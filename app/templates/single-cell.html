@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <form action="" method='post'>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <h3>Single Cell Encapsulation</h3>
+                <div class="static-content">
+                    <p>The average number of cells introduced to the microfluidic device is adjustable by controlling the inlet media flow rate and the concentration of cells in the media. However, the exact arrival time of each cell at the point of droplet formation follows a random process. To avoid encapsulation of multiple cells in the same droplet, cells are introduced to the device at a rate much less than the droplet formation rate. As a result, the cells are outnumbered by the droplets, thus, reducing the chance of encapsulating multiple cells inside the same droplet. The probability of the number of cells encapsulated in a droplet follows a Poisson distribution, with most of the droplets being empty as shown below. DAFD’s ability to accurately predict the generation rate of droplets, while calculating the inlet flow rates enables the required inlet cell concentration to be calculated to ensure single-cell encapsulation. The default value of lambda (cells to droplets ratio) is set to 0.1 in DAFD when the user specifies single-cell encapsulation. However, this value can be easily adjusted by the user as well.</p>
+                </div>
+                <img src="{{ url_for('static', filename='img/SingleCellEncapsulation.png') }}" width="85%"/>
+            </div>
+        </div>
+        <div class="spacer"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </form>
+</div>
+<!-- /page content -->
+{% endblock %}

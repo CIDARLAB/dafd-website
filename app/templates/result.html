@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+ 
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <form action="{{ url_for('nn.download') }}" method='post'>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <h3>Results</h3>
+                <input type='submit' name='submit' value='Download Model' class="btn btn-success run"/>
+                <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>  
+                <div class="spacer"></div>
+                <table class="overview-table table table-condensed">
+                    <tr>
+                        <th>Selection</th>
+                        {% for column in columns %}
+                            <th>{{ column }}</th>
+                        {% endfor %}
+                        <!--<th>X-val?</th>
+                        <th>Tuned?</th>-->
+                    </tr>
+                    {% for row in data %}
+                    <tr>
+                        <td>
+                            <!--<input type='hidden' name='model' value='{{row[0]}}'/>
+                            <input type='submit' name='details_{{ loop.index }}' value='See details' class="btn btn-success"/>-->
+                            <input type='checkbox' name='selection' value={{row[1]}}/>
+                            <!--<a href="/neural-net/generate_api"><input type="button" name='api' value='Generate API' class="btn btn-info"/></a>-->
+                        </td>
+                        {% for col in row %}
+                            <td>{{ col }}</td>
+                        {% endfor %}
+                        <!--<td>{{ crossval }}</td>
+                        <td>{{ hyperparam }}</td>-->
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            {% if hyperparam == 'Yes' %}
+            <h5>Best Network Architecture</h5>
+            {% else %}
+            <h5>Network Architecture</h5>
+            {% endif %}
+        </div>
+    </div>
+    {% for key, value in architecture.items() %}
+    <div class="row">
+        <div class="col-md-4 col-sm-12 col-xs-12">{{ key }}</div>
+        <div class="col-md-4 col-sm-12 col-xs-12">{{ value }}</div>
+        <div class="col-md-4 col-sm-12 col-xs-12"></div>
+    </div>
+    {% endfor %}
+</div>
+
+<!--/page content -->
+{% endblock %}

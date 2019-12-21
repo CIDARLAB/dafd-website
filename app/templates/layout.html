@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang=en>
+    
+    <head>
+        <title>:: DAFD ::</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.min.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fullpage.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/slider.css') }}"/>
+    </head>
+    
+    <body>
+        <div class="sidenav">
+            <nav>
+                <ul class="menu fa-ul">
+                    <li><span class="inner"><i class="fa fa-home fa-lg"></i><a href="{{ url_for('index') }}">Home</a></span></li>
+                    <li><span class="inner"><i class="fa fa-info-circle fa-lg"></i><a href="{{ url_for('low_cost') }}">Low-Cost Fabrication</a></span></li>
+                    <li><span class="inner"><i class="fa fa-info-circle fa-lg"></i><a href="{{ url_for('droplet_based') }}">Droplet-Based Microfluidics</a></span></li>
+                    <li><span class="inner"><i class="fa fa-info-circle fa-lg"></i><a href="{{ url_for('single_cell') }}">Single-Cell Encapsulation</a></span></li>
+                    <li><span class="inner"><i class="fa fa-exclamation-circle fa-lg"></i><a href="{{ url_for('tips') }}">Tips and Tricks</a></span></li>
+                    <li><span class="inner"><i class="fa fa-users"></i><a href="{{ url_for('team') }}">Meet the Team</a></span></li>
+                    <li><span class="inner"><i class="fa fa-users"></i><a href="{{ url_for('collaborate') }}">Collaborate with Us</a></span></li>
+                    <li><span class="inner"><i class="fa fa-copy"></i><a href="{{ url_for('publications') }}">Publications</a></span></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="right-content" id="fullpage">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </body>
+    
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/fullpage.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/slider.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/scrolloverflow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/form-control.js') }}"></script>
+
+    {% block add_script %}{% endblock %}
+ </html>

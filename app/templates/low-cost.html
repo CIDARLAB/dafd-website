@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h3>Low Cost Fabrication</h3>
+            <div class="static-content">
+                <p>The microfluidic flow-focusing devices were milled out of a 7cm by 7cm polycarbonate substrate with a thickness of 5.56 mm. All the inlet ports were placed 24 mm upstream of the orifice. The inlet width are set to the designed width starting from 10 mm upstream of the orifice. The inlet channel widths decrease from the port diameter to design width gradually as shown below. The outlet width was kept at the designed outlet width up to 5 mm downstream of the orifice and then was gradually increased to match the outlet port diameter. The original design file was created in SolidWorks and is defined in a way that the users only need to update the values for the six geometric parameters without having to redraw any geometry. The original and editable design file is available on Metafluidics and can be also opened and edited in 3DµF. The designs are saved as .STEP files and are loaded in Fusion 360 to generate G-codes necessary to fabricate the microfluidic device using the low-cost CNC mill. The G-codes are then loaded on the CNC machine to mill out micro-channels of the flow layer. The control layer does not include any milled features since our design is valve-less. A thin (250 µm) layer of PDMS (Slygard 184) is sandwiched between the flow and control layer to seal the device. In order to improve the bonding pressure two layers pressure distributors are milled out of polycarbonate (with holes to allow for ports and tubes to be connected) and clamped down to deliver a uniform seal and finish the assembly process.</p>
+            </div>
+            <img src="{{ url_for('static', filename='img/LowCostFabrication.png') }}" width="90%"/>
+        </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
+        </div>
+    </div>
+    <div class="spacer"></div>
+</div>
+<!-- /page content -->
+{% endblock %}

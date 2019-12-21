@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-6 col-sm-6">
+            <h4>Optimal Design Parameters</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-6">
+            <h5>Geometrics parameters</h5>
+            {% for key, value in geo.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+            <div class="spacer"></div>
+            <br/>
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <img height="30px" style="cursor:pointer" id="open_in_3duf_button" src="{{ url_for('static', filename='img/open-in-3duf-button.png') }}"/>
+                </div>
+            </div>
+            <h5>Predicted performance</h5>
+            {% for key, value in perform.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-6 col-sm-6">
+            <h5>Optimization strategy</h5>
+            {% for key, value in opt.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+            <h5>Flow conditions</h5>
+            {% for key, value in flow.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+            <h5>Flow rates</h5>
+            {% for key, value in flowrate.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+            <h5>Single cell encapsulation</h5>
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">Lambda (ratio of cells to droplets)</div>
+                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="lambda" name="lambda" value="0.1" onchange="updateLambda(this.value, {{ gen_rate }}, {{ flow_rate }});"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">Cell concentration (cells per &mu;l)</div>
+                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="conc" name="conc" value="{{ gen_rate * 0.1 * 60 / flow_rate }}" readonly></div>
+            </div>
+        </div>
+    </div>
+
+    <br/>
+    <br/>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+{% endblock %}
+
+
+{% block add_script %}
+
+<script src="{{ url_for('static', filename='js/bundle.js') }}"></script>
+<script>
+    window.onload = function() {
+        var button = document.getElementById("open_in_3duf_button");
+        button.onclick = function() {
+            //TODO: Put the individual parameter information here
+            var params = {
+                "orificeSize": {{ geo['Orifice Width (\u03BCm)'] }},
+                "orificeLength": {{ geo['Orifice Length (\u03BCm)'] }},
+                "oilInputWidth": {{ geo['Oil Inlet Width (\u03BCm)'] }},
+                "waterInputWidth": {{ geo['Water Inlet Width (\u03BCm)'] }},
+                "outputWidth": {{ geo['Outlet Channel Width (\u03BCm)'] }},
+                "outputLength": 5000,
+                "height": {{ geo['Channel Depth (\u03BCm)'] }}
+            };
+            ThreeDuFPlugin.openDesignWithDAFDParams(params);
+        }
+    }
+</script>
+{% endblock %}

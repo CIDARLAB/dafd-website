@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <form action="" method='post'>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <h3>Droplet-Based Microfluidics</h3>
+                <div class="static-content">
+                    <p>Flow-focusing geometries provides superior control over droplet size over a wide range of generation rates in comparison T-junctions and co-flow droplet generation geometries. Droplets are formed by flowing two immiscible fluids in a microfluidic device through a narrow opening called an orifice. A flow-focusing microfluidic device consists of six geometric parameters including orifice width, orifice length, water inlet width, oil inlet width, outlet channel width, and channel depth. Droplets formation can occur through several regimes, including squeezing, dripping, and jetting. In here we only focus on the dripping (regime 1) and jetting (regime 2) regimes due to their higher generation rates in comparison to the squeezing regime. A sample flow-focusing geometry and droplet formation in dripping and jetting regime is shown below. DI water was used as the dispersed phase and mineral oil with a viscosity of 57.2 mPa.s was used as the continuous phase. 5% volumetric Span 80 as the surfactant was added to the oil to increase droplet stability. For more information on microfluidic flow-focusing droplet generation check out: A. Lashkaripour et al., “Performance Tuning of Microfluidic Flow-Focusing Droplet Generators” (Lab on a Chip, 2019).</p>
+                </div>
+                <img src="{{ url_for('static', filename='img/DropletBasedMicrofluidics.png') }}" width="90%"/>
+            </div>
+        </div>
+        <div class="spacer"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </form>
+</div>
+<!-- /page content -->
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h3>Upload Your Data - Transfer Learning</h3>
+            <br/>
+            <br/>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <form action="{{ url_for('nn.analysis_transfer') }}" id="form-transfer" method="post" enctype="multipart/form-data">
+                        <div class="form-group files">
+                            <input id="train-transfer" name="file" type="file" class="form-control" multiple="" onchange="uploadTransfer()"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+{% endblock %}
+
+{% block add_script %}
+<script>
+    function uploadTransfer() {
+        document.getElementById("form-transfer").submit();
+    }
+</script>
+{% endblock %}

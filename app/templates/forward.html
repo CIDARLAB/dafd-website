@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h3>Performance Prediction of Droplet Generators</h3>
+            
+            <h4>Predicted Performance</h4>
+            {% for key, value in perform.items() %}
+            <div class="row">
+                <div class="col-md-4 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-4 col-sm-12 col-xs-12">{{ value }}</div>
+                <div class="col-md-4 col-sm-12 col-xs-12"></div>
+            </div>
+            {% endfor %}
+            <h4>Calculated Values</h4>
+            {% for key, value in values.items() %}
+            <div class="row">
+                <div class="col-md-4 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-4 col-sm-12 col-xs-12">{{ value }}</div>
+                <div class="col-md-4 col-sm-12 col-xs-12"></div>
+            </div>
+            {% endfor %}
+            <h4>Design Parameters</h4>
+            {% for key, value in forward2.items() %}
+            <div class="row">
+                <div class="col-md-4 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-4 col-sm-12 col-xs-12">{{ value }}</div>
+                <div class="col-md-4 col-sm-12 col-xs-12"></div>
+            </div>
+            {% endfor %}
+            <div class="spacer"></div>
+            <br/>
+            <br/>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
+                </div>
+            </div>
+            <div class="spacer"></div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+{% endblock %}

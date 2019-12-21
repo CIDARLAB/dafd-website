@@ -1,0 +1,277 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <form action="{{ url_for('nn.run') }}" method='post'>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <h3>Data Summary</h3>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <label><b>Dataset name:</b></label>
+                        <input class='form-standard form-text' type='text' name='filename' value='{{ filename }}' readonly/>
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <label><b>Model name (required):</b></label>
+                        <input class='form-standard form-text' id='model-name' type='text' name='model-name' value='{{ model_name }}'/>
+                    </div>
+                </div>
+                <div class="spacer"></div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <label><b>Target variable:</b></label>
+                        <select class='form-standard' id='target_select' name='target_single'>
+                            <option value='empty' selected>--Select a target variable--</option>
+                            {% for row in data %}
+                            <option value='{{row[0]}}'>{{row[0]}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <label><b>Type of learning:</b></label>
+                        <select class='form-standard' id='mode_select' name='mode' onChange="populateMetrics()">
+                            <option value='classification' selected>Classification</option>
+                            <option value='regression'>Regression</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="spacer"></div>
+
+                <!--<input type='submit' name='submit' value='Classification' class="btn btn-success run"/>
+                <input type='submit' name='submit' value='Regression' class="btn btn-success run"/>-->
+                
+                <label><b>Data overview:</b></label>
+                <table id="summary" class="overview-table table table-condensed">
+                    <tr>
+                        <!--<th>target variable</th>-->
+                        <th>drop?</th>
+                        {% for column in columns %}
+                            <th>{{column}}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for row in data %}
+                    <tr>
+                        <!--<td><span class='targetVar'><input type='checkbox' name='target' value='{{row[0]}}'/></span></td>-->
+                        <td><input type='checkbox' name='drop' value='{{row[0]}}'/></td>
+                        {% for col in row %}
+                            <td>{{col}}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </table>
+
+                
+                <h4>Model-Training Settings</h4>
+                <!--<div>
+                    <p>Classification metrics:</p>
+                    <label><input type='checkbox' name='cls_metrics' value='accuracy' checked/>Accuracy</label>
+                    <label><input type='checkbox' name='cls_metrics' value='precision'/>Precision</label>
+                    <label><input type='checkbox' name='cls_metrics' value='recall'/>Recall</label>
+                    <label><input type='checkbox' name='cls_metrics' value='f1'/>F1 Score</label>
+                    <label><input type='checkbox' name='cls_metrics' value='roc_auc'/>ROC-AUC Score</label>
+                </div>
+                <div>
+                    <p>Regression metrics:</p>
+                    <label><input type='checkbox' name='reg_metrics' value='r2' checked/>R^2</label>
+                    <label><input type='checkbox' name='reg_metrics' value='mae'/>MAE</label>
+                    <label><input type='checkbox' name='reg_metrics' value='mse'/>MSE</label>
+                    <label><input type='checkbox' name='reg_metrics' value='rmse'/>RMSE</label>
+                </div>-->
+                <div class="row">
+                    <label class="col-md-4 col-sm-12 col-xs-12">Optimization metrics:</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <select id='metrics_select' name='metrics' class='form-standard'>
+                            <option value='accuracy' selected>Accuracy</option>
+                            <option value='precision'>Precision</option>
+                            <option value='recall'>Recall</option>
+                            <option value='f1'>F1 Score</option>
+                            <option value='roc_auc'>ROC-AUC</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12"></div>
+                </div>
+
+                <!--<div>
+                    <p>Data normalization:</p>
+                    <label><input type='radio' name='normalization' value='minmax' checked/>Min-Max Scaler</label>
+                    <label><input type='radio' name='normalization' value='standard'/>Standard Scaler</label>
+                    <label><input type='radio' name='normalization' value='robust'/>Robust Scaler</label>
+                    <label><input type='radio' name='normalization' value='none'/>None</label>
+                </div>-->
+                <div class="row">
+                    <label class="col-md-4 col-sm-12 col-xs-12">Data normalization:</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <select name='normalization' class='form-standard'>
+                            <option value='minmax' selected>Min-Max Scaler</option>
+                            <option value='standard'>Standard Scaler</option>
+                            <option value='robust'>Robust Scaler</option>
+                            <option value='none'>None</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12"></div>
+                </div>
+
+                <!--<div>
+                    <label>Test size: <input type='text' name='test-size' value='0.2'/></label>
+                </div>-->
+                <div class="row">
+                    <label class="col-md-4 col-sm-12 col-xs-12">Test size (in %):</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <input class='form-standard form-text' type='text' id='holdout' name='holdout' value='20'/>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12"></div>
+                </div>
+
+                <!--<div>
+                    <label><input type='checkbox' name='crossval' value='crossval'/>Cross Validation</label><br/>
+                    <label><input type='radio' name='cv_method' value='kfold' checked/>K-Fold</label>
+                    <label><input type='radio' name='cv_method' value='loo'/>Leave-One-Out</label>
+                    <label><input type='radio' name='cv_method' value='stratkfold'/>Stratified K-Fold</label>
+                </div>-->
+                <!--<div>
+                    <label><input type='checkbox' id='hyperpars' name='hyper-param' value='hyper-param'/>Hyperparameter Optimization:</label>
+                    <label><input type='radio' name='tuning' value='grids' checked/>Grid Search</label>
+                    <label><input type='radio' name='tuning' value='randoms'/>Random Search</label>
+                    <label><input type='radio' name='tuning' value='bayesian'/>Bayesian Optimization</label>
+                </div>-->
+                <div class="row">
+                    <label class="col-md-4 col-sm-12 col-xs-12">Validation method:</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <select id='cv_select' class='form-standard' name='validation' onChange="activateFold()">
+                            <option value='crossval' selected>Cross Validation</option>
+                            <option value='holdout'>Train and Holdout</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12"></div>
+                </div>
+                <div class="row">
+                    <label class="col-md-4 col-sm-12 col-xs-12">Number of folds:</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <input id='fold_text' class='form-standard form-text' type='text' name='fold' value='3'/>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12"></div>
+                </div>
+
+
+                <h4>Neural-Network Settings</h4>
+                <div class="row">
+                    <label class="col-md-4 col-sm-12 col-xs-12">Network tuning:</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <select id='hp_select' class='form-standard' name='tuning' onChange="activateFold()">
+                            <option value='grid' selected>Grid Search</option>
+                            <option value='random'>Random Search</option>
+                            <option value='none'>None</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12"></div>
+                </div>
+
+                <div id="network-setting" class="subtext">Split with comma (,) for multiple values for each parameter</div>
+                <div class="spacer"></div>
+                <div class="row">
+                    <label class="col-md-4 col-sm-12 col-xs-12">Epoch:</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <input class='form-standard form-text' id='reqParam1' type='text' name='epoch' value='100'/>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12"></div>
+                </div>
+                <div class="row">
+                    <label class="col-md-4 col-sm-12 col-xs-12">Batch-Size:</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <input class='form-standard form-text' id='reqParam2' type='text' name='batch' value='1'/>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12"></div>
+                </div>
+                <div class="row">
+                    <label class="col-md-4 col-sm-12 col-xs-12">Number of Hidden Layers:</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <input class='form-standard form-text' id='reqParam3' type='text' name='num_layers' value='4'/>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12"></div>
+                </div>
+                <div class="row">
+                    <label class="col-md-4 col-sm-12 col-xs-12">Number of Nodes per Layer:</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <input class='form-standard form-text' id='reqParam4' type='text' name='num_nodes' value='8'/>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12"></div>
+                </div>
+                <div class="spacer"></div>
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <input type="checkbox" class="flat" name='contribute' value='agree' checked="checked"/>   <span class='subtext'>I agree to contribute my data to the community. Opt out if you do not wish to share your data.</span>
+                    </div>
+                </div>
+                <div class="spacer"></div>
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <input type='submit' name='submit' value='Execute' class="btn btn-success run execute" onClick="validityForm()"/>
+                    </div>
+                </div>
+                <div class="spacer"></div>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- /page content -->
+{% endblock %}
+
+{% block add_script %}
+<script>
+    /*$('.run').on('click', function() {
+        var tune = document.getElementById('hyperpars').checked
+        var m = document.getElementById('reqParam0').value
+        var a = document.getElementById('reqParam1').value
+        var b = document.getElementById('reqParam2').value
+        var c = document.getElementById('reqParam3').value
+        var d = document.getElementById('reqParam4').value
+
+
+        if (m == null || m == "") {
+            alert("Please fill the model name!");
+            event.preventDefault();
+        }
+
+        //if (a == null || a == "", b == null || b == "", c == null || c == "", d == null || d == "") {
+        if(tune) {
+
+            if (a == null || a == "" || b == null || b == "" || c == null || c == "" || d == null || d == "") {
+                //alert(document.getElementById('reqParam1').value)
+                alert("Please fill all required fields (NN Parameters Setting)!");
+                event.preventDefault();
+            }
+        }
+    });*/
+</script>
+{% endblock %}

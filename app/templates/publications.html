@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <form action="" method='post'>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <h3>Publications</h3>
+                <div class="static-content">
+                    <p>For more information on Low-cost fabrication of microfluidic devices read Lashkaripour, Ali, Ryan Silva, and Douglas Densmore. "<a href="https://link.springer.com/article/10.1007/s10404-018-2048-2" target="_blank">Desktop micromilled microfluidics</a>." Microfluidics and Nanofluidics 22, no. 3 (2018): 31. or contact us at <a href="mailto:lashkari@bu.edu" target="_top">lashkari@bu.edu</a>.</p>
+
+                    <p>For more information of microfluidic flow-focusing droplet generation read Lashkaripour, Ali, Christopher Rodriguez, Luis Ortiz, and Douglas Densmore. "<a href="https://pubs.rsc.org/en/content/articlelanding/2019/lc/c8lc01253a" target="_blank">Performance tuning of microfluidic flow-focusing droplet generators</a>." Lab on a Chip 19, no. 6 (2019): 1041-1053. or contact us at <a href="mailto:lashkari@bu.edu" target="_top">lashkari@bu.edu</a>.</p>
+                </div>
+            </div>
+        </div>
+        <div class="spacer"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </form>
+</div>
+<!-- /page content -->
+{% endblock %}

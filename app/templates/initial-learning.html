@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h3>Upload Your Data - Initial Learning</h3>
+            <br/>
+            <br/>
+            <br/>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <form action="{{ url_for('nn.analysis') }}" id="form-initial" method="post" enctype="multipart/form-data">
+                        <div class="form-group files">
+                            <input id="train-initial" name="file" type="file" class="form-control" multiple="" onchange="uploadInitial()"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+{% endblock %}
+
+{% block add_script %}
+<script>
+    /*$('.run').on('click', function() {
+        var tune = document.getElementById('hyperpars').checked
+        var m = document.getElementById('reqParam0').value
+        var a = document.getElementById('reqParam1').value
+        var b = document.getElementById('reqParam2').value
+        var c = document.getElementById('reqParam3').value
+        var d = document.getElementById('reqParam4').value
+
+        if (m == null || m == "") {
+            alert("Please fill the model name!");
+            event.preventDefault();
+        }
+
+        //if (a == null || a == "", b == null || b == "", c == null || c == "", d == null || d == "") {
+        if(tune) {
+
+            if (a == null || a == "" || b == null || b == "" || c == null || c == "" || d == null || d == "") {
+                //alert(document.getElementById('reqParam1').value)
+                alert("Please fill all required fields (NN Parameters Setting)!");
+                event.preventDefault();
+            }
+        }
+    });*/
+    function uploadInitial() {
+        document.getElementById("form-initial").submit();
+    }
+</script>
+{% endblock %}

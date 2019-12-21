@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <form action="" method='post'>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <h3>Tips for using DAFD</h3>
+                <div class="static-content">
+                    <ul>
+                        <li>Inferred droplet diameter is calculated through dividing the flow rate of water by the generation rate, to calculate the average droplet volume and back-calculate the inferred droplet diameter from the average droplet volume.</li>
+                        <li>To ensure DAFD maintains high-accuracy make sure the inferred droplet diameter calculated by DAFD is close to the desired droplet diameter. In case this value is not within your application tolerance, you can change, add, or remove constraints to achieve a inferred droplet diameter close to the desired droplet diameter.</li>
+                        <li>The closer the values of inferred droplet diameter and the predicted droplet diameter are, the higher the accuracy of DAFD would be.</li>
+                        <li>If you define a droplet diameter and constrain the orifice width to be smaller than the droplet diameter, DAFD automatically assumes droplet formation to occur at jetting regime and searches through data-points that are in this regime.</li>
+                        <li>If there is a point on the data-set that matches or is within the tolerance of the desired performance, DAFD will return that experimental data point. In the section optimization strategy these cases can be identified if the point source is identified as experimental.</li>
+                        <li>You can also specify a range of constraints in DAFD. For example If you need an orifice width between 150 and 175 µm, you can simply enter in "150-175" the orifice width constraints to keep the orifice width in those bounds.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="spacer"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <h3>Tips for Microfabrication</h3>
+                <div class="static-content">
+                    <ul>
+                        <li>You will achieve a higher spatial accuracy during micro-milling if the channel widths are exactly equal to the available endmill’s cutting diameter.</li>
+                        <li>Adequate chip removal from the tip of the endmill is crucial to a successful milling session. Make sure you are continuously removing chips and burrs from the endmill using a bit fan and pressured air (i.e., electric duster).</li>
+                        <li>If you’re using a CNC machine that locating the endmill is achieved through physical contact of the endmill and the CNC bed, when working with small endmills (i.e., < 75 µm) you can avoid breaking the endmill by not physically locating it. Just simply, generate a G-code for a shallow and small probing cut. Reduce the material thickness in the software controlling the CNC until a visible cut on the substrate is observed.</li>
+                        <li>You can find the feeds and speeds for milling a polycarbonate substrate in our previous work called "<a href="https://link.springer.com/article/10.1007/s10404-018-2048-2" target="_blank">Desktop micromilled microfluidics</a>."</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="spacer"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </form>
+</div>
+<!-- /page content -->
+{% endblock %}

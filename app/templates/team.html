@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <form action="" method='post'>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <h3>Meet the Team</h3>
+                <div class="static-content text-center">
+                    <div class="row vertical-spacer">
+                        <div class="col-md-4 col-sm-12 text-center"><img class="img-team" src="{{ url_for('static', filename='img/Ali.png') }}"></div>
+                        <div class="col-md-4 col-sm-12 text-center"><img class="img-team" src="{{ url_for('static', filename='img/Chris.png') }}"></div>
+                        <div class="col-md-4 col-sm-12 text-center"><img class="img-team" src="{{ url_for('static', filename='img/Noushin.png') }}"></div>
+                    </div>
+                    <div class="row vertical-spacer">
+                        <div class="col-md-4 col-sm-12 text-center">
+                            <b>Ali Lashkaripour</b>
+                            <br/>Lead Researcher
+                            <br/>lashkari@bu.edu
+                        </div>
+                        <div class="col-md-4 col-sm-12 text-center">
+                            <b>Christopher Rodriguez</b>
+                            <br/>Co-researcher
+                            <br/>cwrod@mit.edu
+                        </div>
+                        <div class="col-md-4 col-sm-12 text-center">
+                            <b>Noushin Mehdipour</b>
+                            <br/>Co-researcher
+                            <br/>noushinm@bu.edu
+                        </div>
+                    </div>
+                    <div class="row vertical-spacer">
+                        <div class="col-md-4 col-sm-12 text-center"><img class="img-team" src="{{ url_for('static', filename='img/Rizki.png') }}"></div>
+                        <div class="col-md-4 col-sm-12 text-center"><img class="img-team" src="{{ url_for('static', filename='img/David.png') }}"></div>
+                        <div class="col-md-4 col-sm-12 text-center"><img class="img-team" src="{{ url_for('static', filename='img/Luis.png') }}"></div>
+                    </div>
+                    <div class="row vertical-spacer">
+                        <div class="col-md-4 col-sm-12 text-center">
+                            <b>Rizki Mardian</b>
+                            <br/>Co-researcher
+                            <br/>mardian@bu.edu
+                        </div>
+                        <div class="col-md-4 col-sm-12 text-center">
+                            <b>David McIntyre</b>
+                            <br/>Co-researcher
+                            <br/>dpmc@bu.edu
+                        </div>
+                        <div class="col-md-4 col-sm-12 text-center">
+                            <b>Luis Ortiz</b>
+                            <br/>Co-researcher
+                            <br/>lortiz15@bu.edu
+                        </div>
+                    </div>
+                    <div class="row vertical-spacer">
+                        <div class="col-md-4 col-sm-12 text-center"><img class="img-team" src="{{ url_for('static', filename='img/Doug.png') }}"></div>
+                        <div class="col-md-4 col-sm-12 text-center"><img class="img-team" src="{{ url_for('static', filename='img/Joshua.png') }}"></div>
+                        <div class="col-md-4 col-sm-12 text-center"></div>
+                    </div>
+                    <div class="row vertical-spacer">
+                        <div class="col-md-4 col-sm-12 text-center">
+                            <b>Douglas Densmore</b>
+                            <br/>Lead PI
+                            <br/>dougd@bu.edu
+                        </div>
+                        <div class="col-md-4 col-sm-12 text-center">
+                            <b>Joshua Campbell</b>
+                            <br/>Co-PI
+                            <br/>camp@bu.edu
+                        </div>
+                        <div class="col-md-4 col-sm-12 text-center">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="spacer"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </form>
+</div>
+<!-- /page content -->
+{% endblock %}
