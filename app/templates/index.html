@@ -13,7 +13,7 @@
 			<div class="row md-spacer">
 				<div class="col-md-12">
 					<div class="banner">
-						<p>The first microfluidic design automation software to deliver a user-specified desired performance using machine learning.</p>
+						<p>The first microfluidic design automation software to deliver a user-specified performance using machine learning.</p>
 					</div>
 				</div>
 			</div>
@@ -70,7 +70,7 @@
 									<input size="4" type="text" id="dropSize" name="dropSize" value="25" oninput="updateIntSlider('dropSizeRange', this.id)" onchange="intSliderChange('dropSizeRange', this.id, 25, 250)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired droplet diameter between 25 &mu;m and 250 &mu;m.</span></div>
 								</div>
 							</div>
 							<div class="row slider-one-col">
@@ -88,7 +88,7 @@
 									<input size="4" type="text" id="genRate" name="genRate" value="5" oninput="updateIntSlider('genRateRange', this.id)" onchange="intSliderChange('genRateRange', this.id, 5, 500)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired generation rate between 5 Hz and 500 Hz.</span></div>
 								</div>
 							</div>
 							<div class="row">
@@ -118,7 +118,7 @@
 									<input size="4" type="text" id="oriWid" name="oriWid" value="75" disabled oninput="updateIntSlider('oriWidRange', this.id)" onchange="intSliderChange('oriWidRange', this.id, 75, 175)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">If you have a design constraint you can pick an orifice width between 75 &mu;m and 175 &mu;m.</span></div>
 								</div>
 							</div>
 							<!--3rd row-->
@@ -137,7 +137,7 @@
 									<input size="4" type="text" id="aspRatio" name="aspRatio" value="1" disabled oninput="updateFloatSlider('aspRatioRange', this.id)" onchange="floatSliderChange('aspRatioRange', this.id, 100, 300)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Channel depth normalized to the orifice width.</span></div>
 								</div>
 							</div>
 							<!--4th row-->
@@ -156,7 +156,7 @@
 									<input size="4" type="text" id="expRatio" name="expRatio" value="2" disabled oninput="updateFloatSlider('expRatioRange', this.id)" onchange="floatSliderChange('expRatioRange', this.id, 200, 600)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Outlet channel width normalized to the orifice width.</span></div>
 								</div>
 							</div>
 							<!--5th row-->
@@ -175,7 +175,7 @@
 									<input size="4" type="text" id="normOri" name="normOri" value="1" disabled oninput="updateFloatSlider('normOriRange', this.id)" onchange="floatSliderChange('normOriRange', this.id, 100, 300)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Orifice length normalized to the orifice width.</span></div>
 								</div>
 							</div>
 
@@ -195,7 +195,7 @@
 									<input size="4" type="text" id="normInlet" name="normInlet" value="2" disabled oninput="updateFloatSlider('normInletRange', this.id)" onchange="floatSliderChange('normInletRange', this.id, 200, 400)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Water inlet width normalized to the orifice width.</span></div>
 								</div>
 							</div>
 							<!--3rd row-->
@@ -214,7 +214,7 @@
 									<input size="4" type="text" id="normOil" name="normOil" value="2" disabled oninput="updateFloatSlider('normOilRange', this.id)" onchange="floatSliderChange('normOilRange', this.id, 200, 400)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Oil inlet width normalized to the orifice width.</span></div>
 								</div>
 							</div>
 							<!--4th row-->
@@ -233,7 +233,7 @@
 									<input size="4" type="text" id="flowRatio" name="flowRatio" value="2" disabled oninput="updateFloatSlider('flowRatioRange', this.id)" onchange="floatSliderChange('flowRatioRange', this.id, 200, 2200)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Oil flow rate divided by water flow rate.</span></div>
 								</div>
 							</div>
 							<!--5th row-->
@@ -252,7 +252,7 @@
 									<input size="4" type="text" id="capNum" name="capNum" value="0.03" disabled oninput="updateFloatSlider('capNumRange', this.id)" onchange="floatSliderChange('capNumRange', this.id, 3, 106)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Capillary number is the ratio of viscous forces and the interfacial tension.</span></div>
 								</div>
 							</div>
 							<!--6th row-->
@@ -272,7 +272,7 @@
 								</div>
 								<div class="col-md-1 text-center"></div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">If you have a design constraint on regime, you can pick between dripping or jetting regime.</span></div>
 								</div>
 							</div>
 
@@ -317,7 +317,7 @@
 									<input size="4" type="text" id="oriWid2" name="oriWid2" value="75" oninput="updateIntSlider('oriWidRange2', this.id)" onchange="intSliderChange('oriWidRange2', this.id, 75, 175)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick an orifice width between 75 &mu;m and 175 &mu;m.</span></div>
 								</div>
 							</div>
 							<!--2nd row-->
@@ -334,7 +334,7 @@
 									<input size="4" type="text" id="aspRatio2" name="aspRatio2" value="1" oninput="updateFloatSlider('aspRatioRange2', this.id)" onchange="floatSliderChange('aspRatioRange2', this.id, 100, 300)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Channel depth normalized to the orifice width.</span></div>
 								</div>
 							</div>
 							<!--3rd row-->
@@ -351,7 +351,7 @@
 									<input size="4" type="text" id="expRatio2" name="expRatio2" value="2" oninput="updateFloatSlider('expRatioRange2', this.id)" onchange="floatSliderChange('expRatioRange2', this.id, 200, 600)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Outlet channel width normalized to the orifice width.</span></div>
 								</div>
 							</div>
 							<!--4th row-->
@@ -368,7 +368,7 @@
 									<input size="4" type="text" id="normOri2" name="normOri2" value="1" oninput="updateFloatSlider('normOriRange2', this.id)" onchange="floatSliderChange('normOriRange2', this.id, 100, 300)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Orifice length normalized to the orifice width.</span></div>
 								</div>
 							</div>
 							<!--5th row-->
@@ -385,7 +385,7 @@
 									<input size="4" type="text" id="normInlet2" name="normInlet2" value="2" oninput="updateFloatSlider('normInletRange2', this.id)" onchange="floatSliderChange('normInletRange2', this.id, 200, 400)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Water inlet width normalized to the orifice width.</span></div>
 								</div>
 							</div>
 							<!--6th row-->
@@ -402,7 +402,7 @@
 									<input size="4" type="text" id="normOil2" name="normOil2" value="2" oninput="updateFloatSlider('normOilRange2', this.id)" onchange="floatSliderChange('normOilRange2', this.id, 200, 400)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Oil inlet width normalized to the orifice width.</span></div>
 								</div>
 							</div>
 							<!--7th row-->
@@ -419,7 +419,7 @@
 									<input size="4" type="text" id="flowRatio2" name="flowRatio2" value="2" oninput="updateFloatSlider('flowRatioRange2', this.id)" onchange="floatSliderChange('flowRatioRange2', this.id, 200, 2200)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Oil flow rate divided by water flow rate.</span></div>
 								</div>
 							</div>
 							<!--8th row-->
@@ -436,7 +436,7 @@
 									<input size="4" type="text" id="capNum2" name="capNum2" value="0.03" oninput="updateFloatSlider('capNumRange2', this.id)" onchange="floatSliderChange('capNumRange2', this.id, 3, 106)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Capillary number is the ratio of viscous forces and the interfacial tension.</span></div>
 								</div>
 							</div>
 							<div class="row">
