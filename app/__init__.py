@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
 import os
 from config import CONFIG, REDIS
+
 from werkzeug.utils import secure_filename
 
 from make_celery import make_celery
@@ -14,6 +15,8 @@ app.config.update(
     CELERY_RESULT_BACKEND=REDIS['backend']
 )
 celery = make_celery(app)
+
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 from app.mod_NN.views import nn_blueprint
 app.register_blueprint(nn_blueprint, url_prefix='/neural-net')
@@ -66,6 +69,49 @@ def collaborate():
 def publications():
 	
 	return render_template('publications.html')
+
+@app.route("/download.html")
+@app.route("/download")
+def download():
+	
+	return render_template('download.html')
+
+
+@app.route("/dataset1")
+def dataset1():
+	
+	directory = os.path.join(APP_ROOT, './resources/inputs/')
+	return send_from_directory(directory=directory, filename='example-dataset-01.csv', as_attachment=True)
+
+@app.route("/dataset2")
+def dataset2():
+	
+    directory = os.path.join(APP_ROOT, './resources/inputs/')
+    return send_from_directory(directory=directory, filename='example-dataset-02.csv', as_attachment=True)
+
+@app.route("/dataset3")
+def dataset3():
+	
+    directory = os.path.join(APP_ROOT, './resources/inputs/')
+    return send_from_directory(directory=directory, filename='example-dataset-03.csv', as_attachment=True)
+
+@app.route("/dataset4")
+def dataset4():
+	
+    directory = os.path.join(APP_ROOT, './resources/inputs/')
+    return send_from_directory(directory=directory, filename='example-dataset-05.csv', as_attachment=True)
+
+@app.route("/dataset5")
+def dataset5():
+	
+    directory = os.path.join(APP_ROOT, './resources/inputs/')
+    return send_from_directory(directory=directory, filename='example-dataset-05.csv', as_attachment=True)
+
+@app.route("/dataset6")
+def dataset6():
+	
+    directory = os.path.join(APP_ROOT, './resources/inputs/')
+    return send_from_directory(directory=directory, filename='example-dataset-06.csv', as_attachment=True)
 
 
 '''The following part below is for celery test'''

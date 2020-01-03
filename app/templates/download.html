@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h3>Download Datasets</h3>
+            <div class="static-content">
+                <p>The following files are some of the example datasets.</p>
+            </div>
+            <ul>
+                <li><a href="{{ url_for('dataset1') }}">Dataset 1</a></li>
+                <li><a href="{{ url_for('dataset2') }}">Dataset 2</a></li>
+                <li><a href="{{ url_for('dataset3') }}">Dataset 3</a></li>
+                <li><a href="{{ url_for('dataset4') }}">Dataset 4</a></li>
+                <li><a href="{{ url_for('dataset5') }}">Dataset 5</a></li>
+                <li><a href="{{ url_for('dataset6') }}">Dataset 6</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
+        </div>
+    </div>
+    <div class="spacer"></div>
+</div>
+<!-- /page content -->
+{% endblock %}
