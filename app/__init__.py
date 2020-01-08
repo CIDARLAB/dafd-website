@@ -71,6 +71,7 @@ def publications():
 	return render_template('publications.html')
 
 @app.route("/download.html")
+@app.route("/download")
 def download():
 	
 	return render_template('download.html')
