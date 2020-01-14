@@ -67,9 +67,8 @@ body {
     margin-left: 1em;
 }
 
-
 .right-content {
-    background: #f2f2f2;
+    background: #fff;
     margin-left: 22%;
     width: 78%;
     padding: 0px;
@@ -95,8 +94,9 @@ body {
 }
 
 .img-stakeholders {
-    height: 60px;
+    height: 40px;
     padding: 5px;
+    cursor: pointer;
 }
 
 .banner {
@@ -120,6 +120,18 @@ body {
     text-align: center;
     padding: 20px 0 0 0;
     top: 0px;
+}
+.logo-footer {
+    padding: 12px;
+    position: fixed;
+    left: 15px;
+    bottom: 0;
+    width: 100%;
+    color: white;
+}
+.copyright {
+    font-size: 11px;
+    color: black;
 }
 
 /* BUTTON */

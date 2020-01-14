@@ -28,11 +28,11 @@ def index():
 	
 	return render_template('index.html', nn_server=domain)
 
-@app.route("/low_cost.html")
-@app.route("/low_cost")
-def low_cost():
+@app.route("/information.html")
+@app.route("/information")
+def information():
 	
-	return render_template('low-cost.html')
+	return render_template('information.html')
 
 @app.route("/droplet_based.html")
 @app.route("/droplet_based")
@@ -46,11 +46,11 @@ def single_cell():
 	
 	return render_template('single-cell.html')
 
-@app.route("/tips.html")
-@app.route("/tips")
-def tips():
+@app.route("/tutorial.html")
+@app.route("/tutorial")
+def tutorial():
 	
-	return render_template('tips.html')
+	return render_template('tutorial.html')
 
 @app.route("/team.html")
 @app.route("/team")

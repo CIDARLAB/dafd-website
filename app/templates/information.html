@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h3>Low Cost Fabrication</h3>
+            <div class="static-content">
+                <p>The microfluidic flow-focusing devices were milled out of a 7cm by 7cm polycarbonate substrate with a thickness of 5.56 mm. All the inlet ports were placed 24 mm upstream of the orifice. The inlet width are set to the designed width starting from 10 mm upstream of the orifice. The inlet channel widths decrease from the port diameter to design width gradually as shown below. The outlet width was kept at the designed outlet width up to 5 mm downstream of the orifice and then was gradually increased to match the outlet port diameter. The original design file was created in SolidWorks and is defined in a way that the users only need to update the values for the six geometric parameters without having to redraw any geometry. The original and editable design file is available on Metafluidics and can be also opened and edited in 3DµF. The designs are saved as .STEP files and are loaded in Fusion 360 to generate G-codes necessary to fabricate the microfluidic device using the low-cost CNC mill. The G-codes are then loaded on the CNC machine to mill out micro-channels of the flow layer. The control layer does not include any milled features since our design is valve-less. A thin (250 µm) layer of PDMS (Slygard 184) is sandwiched between the flow and control layer to seal the device. In order to improve the bonding pressure two layers pressure distributors are milled out of polycarbonate (with holes to allow for ports and tubes to be connected) and clamped down to deliver a uniform seal and finish the assembly process.</p>
+            </div>
+            <img src="{{ url_for('static', filename='img/LowCostFabrication.png') }}" width="90%"/>
+        </div>
+    </div>
+    <div class="spacer"></div>
+
+    <div style="padding-bottom:30px"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h3>Droplet-Based Microfluidics</h3>
+            <div class="static-content">
+                <p>Flow-focusing geometries provides superior control over droplet size over a wide range of generation rates in comparison T-junctions and co-flow droplet generation geometries. Droplets are formed by flowing two immiscible fluids in a microfluidic device through a narrow opening called an orifice. A flow-focusing microfluidic device consists of six geometric parameters including orifice width, orifice length, water inlet width, oil inlet width, outlet channel width, and channel depth. Droplets formation can occur through several regimes, including squeezing, dripping, and jetting. In here we only focus on the dripping (regime 1) and jetting (regime 2) regimes due to their higher generation rates in comparison to the squeezing regime. A sample flow-focusing geometry and droplet formation in dripping and jetting regime is shown below. DI water was used as the dispersed phase and mineral oil with a viscosity of 57.2 mPa.s was used as the continuous phase. 5% volumetric Span 80 as the surfactant was added to the oil to increase droplet stability. For more information on microfluidic flow-focusing droplet generation check out: A. Lashkaripour et al., “Performance Tuning of Microfluidic Flow-Focusing Droplet Generators” (Lab on a Chip, 2019).</p>
+            </div>
+            <img src="{{ url_for('static', filename='img/DropletBasedMicrofluidics.png') }}" width="90%"/>
+        </div>
+    </div>
+    <div class="spacer"></div>
+
+    <div style="padding-bottom:30px"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h3>Single Cell Encapsulation</h3>
+            <div class="static-content">
+                <p>The average number of cells introduced to the microfluidic device is adjustable by controlling the inlet media flow rate and the concentration of cells in the media. However, the exact arrival time of each cell at the point of droplet formation follows a random process. To avoid encapsulation of multiple cells in the same droplet, cells are introduced to the device at a rate much less than the droplet formation rate. As a result, the cells are outnumbered by the droplets, thus, reducing the chance of encapsulating multiple cells inside the same droplet. The probability of the number of cells encapsulated in a droplet follows a Poisson distribution, with most of the droplets being empty as shown below. DAFD’s ability to accurately predict the generation rate of droplets, while calculating the inlet flow rates enables the required inlet cell concentration to be calculated to ensure single-cell encapsulation. The default value of lambda (cells to droplets ratio) is set to 0.1 in DAFD when the user specifies single-cell encapsulation. However, this value can be easily adjusted by the user as well.</p>
+            </div>
+            <img src="{{ url_for('static', filename='img/SingleCellEncapsulation.png') }}" width="85%"/>
+        </div>
+    </div>
+    <div class="spacer"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
+        </div>
+    </div>
+    <div class="spacer"></div>
+</div>
+<!-- /page content -->
+{% endblock %}
