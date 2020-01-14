@@ -99,7 +99,7 @@ def dataset3():
 def dataset4():
 	
     directory = os.path.join(APP_ROOT, './resources/inputs/')
-    return send_from_directory(directory=directory, filename='example-dataset-05.csv', as_attachment=True)
+    return send_from_directory(directory=directory, filename='example-dataset-04.csv', as_attachment=True)
 
 @app.route("/dataset5")
 def dataset5():
@@ -111,7 +111,7 @@ def dataset5():
 def dataset6():
 	
     directory = os.path.join(APP_ROOT, './resources/inputs/')
-    return send_from_directory(directory=directory, filename='example-dataset-06.csv', as_attachment=True)
+    return send_from_directory(directory=directory, filename='example-dataset-06.xlsx', as_attachment=True)
 
 
 '''The following part below is for celery test'''
