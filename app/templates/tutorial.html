@@ -8,6 +8,13 @@
             <div class="col-md-12 col-sm-12">
                 <h3>Tips for using DAFD</h3>
                 <div class="static-content">
+                <video width="800" controls>
+                    <source src="{{ url_for('static', filename='img/tutorial.mp4') }}" type="video/mp4">
+                    Your browser does not support HTML5 video.
+                </video>
+                </div>
+                <div class="spacer"></div>
+                <div class="static-content">
                     <ul>
                         <li>Inferred droplet diameter is calculated through dividing the flow rate of water by the generation rate, to calculate the average droplet volume and back-calculate the inferred droplet diameter from the average droplet volume.</li>
                         <li>To ensure DAFD maintains high-accuracy make sure the inferred droplet diameter calculated by DAFD is close to the desired droplet diameter. In case this value is not within your application tolerance, you can change, add, or remove constraints to achieve a inferred droplet diameter close to the desired droplet diameter.</li>
