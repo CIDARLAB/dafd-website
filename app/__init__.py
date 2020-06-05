@@ -9,6 +9,7 @@ from make_celery import make_celery
 app = Flask(__name__)
 app.secret_key = CONFIG['secret_key']
 domain = CONFIG['domain']
+tl_domain = CONFIG['domain'] + '/transfer-learning'
 
 app.config.update(
     CELERY_BROKER_URL=REDIS['broker'],
@@ -26,7 +27,7 @@ app.register_blueprint(nn_blueprint, url_prefix='/neural-net')
 @app.route("/index")
 def index():
 	
-	return render_template('index.html', nn_server=domain)
+	return render_template('index.html', nn_server=domain, tl_server=tl_domain)
 
 @app.route("/information.html")
 @app.route("/information")

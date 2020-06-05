@@ -255,6 +255,26 @@ body {
     color: #fff;
 }
 
+.btn-4 {
+    font-size: 14px;
+    background: #429993;
+    width: 150px;
+    height: 150px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex; 
+    align-items: center;  /*Aligns vertically center */
+    justify-content: center; /*Aligns horizontally center */
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.btn-4:hover {
+    background: #26484a;
+    color: #fff;
+}
+
 /*.btn-2:active {
     background: #8399a0;
     top: 2px;
