@@ -55,6 +55,13 @@ def forward():
         forward2['Flow Rate Ratio'] = forward['flow_rate_ratio']
         forward2['Capillary Number'] = forward['capillary_number']
 
+        tolerance = request.form.get('tolerance2')
+        if tolerance is not None:
+            #TODO: Run Tolerance Study tolerance_study(tolerance)
+
+
+
+
         return render_template('forward.html', perform=perform, values=values, forward2=forward2)
 
     return redirect(url_for('index'))
@@ -74,7 +81,14 @@ def backward():
         constraints['flow_rate_ratio'] = request.form.get('flowRatio')
         constraints['capillary_number'] = request.form.get('capNum')
         constraints['regime'] = request.form.get('regime')
-        
+
+
+        print("THIS IS THE TOLERANCE VALUE")
+        print(request.form.get('toleranceCheck'))
+        print(request.form.get('toleranceRange'))
+        print(request.form.get('tolerance'))
+
+
         desired_vals = {}
         desired_vals['generation_rate'] = request.form.get('genRate')
         desired_vals['droplet_size'] = request.form.get('dropSize')
@@ -109,7 +123,12 @@ def backward():
 
         gen_rate = float(parsed[9])
         flow_rate = float(parsed[13])
-        
+
+        tolerance = request.form.get('tolerance2')
+        if tolerance is not None:
+            #TODO: Run Tolerance Study tolerance_study(tolerance)
+
+
         return render_template('backward.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
                                 gen_rate=gen_rate, flow_rate=flow_rate)
 
