@@ -78,6 +78,12 @@ def download():
 	return render_template('download.html')
 
 
+@app.route("/tolerance.html")
+@app.route("/tolerance")
+def tolerance():
+	return render_template('tolerance.html')
+
+
 @app.route("/dataset1")
 def dataset1():
 	
