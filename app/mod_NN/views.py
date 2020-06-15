@@ -57,9 +57,14 @@ def forward():
 
         tolerance = request.form.get('tolerance2')
         if tolerance is not None:
-            return run_tolerance(forward, tolerance, perform, values)
+            features_denormalized, fig_names = run_tolerance(forward, tolerance)
+        else:
+            features_denormalized = None
+            fig_names = None
 
-        return render_template('forward.html', perform=perform, values=values, forward2=forward2, tolTest = (tolerance is not None))
+        return render_template('forward.html', perform=perform, values=values, forward2=forward2,
+                               tolTest = (tolerance is not None), features=features_denormalized,
+                               fig_names=fig_names)
 
     return redirect(url_for('index'))
 
@@ -117,11 +122,13 @@ def backward():
         if tolerance is not None:
             features = {key: round(float(parsed[i]),3) for i, key in enumerate(list(constraints.keys())[:-1])}
             flowrate['Droplet Inferred Size (\u03BCm)'] = perform['Inferred Droplet Diameter (\u03BCm)']
-            return run_tolerance(features, tolerance, perform, flowrate)
-
-
+            features_denormalized, fig_names = run_tolerance(features, tolerance)
+        else:
+            features_denormalized = None
+            fig_names = None
         return render_template('backward.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
-                                gen_rate=gen_rate, flow_rate=flow_rate)
+                                gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, features=features_denormalized,
+                                fig_names=fig_names, tolTest = (tolerance is not None))
 
     return redirect(url_for('index'))
 
@@ -274,20 +281,15 @@ def download():
     return redirect(url_for('index'))
 
 @nn_blueprint.route('/tolerance', methods=['GET', 'POST'])
-def run_tolerance(features, tolerance, perform, values):
+def run_tolerance(features, tolerance):
+    from app.mod_dafd.helper_scripts.TolHelper import TolHelper
+    from app.mod_dafd.bin.DAFD_Interface import DAFD_Interface
     features = features.copy()
     features = {key: float(features[key]) for key in features.keys()}
     tolerance = float(tolerance)
-    print("We got here")
-    if request.method == 'POST':
-        print("we got here too")
-        from app.mod_dafd.helper_scripts.TolHelper import TolHelper
-        from app.mod_dafd.bin.DAFD_Interface import DAFD_Interface
-        TH = TolHelper(features, di=DAFD_Interface(), tolerance=tolerance)
-        TH.run_all()
-        fig_names = TH.plot_all()
-        TH.generate_report()
-        #TODO: Figure out if I can double generate the results
-        return render_template('tolerance.html', tolerance=tolerance, features=TH.features_denormalized, perform=perform,
-                               values=values, fig_names=fig_names)
-    return redirect(url_for("team"))
+    TH = TolHelper(features, di=DAFD_Interface(), tolerance=tolerance)
+    TH.run_all()
+    fig_names = TH.plot_all()
+    TH.generate_report()
+
+    return TH.features_denormalized, fig_names
