@@ -292,7 +292,6 @@
 								</div>
 							</div>
 
-                            <!--1st row--> <!--TODO: UPDATE FORMATTING HERE-->
                             <div class="row">
 								<div class="col-md-12">
 									<h6 class="subtitle-spacer">.: Tolerance Test :.</h6>
@@ -314,10 +313,10 @@
 									<p class="field-tip">Tolerance (%)<!--<span class="tip-content">unit in &#181;m</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
-									<input type="range" min="1" max="99" value="10" class="slider" id="toleranceRange" oninput="updateIntInput(this.value, 'toleranceRange', this.id);">
+									<input type="range" min="1" max="99" value="10" class="slider" id="toleranceRange" oninput="updateIntInput(this.value, 'tolerance', this.id);" disabled>
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="tolerance" name="tolerance" value="10" disabled oninput="updateIntSlider('tolerance', this.id)" onchange="intSliderChange('toleranceRange', this.id, 1, 99)">
+									<input size="4" type="text" id="tolerance" name="tolerance" value="10" disabled oninput="updateIntSlider('toleranceRange', this.id)" onchange="intSliderChange('toleranceRange', this.id, 1, 99)">
                                 </div>
 								<div class="col-md-1 text-center">
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired tolerance between 1% and 99%.</span></div>
@@ -488,7 +487,6 @@
 								</div>
 							</div>
 
-                            <!--1st row--> <!--TODO: UPDATE FORMATTING HERE-->
                             <div class="row">
 								<div class="col-md-12">
 									<h6 class="subtitle-spacer">.: Tolerance Test :.</h6>
@@ -510,10 +508,10 @@
 									<p class="field-tip">Tolerance (%)<!--<span class="tip-content">unit in &#181;m</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
-									<input type="range" min="1" max="99" value="10" class="slider" id="toleranceRange2" oninput="updateIntInput(this.value, 'toleranceRange2', this.id);">
+									<input type="range" min="1" max="99" value="10" class="slider" id="toleranceRange2" oninput="updateIntInput(this.value, 'tolerance2', this.id);">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="tolerance2" name="tolerance2" value="10" disabled oninput="updateIntSlider('tolerance2', this.id)" onchange="intSliderChange('toleranceRange2', this.id, 1, 99)">
+									<input size="4" type="text" id="tolerance2" name="tolerance2" value="10" disabled oninput="updateIntSlider('toleranceRange2', this.id)" onchange="intSliderChange('toleranceRange2', this.id, 1, 99)">
                                 </div>
 								<div class="col-md-1 text-center">
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired tolerance between 1% and 99%.</span></div>
