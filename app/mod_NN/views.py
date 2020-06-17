@@ -55,7 +55,16 @@ def forward():
         forward2['Flow Rate Ratio'] = forward['flow_rate_ratio']
         forward2['Capillary Number'] = forward['capillary_number']
 
-        return render_template('forward.html', perform=perform, values=values, forward2=forward2)
+        tolerance = request.form.get('tolerance2')
+        if tolerance is not None:
+            features_denormalized, fig_names = run_tolerance(forward, tolerance)
+        else:
+            features_denormalized = None
+            fig_names = None
+
+        return render_template('forward.html', perform=perform, values=values, forward2=forward2,
+                               tolTest = (tolerance is not None), features=features_denormalized,
+                               fig_names=fig_names)
 
     return redirect(url_for('index'))
 
@@ -74,14 +83,13 @@ def backward():
         constraints['flow_rate_ratio'] = request.form.get('flowRatio')
         constraints['capillary_number'] = request.form.get('capNum')
         constraints['regime'] = request.form.get('regime')
-        
+
         desired_vals = {}
         desired_vals['generation_rate'] = request.form.get('genRate')
         desired_vals['droplet_size'] = request.form.get('dropSize')
 
         strOutput = runReverse(constraints, desired_vals)
         parsed = strOutput.split(':')[1].split('|')[:-1]
-
         geo = {}
         geo['Orifice Width (\u03BCm)'] = round(float(parsed[0]), 3)
         geo['Channel Depth (\u03BCm)'] = round(float(parsed[1]) * float(parsed[0]), 3)
@@ -109,9 +117,18 @@ def backward():
 
         gen_rate = float(parsed[9])
         flow_rate = float(parsed[13])
-        
+
+        tolerance = request.form.get('tolerance')
+        if tolerance is not None:
+            features = {key: round(float(parsed[i]),3) for i, key in enumerate(list(constraints.keys())[:-1])}
+            flowrate['Droplet Inferred Size (\u03BCm)'] = perform['Inferred Droplet Diameter (\u03BCm)']
+            features_denormalized, fig_names = run_tolerance(features, tolerance)
+        else:
+            features_denormalized = None
+            fig_names = None
         return render_template('backward.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
-                                gen_rate=gen_rate, flow_rate=flow_rate)
+                                gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, features=features_denormalized,
+                                fig_names=fig_names, tolTest = (tolerance is not None))
 
     return redirect(url_for('index'))
 
@@ -262,3 +279,17 @@ def download():
         return send_from_directory(directory=directory, filename='weights-classification.h5', as_attachment=True)
     
     return redirect(url_for('index'))
+
+@nn_blueprint.route('/tolerance', methods=['GET', 'POST'])
+def run_tolerance(features, tolerance):
+    from app.mod_dafd.helper_scripts.TolHelper import TolHelper
+    from app.mod_dafd.bin.DAFD_Interface import DAFD_Interface
+    features = features.copy()
+    features = {key: float(features[key]) for key in features.keys()}
+    tolerance = float(tolerance)
+    TH = TolHelper(features, di=DAFD_Interface(), tolerance=tolerance)
+    TH.run_all()
+    fig_names = TH.plot_all()
+    TH.generate_report()
+
+    return TH.features_denormalized, fig_names

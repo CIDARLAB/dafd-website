@@ -292,6 +292,38 @@
 								</div>
 							</div>
 
+                            <!--1st row--> <!--TODO: UPDATE FORMATTING HERE-->
+                            <div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Tolerance Test :.</h6>
+								</div>
+							</div>
+
+							<div class="row content-spacer">
+								<!--1st column-->
+								<div class="col-md-1 text-left">
+									<b>Enabled?</b>
+								</div>
+							</div>
+							<div class="row slider-one-col">
+								<!--second column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="toleranceCheck" onclick="disableSlider(this.id, 'toleranceRange', 'tolerance');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Tolerance (%)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="1" max="99" value="10" class="slider" id="toleranceRange" oninput="updateIntInput(this.value, 'toleranceRange', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="tolerance" name="tolerance" value="10" disabled oninput="updateIntSlider('tolerance', this.id)" onchange="intSliderChange('toleranceRange', this.id, 1, 99)">
+                                </div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired tolerance between 1% and 99%.</span></div>
+								</div>
+							</div>
+
 							<div class="row">
 								<div class="col-md-12">
 									<input type="submit" class="btn-section-2" value="Generate Design" onclick="validityBackward()"/>
@@ -455,6 +487,40 @@
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Capillary number is the ratio of viscous forces and the interfacial tension.</span></div>
 								</div>
 							</div>
+
+                            <!--1st row--> <!--TODO: UPDATE FORMATTING HERE-->
+                            <div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Tolerance Test :.</h6>
+								</div>
+							</div>
+
+							<div class="row content-spacer">
+								<!--1st column-->
+								<div class="col-md-1 text-left">
+									<b>Enabled?</b>
+								</div>
+							</div>
+							<div class="row slider-one-col">
+								<!--second column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="toleranceCheck2" onclick="disableSlider(this.id, 'toleranceRange2', 'tolerance2');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Tolerance (%)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="1" max="99" value="10" class="slider" id="toleranceRange2" oninput="updateIntInput(this.value, 'toleranceRange2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="tolerance2" name="tolerance2" value="10" disabled oninput="updateIntSlider('tolerance2', this.id)" onchange="intSliderChange('toleranceRange2', this.id, 1, 99)">
+                                </div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired tolerance between 1% and 99%.</span></div>
+								</div>
+							</div>
+
+
 							<div class="row">
 								<div class="col-md-12">
 									<input type="submit" class="btn-section-2" value="Predict Performance"/>
