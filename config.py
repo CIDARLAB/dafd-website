@@ -5,8 +5,8 @@ REDIS = {
 
 CONFIG = {
 	'secret_key': '1234567890',
-	'domain': 'http://localhost:5000',
-	#'domain': 'http://ml.dafdcad.org',
+	#'domain': 'http://localhost:5000',
+	'domain': 'http://ml.dafdcad.org',
 	'path': '../resources/',
 	'model_index': 0	#0:regime classification, 1:regime 1-rate regression, 2:regime 1-size regression, 3:regime 2-rate regression, 4:regime 2-size regression
 }
