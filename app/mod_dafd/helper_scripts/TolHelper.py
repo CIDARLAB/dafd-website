@@ -54,8 +54,7 @@ class TolHelper:
         self.file_base = base
         if self.flow_heatmap_size is None or self.flow_heatmap_gen is None:
             self.run_all()
-
-        folder_path = "app\\static\\img"
+        folder_path = os.path.join(os.getcwd(),"app","static","img")
         for filename in os.listdir(folder_path):
             if filename.startswith('size_grid') or filename.startswith('rate_grid') or filename.startswith('flow_hm'):
                 os.remove(os.path.join(folder_path, filename))
