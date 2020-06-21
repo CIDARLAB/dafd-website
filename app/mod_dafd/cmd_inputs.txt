@@ -1,4 +1,4 @@
 CONSTRAINTS
 DESIRED_VALS
 generation_rate=5
-droplet_size=250
+droplet_size=25

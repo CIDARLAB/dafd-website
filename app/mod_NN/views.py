@@ -36,14 +36,14 @@ def forward():
         parsed = strOutput.split(':')[1].split('|')[:-1]
 
         perform = {}
-        perform['Generation Rate (Hz)'] = round(float(parsed[0]), 3)
-        perform['Droplet Diameter (\u03BCm)'] = round(float(parsed[1]), 3)
+        perform['Generation Rate (Hz)'] = round(float(parsed[0]), 1)
+        perform['Droplet Diameter (\u03BCm)'] = round(float(parsed[1]), 1)
         perform['Regime'] = 'Dripping' if parsed[2]=='1' else 'Jetting'
 
         values = {}
         values['Oil Flow Rate (ml/hr)'] = round(float(parsed[3]), 3)
         values['Water Flow Rate (\u03BCl/min)'] = round(float(parsed[4]), 3)
-        values['Droplet Inferred Size (\u03BCm)'] = round(float(parsed[5]), 3)
+        values['Droplet Inferred Size (\u03BCm)'] = round(float(parsed[5]), 1)
 
         forward2 = {}
         forward2['Orifice Size'] = forward['orifice_size']
@@ -64,7 +64,7 @@ def forward():
 
         return render_template('forward.html', perform=perform, values=values, forward2=forward2,
                                tolTest = (tolerance is not None), features=features_denormalized,
-                               fig_names=fig_names)
+                               fig_names=fig_names, tolerance=tolerance)
 
     return redirect(url_for('index'))
 
@@ -106,9 +106,9 @@ def backward():
         opt['Point Source'] = parsed[8]
 
         perform = {}
-        perform['Generation Rate (Hz)'] = round(float(parsed[9]), 3)
-        perform['Droplet Diameter (\u03BCm)'] = round(float(parsed[10]), 3)
-        perform['Inferred Droplet Diameter (\u03BCm)'] = round(float(parsed[14]), 3)
+        perform['Generation Rate (Hz)'] = round(float(parsed[9]), 1)
+        perform['Droplet Diameter (\u03BCm)'] = round(float(parsed[10]), 1)
+        perform['Inferred Droplet Diameter (\u03BCm)'] = round(float(parsed[14]), 1)
         perform['Regime'] = 'Dripping' if parsed[11]=='1' else 'Jetting'
 
         flowrate = {}
@@ -128,7 +128,7 @@ def backward():
             fig_names = None
         return render_template('backward.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
                                 gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, features=features_denormalized,
-                                fig_names=fig_names, tolTest = (tolerance is not None))
+                                fig_names=fig_names, tolTest = (tolerance is not None), tolerance=tolerance)
 
     return redirect(url_for('index'))
 

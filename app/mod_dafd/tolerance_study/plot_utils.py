@@ -96,20 +96,20 @@ def plot_flow_heatmaps(size_df, rate_df, feat_denorm):
     dy = 1
     figsize = plt.figaspect(float(dx * 2) / float(dy * 1))
     fig, axs = plt.subplots(1, 2, facecolor="w", figsize=figsize)
-    plt.subplots_adjust(wspace=0.3, bottom=0.15)
+    plt.subplots_adjust(wspace=0.3, bottom=0.2)
     sns.set_style("white")
     sns.set_context("notebook")
     sns.set(font_scale=1.25)
     sns.heatmap(size_df, cmap="viridis", ax=axs[0], xticklabels=tick_spacing,
-                yticklabels=tick_spacing, cbar_kws={'label': 'Droplet Size (um)'})
+                yticklabels=tick_spacing, cbar_kws={'label': 'Droplet Size (\u03BCm)'})
     axs[0].tick_params(axis='x', labelrotation=30)
     axs[0].scatter(len(size_df.columns)/2, len(size_df.columns)/2, marker="*", color="w", s=200)
-    plt.setp(axs[0], xlabel="Oil Flow Rate (ml/hr)", ylabel="Water Flow Rate (uL/min)", )
+    plt.setp(axs[0], xlabel="Oil Flow Rate (mL/hr)", ylabel="Water Flow Rate (\u03BCL/min)", )
 
     sns.heatmap(rate_df, cmap="plasma", ax=axs[1], xticklabels=tick_spacing,
                 yticklabels=tick_spacing, cbar_kws={'label': 'Generation Rate (Hz)'})
     axs[1].tick_params(axis='x', labelrotation=30)
-    plt.setp(axs[1], xlabel="Oil Flow Rate (ml/hr)", ylabel="Water Flow Rate (uL/min)")
+    plt.setp(axs[1], xlabel="Oil Flow Rate (mL/hr)", ylabel="Water Flow Rate (\u03BCL/min)")
     axs[1].scatter(len(size_df.columns)/2, len(size_df.columns)/2, marker="*", color="w", s=200)
     return fig
 
