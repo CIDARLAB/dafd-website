@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <form action="" method='post'>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <h3>&mu;Drop: Image Processing Tool</h3>
+                <div class="static-content">
+                    <p>This program analyzes the rate and sizes of droplets produced from a microfluidic droplet
+                        generator from a high-speed video. The user inputs the general regions of droplet activity
+                        in the video and then gets the drop generation rate and average size of each droplet for droplet
+                        generation videos. Please see the video below for how the tool works. &mu;Drop can be downloaded
+                        from the CIDAR Lab Github: <a href="https://github.com/CIDARLAB/uDrop-Generation" target="_top">https://github.com/CIDARLAB/uDrop-Generation</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="spacer"></div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+        <iframe width="840"
+                height="472.5"
+                src="https://www.youtube.com/embed/sHpFGO3Jh3E"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            </div>
+                <div class="spacer"></div>
+            <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </form>
+</div>
+<!-- /page content -->
+{% endblock %}
