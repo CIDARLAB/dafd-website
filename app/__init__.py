@@ -63,7 +63,7 @@ def team():
 @app.route("/udrop.html")
 @app.route("/udrop")
 def udrop():
-	return render_template('udrop.html')
+	return render_template('uDrop.html')
 
 
 @app.route("/collaborate.html")
