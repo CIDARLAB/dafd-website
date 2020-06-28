@@ -46,7 +46,7 @@ def forward():
         values['Droplet Inferred Size (\u03BCm)'] = round(float(parsed[5]), 1)
 
         forward2 = {}
-        forward2['Orifice Size'] = forward['orifice_size']
+        forward2['Orifice Width'] = forward['orifice_size']
         forward2['Aspect Ratio'] = forward['aspect_ratio']
         forward2['Expansion Ratio'] = forward['expansion_ratio']
         forward2['Normalized Orifice Length'] = forward['normalized_orifice_length']

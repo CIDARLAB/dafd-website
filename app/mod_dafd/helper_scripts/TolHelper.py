@@ -109,10 +109,10 @@ class TolHelper:
     def flow_heatmaps(self, range_mult=None):
         if range_mult is None:
             range_mult = self.tolerance*2
-        oil_range = [self.features_denormalized["oil_flow"]*(1-range_mult),
-                     self.features_denormalized["oil_flow"]*(1+range_mult)]
-        water_range = [self.features_denormalized["water_flow"]*(1-range_mult),
-                       self.features_denormalized["water_flow"]*(1+range_mult)]
+        oil_range = [self.features_denormalized["oil_flow_rate"]*(1-range_mult),
+                     self.features_denormalized["oil_flow_rate"]*(1+range_mult)]
+        water_range = [self.features_denormalized["water_flow_rate"]*(1-range_mult),
+                       self.features_denormalized["water_flow_rate"]*(1+range_mult)]
         # if oil_range[0] < 0.05:
         #     oil_range[0] = 0.05
         # if water_range[0] < 0.05:
@@ -134,7 +134,7 @@ class TolHelper:
         oil = np.around(make_grid_range(pd.Series(oil_range), self.flow_grid_size), oil_rounding)
         water = np.around(make_grid_range(pd.Series(water_range), self.flow_grid_size), water_rounding)
 
-        grid_dict = {"oil_flow": oil, "water_flow": water}
+        grid_dict = {"oil_flow_rate": oil, "water_flow_rate": water}
         flow_heatmap_size = self.generate_heatmap_data(grid_dict, "droplet_size", percent=False)
         flow_heatmap_gen = self.generate_heatmap_data(grid_dict, "generation_rate", percent=False)
         return flow_heatmap_size, flow_heatmap_gen
@@ -228,14 +228,14 @@ class TolHelper:
         water_flow_rate_ul_per_min = water_flow_rate * 1000 / 60
 
         ret_dict = {
-            "orifice_size": Or,
+            "orifice_width": Or,
             "depth": channel_height,
             "outlet_width": outlet_channel_width,
             "orifice_length": orifice_length,
-            "water_inlet": water_inlet_width,
-            "oil_inlet": oil_inlet,
-            "oil_flow": oil_flow_rate_ml_per_hour,
-            "water_flow": water_flow_rate_ul_per_min
+            "water_inlet_width": water_inlet_width,
+            "oil_inlet_width": oil_inlet,
+            "oil_flow_rate": oil_flow_rate_ml_per_hour,
+            "water_flow_rate": water_flow_rate_ul_per_min
         }
         return ret_dict
 
@@ -244,12 +244,12 @@ class TolHelper:
         channel_height = features["depth"]
         outlet_channel_width = features["outlet_width"]
         orifice_length = features["orifice_length"]
-        water_inlet_width = features["water_inlet"]
-        oil_inlet = features["oil_inlet"]
-        oil_flow_rate_ml_per_hour = features["oil_flow"]
-        water_flow_rate_ul_per_min = features["water_flow"]
+        water_inlet_width = features["water_inlet_width"]
+        oil_inlet = features["oil_inlet_width"]
+        oil_flow_rate_ml_per_hour = features["oil_flow_rate"]
+        water_flow_rate_ul_per_min = features["water_flow_rate"]
 
-        Or = features["orifice_size"]
+        Or = features["orifice_width"]
         As = channel_height/Or
         Exp = outlet_channel_width/Or
         norm_Ol = orifice_length/Or

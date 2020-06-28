@@ -50,9 +50,9 @@
     <div class="row">
         <div class="col-md-12 twelve columns">
             <H1 class="title"> DAFD Design Report</H1>
-            <p>Thank you for using DAFD, the first machine-learning design automation tool for droplet
-                microfluidics. Below is a summary
-                of your design, along with helpful information in troubleshooting possible fabrication errors.</p>
+            <p>Thank you for using DAFD, the first machine-learning design automation tool for droplet microfluidics.
+                Below is a summary of your design, along with helpful information in troubleshooting possible
+                fabrication or testing errors (tolerances).</p>
             <h3>Assembly Information</h3>
             <p><img class="img" src="{{ url_for('static', filename='img/drop_assembly.png') }}" width="100%"></p>
             <h1>Droplet Generator Overview</h1>
@@ -100,22 +100,22 @@
                     <th colspan="2">Flow Parameters:</th>
                 </tr>
                 <tr>
-                    <th>Orifice size (μm)</th>
+                    <th>Orifice width (μm)</th>
                     <th>Depth (μm)</th>
                     <th>Outlet width (μm)</th>
                     <th>Orifice length (μm)</th>
-                    <th>Water inlet (μm)</th>
-                    <th>Oil inlet (μm)</th>
-                    <th>Oil flow (mL/hr)</th>
-                    <th>Water flow (μL/min)</th>
+                    <th>Water inlet width (μm)</th>
+                    <th>Oil inlet width (μm)</th>
+                    <th>Oil flow rate (mL/hr)</th>
+                    <th>Water flow rate (μL/min)</th>
                 </tr>
                 <tr>
-                    <td>{{ features["orifice_size"]}}</td>
+                    <td>{{ features["orifice_width"]}}</td>
                     <td>{{ features["depth"]}}</td>
                     <td>{{ features["outlet_width"]}}</td>
-                    <td>{{ features["water_inlet"]}}</td>
-                    <td>{{ features["oil_inlet"]}}</td>
-                    <td>{{ features["orifice_size"]}}</td>
+                    <td>{{ features["orifice_length"]}}</td>
+                    <td>{{ features["water_inlet_width"]}}</td>
+                    <td>{{ features["oil_inlet_width"]}}</td>
                     <td>{{ values['Oil Flow Rate (ml/hr)']}}</td>
                     <td>{{ values['Water Flow Rate (\u03BCl/min)'] }}</td>
                 </tr>
@@ -139,20 +139,19 @@
             </table>
             <br/>
 
-            <h1>Tolerances of Design:</h1>
+            <h1>Tolerances of your Design:</h1>
             <p>Using your input tolerance of <strong>{{tolerance}}%</strong>, variance-based sensitivity analysis was
                 performed to identify the principal design features
                 for droplet diameter and generation rate to better troubleshoot any issues from device fabrication (top
                 left bar plots).
-                Large difference between predicted and observed behavior could be due to this. These principal
-                features were then
-                plotted against all other design inputs, to visualize their relative effects on performance output.
+                Large difference between predicted and observed behavior could be due to this. Once the principal feature was identified,
+                a 10-by-10 feature grid was constructed between that and all other features. Each combination was then run through DAFD
+                and visualized in a heatmap to show how changes to each feature can change the output performance.
                 More information about
-                the underlying analysis can be found <a
-                        href="https://en.wikipedia.org/wiki/Variance-based_sensitivity_analysis">here</a>.</p>
+                the underlying analysis can be found in the DAFD paper.</p>
             <p><em>Note: If you see multiple distinct regions (sharp jumps) within the heatmaps, then your current
                 performance is right
-                at the regime boundary. Droplet generation will be unstable, and therefore we recommend re-running
+                at the regime change boundary. Droplet generation will be unstable, and therefore we recommend re-running
                 DAFD with different
                 constraints</em></p>
             <h3>Droplet Diameter:</h3>
@@ -167,7 +166,7 @@
                 affect both droplet diameter and generation rate, rather than doing so through trial and error.
             <p><img class="img" src="{{ url_for('static', filename='img/'+fig_names[2]) }}" width="100%"></p>
             <h3>Questions? Contact Us:</h3>
-            <p>Corresponding Authors: Ali Lashkaripour (<a href="lashkari@bu.edu">lashkari@bu.edu</a>) &amp; Prof.
+            <p>Ali Lashkaripour (<a href="lashkari@bu.edu">lashkari@bu.edu</a>) &amp; Prof.
                 Douglas Densmore (<a href="dougd@bu.edu">dougd@bu.edu</a>)</p>
             <div class="spacer"></div>
             <br/>

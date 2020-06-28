@@ -71,7 +71,7 @@ def plot_sobol_results(si_size, si_gen, names):
         if i == 0:
             plt.setp(ax, xticks = [])
         plt.setp(ax, ylabel=("Total-Effect "+output[i]))
-        plt.xticks(rotation="vertical")
+        plt.xticks(rotation="vertical", fontsize=10)
     ylims = [np.around(ax.get_ylim()[1],1) for ax in axs]
     for ax in axs:
         ax.set_ylim(0, max(ylims)*1.1)
@@ -186,6 +186,7 @@ def plot_heatmaps_grid(hm_s, hm_g, include_pcs=False, si=None, names=None):
             bar_ax[i].tick_params(axis='x', labelrotation=90)
             ax.set_ylim(0, 1.1)
     return fig
+
 def plot_half_heatmaps_grid(hm, output, include_pcs=False, si=None, names=None):
     sns.set_style("white")
     if output == "Droplet Size":
@@ -221,11 +222,14 @@ def plot_half_heatmaps_grid(hm, output, include_pcs=False, si=None, names=None):
         plt.rc('xtick', labelsize=14)  # fontsize of the tick labels
         plt.rc('font', size=24)  # controls default text sizes
 
-        edited_names = []
-        for name in names:
-            name = str.capitalize(name)
-            name = name.replace("_", "\n")
-            edited_names.append(name)
+        edited_names = ["Depth", "Oil flow\nrate", "Oil inlet\nwidth",
+                        "Orifice\nlength", "Orifice\nwidth", "Outlet\nwidth",
+                        "Water\nflow rate", "Water\ninlet width"]
+        # for name in names:
+        #     name = str.capitalize(name)
+        #     name = name.replace("_", " ", 1)
+        #     name = name.replace("_", "\n")
+        #     edited_names.append(name)
         if output == "Droplet Size":
             yax_str = "(Size)"
             color = "#1f968b"
@@ -236,6 +240,6 @@ def plot_half_heatmaps_grid(hm, output, include_pcs=False, si=None, names=None):
         ax = axs[0][0]
         sns.barplot(edited_names, si["ST"], ax=ax, color=color)
         plt.setp(ax, ylabel=("Total-Effect "+yax_str))
-        ax.tick_params(axis='x', labelrotation=90)
+        ax.tick_params(axis='x', labelrotation=90, pad=0)
         ax.set_ylim(0, 1.1)
     return fig
