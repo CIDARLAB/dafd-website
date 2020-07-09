@@ -127,6 +127,30 @@ def dataset6():
     directory = os.path.join(APP_ROOT, './resources/inputs/')
     return send_from_directory(directory=directory, filename='example-dataset-06.xlsx', as_attachment=True)
 
+@app.route("/dataset7")
+def dataset7():
+	
+    directory = os.path.join(APP_ROOT, './resources/inputs/')
+    return send_from_directory(directory=directory, filename='dripping_regime_diameter.csv', as_attachment=True)
+
+@app.route("/dataset8")
+def dataset8():
+	
+    directory = os.path.join(APP_ROOT, './resources/inputs/')
+    return send_from_directory(directory=directory, filename='jetting_regime_diameter.csv', as_attachment=True)
+
+@app.route("/dataset9")
+def dataset9():
+	
+    directory = os.path.join(APP_ROOT, './resources/inputs/')
+    return send_from_directory(directory=directory, filename='dripping_regime_rate.csv', as_attachment=True)
+
+@app.route("/dataset10")
+def dataset10():
+	
+    directory = os.path.join(APP_ROOT, './resources/inputs/')
+    return send_from_directory(directory=directory, filename='jetting_regime_rate.csv', as_attachment=True)
+
 
 '''The following part below is for celery test'''
 @celery.task()
