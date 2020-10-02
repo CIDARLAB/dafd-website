@@ -2,3 +2,9 @@ env/
 .DS_Store
 .vscode
 __pycache__
+
+# IntelliJ based IDEs
+.idea
+
+# Virtual Environments
+.venv
