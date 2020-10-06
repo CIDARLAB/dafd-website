@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 
 {%  block content %}
-<div class="section active" id="section-1">
+<div id="fullpage">
+<div class="section" id="section-1">
     <!--TODO: Add in better GIF if possible
     <div class="row logo-header">
     <div class="row md-spacer">
@@ -10,6 +11,7 @@
 				</div>
 			</div>
     </div>-->
+
     <div class="row">
 		<div class="col-md-2"></div>
 		<div class="col-md-8 text-center">
@@ -42,8 +44,7 @@
 		</div>
 		<div class="col-md-2"></div>
 	</div>
-
-	<div class="row logo-footer">
+	<div class="row footer">
 		<div class="col-md-6">
 			<a href='http://cidarlab.org' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/logo-Cidar-Color-small.png') }}"/></a>
 			<a href='https://www.damplab.org' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/damp-lab-logo-2x_1.png') }}"/></a>
@@ -58,7 +59,7 @@
 		</div>
 	</div>
 </div>
-<div class="section" id="section-2">
+<div class="section fp-auto-height-responsive" id="section-2">
 	<div class="row">
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
@@ -540,7 +541,7 @@
 		<div class="col-md-1"></div>
 	</div>
 </div>
-
+</div>
 {% endblock %}
 
 {% block add_script %}
@@ -549,11 +550,15 @@
 	//NN optimizer submission
 	
 	var myFullpage = new fullpage('#fullpage', {
-		//sectionsColor: ['#f2f2f2', '#8399a0', '#8399a0', '#b7d16a'],
-		//slidesNavigation: true,
 		anchors: ['home', 'designAutomation', 'performancePrediction'],
 		navigation:true,
-		scrollOverflow: true
+		{#scrollOverflow: false#}
+        responsiveHeight: 1000
+        {#scrollOverflowOptions: {#}
+        {#     preventDefaultException: {#}
+        {#         tagName: /.*/#}
+        {#     }#}
+        {#scrollBar:true#}
 	});
 </script>
 {% endblock %}
