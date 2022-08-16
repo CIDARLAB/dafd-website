@@ -62,7 +62,7 @@ def forward():
             features_denormalized = None
             fig_names = None
 
-        return render_template('forward.html', perform=perform, values=values, forward2=forward2,
+        return render_template('dafd1/../templates/forward_1.html', perform=perform, values=values, forward2=forward2,
                                tolTest = (tolerance is not None), features=features_denormalized,
                                fig_names=fig_names, tolerance=tolerance)
 
@@ -126,9 +126,9 @@ def backward():
         else:
             features_denormalized = None
             fig_names = None
-        return render_template('backward.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
-                                gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, features=features_denormalized,
-                                fig_names=fig_names, tolTest = (tolerance is not None), tolerance=tolerance)
+        return render_template('dafd1/../templates/backward_1.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
+                               gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, features=features_denormalized,
+                               fig_names=fig_names, tolTest = (tolerance is not None), tolerance=tolerance)
 
     return redirect(url_for('index'))
 

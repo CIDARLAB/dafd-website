@@ -23,16 +23,28 @@ from app.mod_NN.views import nn_blueprint
 app.register_blueprint(nn_blueprint, url_prefix='/neural-net')
 
 @app.route("/")
-@app.route("/index.html")
-@app.route("/index")
-def index():
-	
-	return render_template('index.html', nn_server=domain, tl_server=tl_domain)
+@app.route("/home.html")
+@app.route("/home")
+def home():
+
+    return render_template("home.html")
+
+
+@app.route("/index_1.html")
+@app.route("/index_1")
+def index_1():
+	return render_template('/index_1.html', nn_server=domain, tl_server=tl_domain)
+
+@app.route("/index_2.html")
+@app.route("/index_2")
+def index_2():
+    return render_template('/index_2.html', nn_server=domain, tl_server=tl_domain)
+
 
 @app.route("/information.html")
 @app.route("/information")
 def information():
-	
+
 	return render_template('information.html')
 
 @app.route("/droplet_based.html")
