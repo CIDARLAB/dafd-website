@@ -560,34 +560,27 @@
 									<h6 class="subtitle-spacer">.: Quality Metric Analysis :.</h6>
 								</div>
 							</div>
-
-							<div class="row content-spacer">
-								<!--1st column-->
-								<div class="col-md-1 text-left">
-									<b>Enabled?</b>
-								</div>
-							</div>
+<!--2nd row-->
 							<div class="row slider-one-col">
-								<!--second column-->
+								<!--2nd column-->
 								<div class="col-md-1 text-center">
-									<input type="checkbox" id="metricsCheck">
+									<input type="checkbox" id="sortByCheck2" onclick="disableCombo(this.id, 'sortByCombo2');">
 								</div>
 								<div class="col-md-4 text-left">
-									<p class="field-tip">Metric Test<!--<span class="tip-content">unit in &#181;m</span>--></p>
+									<p class="field-tip">Metric studies to run<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
-                                <div class="col-md-5 text-left">
-
+								<div class="col-md-5 text-left">
+									<select class="cmbox" name="sort_by2" id="sortByCombo2" disabled>
+										<option value="1" selected>Flow Stability and Versatility</option>
+										<option value="2">None</option>
+									</select>
 								</div>
-								<div class="col-md-1 text-left">
-
-								</div>
-
-
+								<div class="col-md-1 text-center"></div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Choose whether to run a metrics test.</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Choose the metric to sort candidate designs by.</span></div>
 								</div>
-
 							</div>
+
 
                             <div class="row">
 								<div class="col-md-12">

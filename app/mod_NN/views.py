@@ -124,17 +124,20 @@ def forward_2():
             features_denormalized = None
             fig_names = None
 
-        metrics = request.form.get('metrics2')
-        if metrics is not None:
-            #TODO RUN TOLERANCE HEREEERERER
-            None
+        metrics = float(request.form.get('sort_by2'))
+        if float(metrics) == 1:
+            sort_by = "flow_stability"
+            metrics_results, metrics_fig_name = run_metrics(forward, sort_by)
         else:
-            None
+            sort_by = None
+            metrics_results = None
+            metrics_fig_name = None
 
 
         return render_template('forward_2.html', perform=perform, values=values, forward2=forward2,
                                tolTest = (tolerance is not None), features=features_denormalized,
-                               fig_names=fig_names, tolerance=tolerance)
+                               fig_names=fig_names, tolerance=tolerance, metrics_results=metrics_results,
+                               metrics_fig_name = metrics_fig_name)
 
     return redirect(url_for('index_2'))
 
@@ -431,3 +434,28 @@ def run_tolerance(features, tolerance):
     TH.generate_report()
 
     return TH.features_denormalized, fig_names
+
+@nn_blueprint.route('/metrics', methods=['GET', 'POST'])
+def run_metrics(features, sort_by):
+    from app.mod_dafd.helper_scripts.MetricHelper import MetricHelper
+    from app.mod_dafd.bin.DAFD_Interface import DAFD_Interface
+    di = DAFD_Interface()
+    results = {key: float(features[key]) for key in features.keys()}
+    results.update(di.runForward(results))
+    if results["regime"] == 1:
+        reg_str = "Dripping"
+    else:
+        reg_str = "Jetting"
+    MetHelper = MetricHelper(results, di=di)
+    MetHelper.run_all_flow_stability()
+    MetHelper.run_all_versatility()
+    results.update(MetHelper.versatility_results)
+    results.update({"flow_stability": MetHelper.point_flow_stability})
+    report_info = {
+        "regime": reg_str,
+        "results_df": pd.DataFrame([results]),
+        "sort_by": sort_by
+    }
+    report_info["feature_denormalized"] = MetHelper.features_denormalized
+    fig_name = MetHelper.plot_metrics()
+    return report_info, fig_name
