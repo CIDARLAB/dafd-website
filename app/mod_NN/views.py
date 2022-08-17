@@ -9,16 +9,27 @@ nn_blueprint = Blueprint('nn', __name__)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 from app.mod_NN.controllers import validFile, getDataType, runNN, runForward, runReverse
+#
+# @nn_blueprint.route('/')
+# @nn_blueprint.route('/index')
+# @nn_blueprint.route('/index.html')
+# def index():
+#
+#     return redirect(url_for('index'))
 
-@nn_blueprint.route('/')
-@nn_blueprint.route('/index')
-@nn_blueprint.route('/index.html')
-def index():
+@nn_blueprint.route("/index_1.html")
+@nn_blueprint.route("/index_1")
+def index_1():
+	return render_template('index_1.html')
 
-    return redirect(url_for('index'))
+@nn_blueprint.route("/index_2.html")
+@nn_blueprint.route("/index_2")
+def index_2():
+    return render_template('index_2.html')
 
-@nn_blueprint.route('/forward', methods=['GET', 'POST'])
-def forward():
+
+@nn_blueprint.route('/forward_1', methods=['GET', 'POST'])
+def forward_1():
 
     if request.method == 'POST':
 
@@ -62,14 +73,74 @@ def forward():
             features_denormalized = None
             fig_names = None
 
-        return render_template('dafd1/../templates/forward_1.html', perform=perform, values=values, forward2=forward2,
+        return render_template('forward_1.html', perform=perform, values=values, forward2=forward2,
                                tolTest = (tolerance is not None), features=features_denormalized,
                                fig_names=fig_names, tolerance=tolerance)
 
-    return redirect(url_for('index'))
+    return redirect(url_for('index_1'))
 
-@nn_blueprint.route('/backward', methods=['GET', 'POST'])
-def backward():
+@nn_blueprint.route('/forward_2', methods=['GET', 'POST'])
+def forward_2():
+
+    if request.method == 'POST':
+
+        forward = {}
+        forward['orifice_size'] = request.form.get('oriWid2')
+        forward['aspect_ratio'] = request.form.get('aspRatio2')
+        forward['expansion_ratio'] = request.form.get('expRatio2')
+        forward['normalized_orifice_length'] = request.form.get('normOri2')
+        forward['normalized_water_inlet'] = request.form.get('normInlet2')
+        forward['normalized_oil_inlet'] = request.form.get('normOil2')
+        forward['flow_rate_ratio'] = request.form.get('flowRatio2')
+        forward['capillary_number'] = request.form.get('capNum2')
+
+        strOutput = runForward(forward)
+        parsed = strOutput.split(':')[1].split('|')[:-1]
+
+        perform = {}
+        perform['Generation Rate (Hz)'] = round(float(parsed[0]), 1)
+        perform['Droplet Diameter (\u03BCm)'] = round(float(parsed[1]), 1)
+        perform['Regime'] = 'Dripping' if parsed[2]=='1' else 'Jetting'
+
+        values = {}
+        values['Oil Flow Rate (ml/hr)'] = round(float(parsed[3]), 3)
+        values['Water Flow Rate (\u03BCl/min)'] = round(float(parsed[4]), 3)
+        values['Droplet Inferred Size (\u03BCm)'] = round(float(parsed[5]), 1)
+
+        forward2 = {}
+        forward2['Orifice Width'] = forward['orifice_size']
+        forward2['Aspect Ratio'] = forward['aspect_ratio']
+        forward2['Expansion Ratio'] = forward['expansion_ratio']
+        forward2['Normalized Orifice Length'] = forward['normalized_orifice_length']
+        forward2['Normalized Water Inlet'] = forward['normalized_water_inlet']
+        forward2['Normalized Oil Inlet'] = forward['normalized_oil_inlet']
+        forward2['Flow Rate Ratio'] = forward['flow_rate_ratio']
+        forward2['Capillary Number'] = forward['capillary_number']
+
+        tolerance = request.form.get('tolerance2')
+        if tolerance is not None:
+            features_denormalized, fig_names = run_tolerance(forward, tolerance)
+        else:
+            features_denormalized = None
+            fig_names = None
+
+        metrics = request.form.get('metrics2')
+        if metrics is not None:
+            #TODO RUN TOLERANCE HEREEERERER
+            None
+        else:
+            None
+
+
+        return render_template('forward_2.html', perform=perform, values=values, forward2=forward2,
+                               tolTest = (tolerance is not None), features=features_denormalized,
+                               fig_names=fig_names, tolerance=tolerance)
+
+    return redirect(url_for('index_2'))
+
+
+@nn_blueprint.route('/backward_1', methods=['GET', 'POST'])
+def backward_1():
 
     if request.method == 'POST':
     
@@ -126,11 +197,78 @@ def backward():
         else:
             features_denormalized = None
             fig_names = None
-        return render_template('dafd1/../templates/backward_1.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
+        return render_template('backward_1.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
                                gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, features=features_denormalized,
                                fig_names=fig_names, tolTest = (tolerance is not None), tolerance=tolerance)
 
-    return redirect(url_for('index'))
+    return redirect(url_for('index_1'))
+
+
+@nn_blueprint.route('/backward_2', methods=['GET', 'POST'])
+def backward_2():
+    if request.method == 'POST':
+
+        constraints = {}
+        constraints['orifice_size'] = request.form.get('oriWid')
+        constraints['aspect_ratio'] = request.form.get('aspRatio')
+        constraints['expansion_ratio'] = request.form.get('expRatio')
+        constraints['normalized_orifice_length'] = request.form.get('normOri')
+        constraints['normalized_water_inlet'] = request.form.get('normInlet')
+        constraints['normalized_oil_inlet'] = request.form.get('normOil')
+        constraints['flow_rate_ratio'] = request.form.get('flowRatio')
+        constraints['capillary_number'] = request.form.get('capNum')
+        constraints['regime'] = request.form.get('regime')
+
+        desired_vals = {}
+        desired_vals['generation_rate'] = request.form.get('genRate')
+        desired_vals['droplet_size'] = request.form.get('dropSize')
+
+        strOutput = runReverse(constraints, desired_vals)
+        #TODO: RUN REVERSE QM IF METRICS IS NOT NONE
+
+
+        parsed = strOutput.split(':')[1].split('|')[:-1]
+        geo = {}
+        geo['Orifice Width (\u03BCm)'] = round(float(parsed[0]), 3)
+        geo['Channel Depth (\u03BCm)'] = round(float(parsed[1]) * float(parsed[0]), 3)
+        geo['Outlet Channel Width (\u03BCm)'] = round(float(parsed[2]) * float(parsed[0]), 3)
+        geo['Orifice Length (\u03BCm)'] = round(float(parsed[3]) * float(parsed[0]), 3)
+        geo['Water Inlet Width (\u03BCm)'] = round(float(parsed[4]) * float(parsed[0]), 3)
+        geo['Oil Inlet Width (\u03BCm)'] = round(float(parsed[5]) * float(parsed[0]), 3)
+
+        flow = {}
+        flow['Flow Rate Ratio (Oil Flow Rate/Water Flow Rate)'] = round(float(parsed[6]), 3)
+        flow['Capillary Number'] = round(float(parsed[7]), 3)
+
+        opt = {}
+        opt['Point Source'] = parsed[8]
+
+        perform = {}
+        perform['Generation Rate (Hz)'] = round(float(parsed[9]), 1)
+        perform['Droplet Diameter (\u03BCm)'] = round(float(parsed[10]), 1)
+        perform['Inferred Droplet Diameter (\u03BCm)'] = round(float(parsed[14]), 1)
+        perform['Regime'] = 'Dripping' if parsed[11] == '1' else 'Jetting'
+
+        flowrate = {}
+        flowrate['Oil Flow Rate (ml/hr)'] = round(float(parsed[12]), 3)
+        flowrate['Water Flow Rate (\u03BCl/min)'] = round(float(parsed[13]), 3)
+
+        gen_rate = float(parsed[9])
+        flow_rate = float(parsed[13])
+
+        tolerance = request.form.get('tolerance')
+        if tolerance is not None:
+            features = {key: round(float(parsed[i]), 3) for i, key in enumerate(list(constraints.keys())[:-1])}
+            flowrate['Droplet Inferred Size (\u03BCm)'] = perform['Inferred Droplet Diameter (\u03BCm)']
+            features_denormalized, fig_names = run_tolerance(features, tolerance)
+        else:
+            features_denormalized = None
+            fig_names = None
+        return render_template('backward_2.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
+                               gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, features=features_denormalized,
+                               fig_names=fig_names, tolTest=(tolerance is not None), tolerance=tolerance)
+
+    return redirect(url_for('index_2'))
 
 
 @nn_blueprint.route('/dummy', methods=['GET', 'POST'])
