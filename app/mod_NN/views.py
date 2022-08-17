@@ -269,20 +269,25 @@ def backward_2():
         flowrate['Oil Flow Rate (ml/hr)'] = round(float(parsed[12]), 3)
         flowrate['Water Flow Rate (\u03BCl/min)'] = round(float(parsed[13]), 3)
 
+        features = {key: round(float(parsed[i]), 3) for i, key in enumerate(list(constraints.keys())[:-1])}
+
         gen_rate = float(parsed[9])
         flow_rate = float(parsed[13])
 
         tolerance = request.form.get('tolerance')
         if tolerance is not None:
-            features = {key: round(float(parsed[i]), 3) for i, key in enumerate(list(constraints.keys())[:-1])}
             flowrate['Droplet Inferred Size (\u03BCm)'] = perform['Inferred Droplet Diameter (\u03BCm)']
             features_denormalized, fig_names = run_tolerance(features, tolerance)
         else:
             features_denormalized = None
             fig_names = None
+
+        metrics_results, metrics_fig_name = run_metrics(features, sort_by)
+
         return render_template('backward_2.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
                                gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, features=features_denormalized,
-                               fig_names=fig_names, tolTest=(tolerance is not None), tolerance=tolerance)
+                               fig_names=fig_names, tolTest=(tolerance is not None), tolerance=tolerance,
+                               metrics_results=metrics_results, metrics_fig_name=metrics_fig_name)
 
     return redirect(url_for('index_2'))
 
