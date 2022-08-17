@@ -301,6 +301,64 @@
 								</div>
 							</div>
 
+
+                            <div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Metric-Driven Design Automation :.</h6>
+								</div>
+							</div>
+
+							<div class="row content-spacer">
+								<!--1st column-->
+								<div class="col-md-1 text-left">
+									<b>Enabled?</b>
+								</div>
+							</div>
+							<div class="row slider-one-col">
+								<!--second column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="metricsCheck" onclick="disableSlider(this.id, 'topKRange', 'top_k');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Number of candidates<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="1" max="10" value="3" class="slider" id="topKRange" oninput="updateIntInput(this.value, 'top_k', this.id);" disabled>
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="top_k" name="top_k" value="3" disabled oninput="updateIntSlider('topKRange', this.id)" onchange="intSliderChange('topKRange', this.id, 1, 10)">
+                                </div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired number of candidates for evaluation.</span></div>
+								</div>
+
+							</div>
+                            <!--2nd row-->
+							<div class="row slider-one-col">
+								<!--2nd column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="sortByCheck" onclick="disableCombo(this.id, 'sortByCombo');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Desired metric<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<select class="cmbox" name="sort_by" id="sortByCombo" disabled>
+										<option value="1" selected>Flow Stability</option>
+										<option value="2">Overall versatility score</option>
+                                        <option value="3">Size versatility score</option>
+                                        <option value="4">Rate versatility score</option>
+									</select>
+								</div>
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Choose the metric to sort candidate designs by.</span></div>
+								</div>
+							</div>
+
+
+
+
                             <div class="row">
 								<div class="col-md-12">
 									<h6 class="subtitle-spacer">.: Tolerance Test :.</h6>
@@ -494,6 +552,41 @@
 								<div class="col-md-1 text-center">
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Capillary number is the ratio of viscous forces and the interfacial tension.</span></div>
 								</div>
+							</div>
+
+
+                            <div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Quality Metric Analysis :.</h6>
+								</div>
+							</div>
+
+							<div class="row content-spacer">
+								<!--1st column-->
+								<div class="col-md-1 text-left">
+									<b>Enabled?</b>
+								</div>
+							</div>
+							<div class="row slider-one-col">
+								<!--second column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="metricsCheck">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Metric Test<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+                                <div class="col-md-5 text-left">
+
+								</div>
+								<div class="col-md-1 text-left">
+
+								</div>
+
+
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Choose whether to run a metrics test.</span></div>
+								</div>
+
 							</div>
 
                             <div class="row">
