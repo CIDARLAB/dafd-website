@@ -7,8 +7,7 @@ import time
 nn_blueprint = Blueprint('nn', __name__)
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-
-from app.mod_NN.controllers import validFile, getDataType, runNN, runForward, runReverse
+from app.mod_NN.controllers import validFile, getDataType, runNN, runForward, runReverse, runReverse_2
 #
 # @nn_blueprint.route('/')
 # @nn_blueprint.route('/index')
@@ -226,8 +225,22 @@ def backward_2():
         desired_vals['generation_rate'] = request.form.get('genRate')
         desired_vals['droplet_size'] = request.form.get('dropSize')
 
-        strOutput = runReverse(constraints, desired_vals)
-        #TODO: RUN REVERSE QM IF METRICS IS NOT NONE
+        metrics = {}
+        sort_by = request.form.get("sort_by")
+        if sort_by is not None:
+            metric_options = [
+                "flow_stability",
+                "overall_versatility_score",
+                "size_versatility_score",
+                "rate_versatility_score",
+            ]
+            sort_by = metric_options[int(sort_by) - 1]
+        metrics["sort_by"] = sort_by
+        metrics["top_k"] = request.form.get("top_k")
+        if metrics["sort_by"] is not None or metrics["top_k"] is not None:
+            strOutput = runReverse_2(constraints, desired_vals, metrics)
+        else:
+            strOutput = runReverse(constraints, desired_vals)
 
 
         parsed = strOutput.split(':')[1].split('|')[:-1]

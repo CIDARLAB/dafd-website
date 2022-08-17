@@ -31,7 +31,7 @@ from app.mod_NN.models import createClassifier, createRegressor
 from keras import backend as K
 from keras.callbacks import EarlyStopping
 
-from app.mod_dafd.DAFD_CMD import runDAFD
+from app.mod_dafd.DAFD_CMD import runDAFD, runDAFD_2
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 RESOURCES = os.path.join(APP_ROOT, '../resources/inputs/')
@@ -435,3 +435,27 @@ def runReverse(constraints, desired_vals):
 					f.write(key + '=' + str(desired_vals[key]) + '\n')
 
 	return runDAFD()
+
+
+def runReverse_2(constraints, desired_vals, metrics):
+
+	with open("app/mod_dafd/cmd_inputs.txt", "w") as f:
+		if metrics:
+			f.write("VERSATILITY\n")
+			f.write("FLOW_STABILITY\n")
+			for key in metrics:
+				if metrics[key] is not None:
+					f.write(key + '=' + str(metrics[key]) + '\n')
+
+		if constraints:
+			f.write("CONSTRAINTS\n")
+			for key in constraints:
+				if constraints[key] != None:
+					f.write(key + '=' + str(constraints[key]) + ':' + str(constraints[key]) + '\n')
+		if desired_vals:
+			f.write("DESIRED_VALS\n")
+			for key in desired_vals:
+				if desired_vals[key] != None:
+					f.write(key + '=' + str(desired_vals[key]) + '\n')
+
+	return runDAFD_2()
