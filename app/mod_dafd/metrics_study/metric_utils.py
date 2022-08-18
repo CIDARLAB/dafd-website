@@ -112,14 +112,14 @@ def denormalize_features(features):
     water_flow_rate_ul_per_min = water_flow_rate * 1000 / 60
 
     ret_dict = {
-        "orifice_size": Or,
+        "orifice_width": Or,
         "depth": channel_height,
         "outlet_width": outlet_channel_width,
         "orifice_length": orifice_length,
-        "water_inlet": water_inlet_width,
-        "oil_inlet": oil_inlet,
-        "oil_flow": oil_flow_rate_ml_per_hour,
-        "water_flow": water_flow_rate_ul_per_min
+        "water_inlet_width": water_inlet_width,
+        "oil_inlet_width": oil_inlet,
+        "oil_flow_rate": oil_flow_rate_ml_per_hour,
+        "water_flow_rate": water_flow_rate_ul_per_min
     }
     return ret_dict
 

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, send_from_directory
 import pandas as pd
+import numpy as np
 import os
 from werkzeug.utils import secure_filename
 import time
@@ -123,20 +124,29 @@ def forward_2():
             features_denormalized = None
             fig_names = None
 
-        metrics = float(request.form.get('sort_by2'))
-        if float(metrics) == 1:
+        if request.form.get('sort_by2') is not None or request.form.get('sort_by2') != "None":
             sort_by = "flow_stability"
             metrics_results, metrics_fig_name = run_metrics(forward, sort_by)
+
+            if "dripping" in metrics_results["sort_by"]:
+                metrics_results["metric_keys"] = ["dripping_overall_score", "dripping_size_score", "dripping_rate_score"]
+                metrics_results["verse_group"] = "Versatility (in dripping regime)"
+            elif "jetting" in metrics_results["sort_by"]:
+                metrics_results["metric_keys"] = ["jetting_overall_score", "jetting_size_score", "jetting_rate_score"]
+                metrics_results["verse_group"] = "Versatility (in jetting regime)"
+            else:
+                metrics_results["metric_keys"] = ["all_overall_score", "all_size_score", "all_rate_score"]
+                metrics_results["verse_group"] = "Versatility (in both regimes)"
+
         else:
-            sort_by = None
             metrics_results = None
             metrics_fig_name = None
 
 
         return render_template('forward_2.html', perform=perform, values=values, forward2=forward2,
-                               tolTest = (tolerance is not None), features=features_denormalized,
+                               tolTest = (tolerance is not None), features=metrics_results["feature_denormalized"],
                                fig_names=fig_names, tolerance=tolerance, metrics_results=metrics_results,
-                               metrics_fig_name = metrics_fig_name)
+                               metrics_fig_name = metrics_fig_name, metricTest = (metrics_results is not None))
 
     return redirect(url_for('index_2'))
 
@@ -282,12 +292,26 @@ def backward_2():
             features_denormalized = None
             fig_names = None
 
-        metrics_results, metrics_fig_name = run_metrics(features, sort_by)
+        if metrics["sort_by"] is not None or metrics["top_k"] is not None:
+            metrics_results, metrics_fig_name = run_metrics(features, sort_by)
+            if "dripping" in metrics_results["sort_by"]:
+                metrics_results["metric_keys"] = ["dripping_overall_score", "dripping_size_score", "dripping_rate_score"]
+                metrics_results["verse_group"] = "Versatility (in dripping regime)"
+            elif "jetting" in metrics_results["sort_by"]:
+                metrics_results["metric_keys"] = ["jetting_overall_score", "jetting_size_score", "jetting_rate_score"]
+                metrics_results["verse_group"] = "Versatility (in jetting regime)"
+            else:
+                metrics_results["metric_keys"] = ["all_overall_score", "all_size_score", "all_rate_score"]
+                metrics_results["verse_group"] = "Versatility (in both regimes)"
+
+        else:
+            metrics_results = None
+            metrics_fig_name = None
 
         return render_template('backward_2.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
                                gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, features=features_denormalized,
                                fig_names=fig_names, tolTest=(tolerance is not None), tolerance=tolerance,
-                               metrics_results=metrics_results, metrics_fig_name=metrics_fig_name)
+                               metrics_results=metrics_results, metrics_fig_name=metrics_fig_name, metricTest=(metrics_results is not None))
 
     return redirect(url_for('index_2'))
 
@@ -469,9 +493,12 @@ def run_metrics(features, sort_by):
     MetHelper.run_all_versatility()
     results.update(MetHelper.versatility_results)
     results.update({"flow_stability": MetHelper.point_flow_stability})
+    for k in results.keys():
+        results[k] = np.round(results[k],3)
+
     report_info = {
         "regime": reg_str,
-        "results_df": pd.DataFrame([results]),
+        "results": results,
         "sort_by": sort_by
     }
     report_info["feature_denormalized"] = MetHelper.features_denormalized

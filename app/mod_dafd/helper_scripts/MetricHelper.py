@@ -92,8 +92,8 @@ class MetricHelper:
             self.chip_results.loc[i, "boundary"] = boundary
             # denormalize features for future analysis
             denormed = metric_utils.denormalize_features(pt.to_dict())
-            self.chip_results.loc[i, "water_flow"] = denormed["water_flow"]
-            self.chip_results.loc[i, "oil_flow"] = denormed["oil_flow"]
+            self.chip_results.loc[i, "water_flow"] = denormed["water_flow_rate"]
+            self.chip_results.loc[i, "oil_flow"] = denormed["oil_flow_rate"]
 
     def calc_versatility_score(self):
         results = {}
@@ -139,7 +139,7 @@ class MetricHelper:
         self.chip_results.loc[non_boundary_points.index, "flow_stability"] = min_distances
         base_flow_stability = self._find_flow_in_df(self.features_normalized)
         if base_flow_stability.empty:
-            base_flows = (self.features_denormalized["water_flow"]*.06, self.features_denormalized["oil_flow"])
+            base_flows = (self.features_denormalized["water_flow_rate"]*.06, self.features_denormalized["oil_flow_rate"])
             base_distance = cdist([base_flows], boundary_flows)
             return np.min(base_distance)
         else:

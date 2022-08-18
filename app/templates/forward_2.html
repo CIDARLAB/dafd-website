@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-  
+
 {%  block content %}
 <!-- page content -->
 <div class="container content-container">
@@ -43,7 +43,7 @@
     </div>
 </div>
 <!-- /page content -->
-{% if tolTest %}
+{% if tolTest or metricTest %}
 <div class="container content-container">
     <div class="row">
         <div class="col-md-12 twelve columns">
@@ -136,6 +136,15 @@
                 </tr>
             </table>
             <br/>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if tolTest %}
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 twelve columns">
 
             <h1>Tolerances of your Design:</h1>
             <p>Using your input tolerance of <strong>{{tolerance}}%</strong>, variance-based sensitivity analysis was
@@ -163,14 +172,70 @@
                 understanding how changing these rates
                 affect both droplet diameter and generation rate, rather than doing so through trial and error.
             <p><img class="img" src="{{ url_for('static', filename='img/'+fig_names[2]) }}" width="100%"></p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- /metrics content -->
+    {% if metricTest %}
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 twelve columns">
+            <h1>Design Quality Metrics:</h1>
+            <p> As requested, the versatility and flow stability metric of the design was
+            calculated. Below, you can see the scores of and visualize the performance ranges of your
+            device (versatility) as well as how close the device is to a regime boundary (flow stability).
+            More info on this methodology can be found here (Note: this link currently not active,
+            publication is in review).
+
+                        <h3>Droplet Generator Design:</h3>
+
+            <table style="width:100%;margin-left:auto;margin-right:auto;">
+
+                <tr>
+                    <th colspan="3">{{metrics_results["verse_group"]}}:</th>
+                    <th colspan="2">Flow stability:</th>
+                </tr>
+                <tr>
+                    {# TODO: GROUP BY REGIME HERE #}
+                    <th>Overall score</th>
+                    <th>Size score</th>
+                    <th>Rate score</th>
+                    <th>Flow stability score</th>
+
+                </tr>
+                <tr>
+                    {# TODO: GROUP BY REGIME HERE #}
+                    <td>{{metrics_results["results"][metrics_results["metric_keys"][0]]}}</td>
+                    <td>{{metrics_results["results"][metrics_results["metric_keys"][1]]}}</td>
+                    <td>{{metrics_results["results"][metrics_results["metric_keys"][2]]}}</td>
+                    <td>{{metrics_results["results"]["flow_stability"]}}</td>
+
+                </tr>
+            </table>
+
+
+            <p><img class="img" src="{{ url_for('static', filename='img/'+metrics_fig_name)}}" width="100%"></p>
+
+        </div>
+    </div>
+</div>
+    {% endif %}
+
+{% if metricTest or tolTest %}
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 twelve columns">
             <h3>Questions? Contact Us:</h3>
-            <p>Ali Lashkaripour (<a href="lashkari@bu.edu">lashkari@bu.edu</a>) &amp; Prof.
+            <p>David McIntyre (<a href="dpmc@bu.edu">dpmc@bu.edu</a>) &amp; Prof.
                 Douglas Densmore (<a href="dougd@bu.edu">dougd@bu.edu</a>)</p>
             <div class="spacer"></div>
             <br/>
             <div class="spacer"></div>
-
-            <div class="row">
+        </div>
+    </div>
+    <div class="row">
                 <div class="col-md-6">
                     <a href='http://cidarlab.org' target="_blank"><img class="img-stakeholders"
                                                                        src="{{ url_for('static', filename='img/logo-Cidar-Color-small.png') }}"/></a>
@@ -191,15 +256,7 @@
                     <a href='https://github.com/CIDARLAB/DAFD' target="_blank"><img class="img-stakeholders"
                                                                                     src="{{ url_for('static', filename='img/github.png') }}"/></a>
                 </div>
-
             </div>
-        </div>
-    </div>
 </div>
 {% endif %}
-
-<!-- /metrics content -->
-    {% if metrics_results %}
-    {{ metrics_results}}
-    {% endif %}
 {% endblock %}
