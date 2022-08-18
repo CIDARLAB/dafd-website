@@ -89,10 +89,10 @@
 									<p class="field-tip">Droplet diameter (&mu;m)<!--<span class="tip-content">unit in &#181;m</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
-									<input type="range" min="25" max="250" value="25" class="slider-activated" id="dropSizeRange" oninput="updateIntInput(this.value, 'dropSize', this.id);">
+									<input type="range" min="25" max="250" value="100" class="slider-activated" id="dropSizeRange" oninput="updateIntInput(this.value, 'dropSize', this.id);">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="dropSize" name="dropSize" value="25" oninput="updateIntSlider('dropSizeRange', this.id)" onchange="intSliderChange('dropSizeRange', this.id, 25, 250)">
+									<input size="4" type="text" id="dropSize" name="dropSize" value="100" oninput="updateIntSlider('dropSizeRange', this.id)" onchange="intSliderChange('dropSizeRange', this.id, 25, 250)">
 								</div>
 								<div class="col-md-1 text-center">
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired droplet diameter between 25 &mu;m and 250 &mu;m.</span></div>
@@ -107,10 +107,10 @@
 									<p class="field-tip">Generation rate (Hz)<!--<span class="tip-content">unit in Hz</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
-									<input type="range" min="5" max="500" value="5" class="slider-activated" id="genRateRange" oninput="updateIntInput(this.value, 'genRate', this.id);">
+									<input type="range" min="5" max="500" value="100" class="slider-activated" id="genRateRange" oninput="updateIntInput(this.value, 'genRate', this.id);">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="genRate" name="genRate" value="5" oninput="updateIntSlider('genRateRange', this.id)" onchange="intSliderChange('genRateRange', this.id, 5, 500)">
+									<input size="4" type="text" id="genRate" name="genRate" value="100" oninput="updateIntSlider('genRateRange', this.id)" onchange="intSliderChange('genRateRange', this.id, 5, 500)">
 								</div>
 								<div class="col-md-1 text-center">
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired generation rate between 5 Hz and 500 Hz.</span></div>
@@ -271,10 +271,10 @@
 									<p class="field-tip">Capillary number<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
-									<input type="range" min="3" max="106" value="3" class="slider" id="capNumRange" oninput="updateFloatInput(this.value, 'capNum', this.id);" disabled>
+									<input type="range" min="5" max="106" value="5" class="slider" id="capNumRange" oninput="updateFloatInput(this.value, 'capNum', this.id);" disabled>
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="capNum" name="capNum" value="0.03" disabled oninput="updateFloatSlider('capNumRange', this.id)" onchange="floatSliderChange('capNumRange', this.id, 3, 106)">
+									<input size="4" type="text" id="capNum" name="capNum" value="0.05" disabled oninput="updateFloatSlider('capNumRange', this.id)" onchange="floatSliderChange('capNumRange', this.id, 5, 106)">
 								</div>
 								<div class="col-md-1 text-center">
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Capillary number is the ratio of viscous forces and the interfacial tension.</span></div>
@@ -544,10 +544,10 @@
 									<p class="field-tip">Capillary number<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
-									<input type="range" min="3" max="106" value="3" class="slider-activated" id="capNumRange2" oninput="updateFloatInput(this.value, 'capNum2', this.id);">
+									<input type="range" min="5" max="106" value="5" class="slider-activated" id="capNumRange2" oninput="updateFloatInput(this.value, 'capNum2', this.id);">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="capNum2" name="capNum2" value="0.03" oninput="updateFloatSlider('capNumRange2', this.id)" onchange="floatSliderChange('capNumRange2', this.id, 3, 106)">
+									<input size="4" type="text" id="capNum2" name="capNum2" value="0.05" oninput="updateFloatSlider('capNumRange2', this.id)" onchange="floatSliderChange('capNumRange2', this.id, 5, 106)">
 								</div>
 								<div class="col-md-1 text-center">
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Capillary number is the ratio of viscous forces and the interfacial tension.</span></div>
