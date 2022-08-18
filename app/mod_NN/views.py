@@ -303,7 +303,8 @@ def backward_2():
             else:
                 metrics_results["metric_keys"] = ["all_overall_score", "all_size_score", "all_rate_score"]
                 metrics_results["verse_group"] = "Versatility (in both regimes)"
-
+            metrics_results["sort_by"] = str.replace(str.capitalize(metrics_results["sort_by"]),"_"," ")
+            metrics_results["top_k"] = metrics["top_k"]
         else:
             metrics_results = None
             metrics_fig_name = None
@@ -488,6 +489,9 @@ def run_metrics(features, sort_by):
         reg_str = "Dripping"
     else:
         reg_str = "Jetting"
+    if "versatility" in sort_by:
+        sort_by = str.lower(reg_str) + "_" + sort_by.split("_")[0] + "_" + "score"
+
     MetHelper = MetricHelper(results, di=di)
     MetHelper.run_all_flow_stability()
     MetHelper.run_all_versatility()

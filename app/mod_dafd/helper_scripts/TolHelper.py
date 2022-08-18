@@ -7,6 +7,7 @@ import os
 import pickle
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
 
 class TolHelper:
@@ -73,6 +74,7 @@ class TolHelper:
 
         f1 = plot_flow_heatmaps(self.flow_heatmap_size, self.flow_heatmap_gen, self.features_denormalized)
         plt.savefig(os.path.join(folder_path, f3name))
+        sns.set_style("ticks")
 
         return [f1name, f2name, f3name]
 

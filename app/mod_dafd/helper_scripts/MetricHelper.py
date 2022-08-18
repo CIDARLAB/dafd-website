@@ -212,6 +212,8 @@ class MetricHelper:
 
     def plot_metrics(self):
         fig, axs = plt.subplots(1, 2, figsize=[12.5, 5])
+        # axs[0].set_facecolor('white')
+        # axs[1].set_facecolor('white')
         colors = ["#5B84C4", "#FB9B50"]
 
         out = self.chip_results

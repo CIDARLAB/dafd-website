@@ -75,14 +75,13 @@
     </div>
 </div>
 <!-- /page content -->
-{% if tolTest %}
+{% if tolTest or metricTest %}
 <div class="container content-container">
     <div class="row">
         <div class="col-md-12 twelve columns">
             <H1 class="title"> DAFD Design Report</H1>
-                <p>Thank you for using DAFD, the first machine-learning design automation tool for droplet microfluidics.
-                Below is a summary of your design, along with helpful information in troubleshooting possible
-                fabrication or testing errors (tolerances).</p>
+            <p>Thank you for using DAFD, the first machine-learning design automation tool for droplet microfluidics.
+                Below is a summary of your design.</p>
             <h3>Assembly Information</h3>
             <p><img class="img" src="{{ url_for('static', filename='img/drop_assembly.png') }}" width="100%"></p>
             <h1>Droplet Generator Overview</h1>
@@ -140,16 +139,17 @@
                     <th>Water flow rate (μL/min)</th>
                 </tr>
                 <tr>
-                    <td>{{ geo['Orifice Width (\u03BCm)']}}</td>
-                    <td>{{ geo['Channel Depth (\u03BCm)']}}</td>
-                    <td>{{ geo['Outlet Channel Width (\u03BCm)']}}</td>
-                    <td>{{ geo['Orifice Length (\u03BCm)']}}</td>
-                    <td>{{ geo['Water Inlet Width (\u03BCm)']}}</td>
-                    <td>{{  geo['Oil Inlet Width (\u03BCm)'] }}</td>
-                    <td>{{ flowrate['Oil Flow Rate (ml/hr)']}}</td>
-                    <td>{{ flowrate['Water Flow Rate (\u03BCl/min)'] }}</td>
+                    <td>{{ geo["Orifice Width (\u03BCm)"]}}</td>
+                    <td>{{ geo["Channel Depth (\u03BCm)"]}}</td>
+                    <td>{{ geo["Outlet Channel Width (\u03BCm)"]}}</td>
+                    <td>{{ geo["Orifice Length (\u03BCm)"]}}</td>
+                    <td>{{ geo["Water Inlet Width (\u03BCm)"]}}</td>
+                    <td>{{ geo["Water Inlet Width (\u03BCm)"]}}</td>
+                    <td>{{ values['Oil Flow Rate (ml/hr)']}}</td>
+                    <td>{{ values['Water Flow Rate (\u03BCl/min)'] }}</td>
                 </tr>
             </table>
+
             <h3>Expected Performance:</h3>
 
             <table style="width:60%;margin-left:auto;margin-right:auto;">
@@ -162,11 +162,20 @@
                 <tr>
                     <td>{{perform['Generation Rate (Hz)']}}</td>
                     <td>{{perform['Droplet Diameter (\u03BCm)']}}</td>
-                    <td>{{values['Droplet Inferred Size (\u03BCm)']}}</td>
+                    <td>{{perform['Inferred Droplet Diameter (\u03BCm)']}}</td>
                     <td>{{perform['Regime']}}</td>
                 </tr>
             </table>
             <br/>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if tolTest %}
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 twelve columns">
 
             <h1>Tolerances of your Design:</h1>
             <p>Using your input tolerance of <strong>{{tolerance}}%</strong>, variance-based sensitivity analysis was
@@ -194,14 +203,70 @@
                 understanding how changing these rates
                 affect both droplet diameter and generation rate, rather than doing so through trial and error.
             <p><img class="img" src="{{ url_for('static', filename='img/'+fig_names[2]) }}" width="100%"></p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- /metrics content -->
+    {% if metricTest %}
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 twelve columns">
+            <h1>Design Quality Metrics:</h1>
+            <p>Using <strong>{{metrics_results["top_k"]}}</strong> candidate designs, the versatility and flow stability metrics of each candidate
+                generator was calculated. Output designs were ranked according to <strong>{{metrics_results["sort_by"]}}</strong>.
+                Below, you can see the performance ranges of the top-ranked devices regime (versatility) as well as how
+                close the device is to a regime boundary (flow stability). More info on this methodology can be found
+                here (Note: this link currently not active, publication is in review).</p>
+
+                        <h3>Droplet Generator Design:</h3>
+
+            <table style="width:100%;margin-left:auto;margin-right:auto;">
+
+                <tr>
+                    <th colspan="3">{{metrics_results["verse_group"]}}:</th>
+                    <th colspan="2">Flow stability:</th>
+                </tr>
+                <tr>
+                    {# TODO: GROUP BY REGIME HERE #}
+                    <th>Overall score</th>
+                    <th>Size score</th>
+                    <th>Rate score</th>
+                    <th>Flow stability score</th>
+
+                </tr>
+                <tr>
+                    {# TODO: GROUP BY REGIME HERE #}
+                    <td>{{metrics_results["results"][metrics_results["metric_keys"][0]]}}</td>
+                    <td>{{metrics_results["results"][metrics_results["metric_keys"][1]]}}</td>
+                    <td>{{metrics_results["results"][metrics_results["metric_keys"][2]]}}</td>
+                    <td>{{metrics_results["results"]["flow_stability"]}}</td>
+
+                </tr>
+            </table>
+
+
+            <p><img class="img" src="{{ url_for('static', filename='img/'+metrics_fig_name)}}" width="100%"></p>
+
+        </div>
+    </div>
+</div>
+    {% endif %}
+
+{% if metricTest or tolTest %}
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 twelve columns">
             <h3>Questions? Contact Us:</h3>
-            <p>Ali Lashkaripour (<a href="lashkari@bu.edu">lashkari@bu.edu</a>) &amp; Prof.
+            <p>David McIntyre (<a href="dpmc@bu.edu">dpmc@bu.edu</a>) &amp; Prof.
                 Douglas Densmore (<a href="dougd@bu.edu">dougd@bu.edu</a>)</p>
             <div class="spacer"></div>
             <br/>
             <div class="spacer"></div>
-
-            <div class="row">
+        </div>
+    </div>
+    <div class="row">
                 <div class="col-md-6">
                     <a href='http://cidarlab.org' target="_blank"><img class="img-stakeholders"
                                                                        src="{{ url_for('static', filename='img/logo-Cidar-Color-small.png') }}"/></a>
@@ -222,10 +287,7 @@
                     <a href='https://github.com/CIDARLAB/DAFD' target="_blank"><img class="img-stakeholders"
                                                                                     src="{{ url_for('static', filename='img/github.png') }}"/></a>
                 </div>
-
             </div>
-        </div>
-    </div>
 </div>
 {% endif %}
 {% endblock %}
