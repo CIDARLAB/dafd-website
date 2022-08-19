@@ -106,6 +106,7 @@ def runDAFD_2():
 	sort_by = None
 	flow_stability = False
 	versatility = False
+	top_k=3
 
 	with open(os.path.dirname(os.path.abspath(__file__)) + "/" + "cmd_inputs.txt","r") as f:
 		for line in f:
@@ -229,15 +230,16 @@ def runDAFD_2():
 			fwd_results = di.runForward(rev_results)
 
 			import datetime
-			# date = datetime.datetime.today().isoformat()[:16]
-			# size = int(fwd_results["droplet_size"])
-			# rate = int(rev_results["generation_rate"])
-			# filepath = f"{date}_{size}um_{rate}Hz.csv"
-			# filepath = filepath.replace(":", "_")
-			# results_df.to_csv(filepath)
-			# results_df.to_csv(filepath)
-			#
-			# MetHelper.generate_report(report_info)
+			date = datetime.datetime.today().isoformat()[:16]
+			size = int(fwd_results["droplet_size"])
+			rate = int(rev_results["generation_rate"])
+			folder_path = os.path.join(os.getcwd(), "app", "resources")
+			for filename in os.listdir(folder_path):
+				if "Hz" in filename:
+					os.remove(os.path.join(folder_path, filename))
+			filepath = f"app/resources/{date}_{size}um_{rate}Hz.csv"
+			filepath = filepath.replace(":", "_")
+			results_df.to_csv(filepath)
 
 		else:
 			rev_results = di.runInterp(desired_vals, constraints)
@@ -256,4 +258,4 @@ def runDAFD_2():
 		result_str += str(fwd_results["water_rate"]) + "|"
 		result_str += str(fwd_results["inferred_droplet_size"]) + "|"
 
-	return result_str
+	return result_str, filepath

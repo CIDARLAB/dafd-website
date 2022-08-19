@@ -20,7 +20,7 @@ celery = make_celery(app)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 from app.mod_NN.views import nn_blueprint
-app.register_blueprint(nn_blueprint, url_prefix='/neural-net')
+app.register_blueprint(nn_blueprint)#, url_prefix='')
 
 @app.route("/")
 @app.route("/home.html")
@@ -90,11 +90,11 @@ def publications():
 	
 	return render_template('publications.html')
 
-@app.route("/download.html")
-@app.route("/download")
-def download():
+@app.route("/download_weights.html")
+@app.route("/download_weights")
+def download_weights():
 	
-	return render_template('download.html')
+	return render_template('download_weights.html')
 
 
 @app.route("/tolerance.html")

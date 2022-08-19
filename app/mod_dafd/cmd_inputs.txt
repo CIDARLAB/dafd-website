@@ -1,7 +1,6 @@
 VERSATILITY
 FLOW_STABILITY
-sort_by=size_versatility_score
-top_k=3
+sort_by=flow_stability
 CONSTRAINTS
 regime=1:1
 DESIRED_VALS

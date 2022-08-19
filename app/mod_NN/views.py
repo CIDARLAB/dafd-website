@@ -248,7 +248,7 @@ def backward_2():
         metrics["sort_by"] = sort_by
         metrics["top_k"] = request.form.get("top_k")
         if metrics["sort_by"] is not None or metrics["top_k"] is not None:
-            strOutput = runReverse_2(constraints, desired_vals, metrics)
+            strOutput, filepath = runReverse_2(constraints, desired_vals, metrics)
         else:
             strOutput = runReverse(constraints, desired_vals)
 
@@ -294,6 +294,7 @@ def backward_2():
 
         if metrics["sort_by"] is not None or metrics["top_k"] is not None:
             metrics_results, metrics_fig_name = run_metrics(features, sort_by)
+            metrics_results["filepath"] = filepath
             if "dripping" in metrics_results["sort_by"]:
                 metrics_results["metric_keys"] = ["dripping_overall_score", "dripping_size_score", "dripping_rate_score"]
                 metrics_results["verse_group"] = "Versatility (in dripping regime)"
@@ -359,6 +360,18 @@ def analysis():
         return render_template('analysis.html', columns=columns, data=df.values, filename=filename, model_name=model_name)
 
     return redirect(url_for('index'))
+
+
+@nn_blueprint.route("/metrics_results")
+def metrics_results():
+    directory = os.path.join(os.getcwd(),'app', 'resources')
+    for filename in os.listdir(directory):
+        if "Hz" in filename:
+            break
+    return send_from_directory(directory=directory, filename=filename, as_attachment=True)
+
+
+
 
 @nn_blueprint.route('/run', methods=['GET', 'POST'])
 def run():
@@ -454,8 +467,8 @@ def run():
         
     return redirect(url_for('index'))
 
-@nn_blueprint.route('/download', methods=['GET', 'POST'])
-def download():
+@nn_blueprint.route('/download_weights', methods=['GET', 'POST'])
+def download_weights():
 
     if request.method == 'POST':
 

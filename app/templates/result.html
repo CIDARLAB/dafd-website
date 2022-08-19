@@ -3,12 +3,12 @@
 {%  block content %}
 <!-- page content -->
 <div class="container content-container">
-    <form action="{{ url_for('nn.download') }}" method='post'>
+    <form action="{{ url_for('nn.download_weights') }}" method='post'>
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <h3>Results</h3>
                 <input type='submit' name='submit' value='Download Model' class="btn btn-success run"/>
-                <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>  
+                <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('home') }}'" value="Back to Home Screen"/>
                 <div class="spacer"></div>
                 <table class="overview-table table table-condensed">
                     <tr>
