@@ -240,6 +240,9 @@ def runDAFD_2():
 			filepath = f"app/resources/{date}_{size}um_{rate}Hz.csv"
 			filepath = filepath.replace(":", "_")
 			results_df.to_csv(filepath)
+			file_name = f"{date}_{size}um_{rate}Hz.csv"
+			file_name = file_name.replace(":", "_")
+
 
 		else:
 			rev_results = di.runInterp(desired_vals, constraints)
@@ -258,4 +261,4 @@ def runDAFD_2():
 		result_str += str(fwd_results["water_rate"]) + "|"
 		result_str += str(fwd_results["inferred_droplet_size"]) + "|"
 
-	return result_str, filepath
+	return result_str, file_name

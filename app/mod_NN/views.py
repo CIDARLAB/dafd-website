@@ -294,7 +294,7 @@ def backward_2():
 
         if metrics["sort_by"] is not None or metrics["top_k"] is not None:
             metrics_results, metrics_fig_name = run_metrics(features, sort_by)
-            metrics_results["filepath"] = filepath
+            metrics_results["file_name"] = filepath
             if "dripping" in metrics_results["sort_by"]:
                 metrics_results["metric_keys"] = ["dripping_overall_score", "dripping_size_score", "dripping_rate_score"]
                 metrics_results["verse_group"] = "Versatility (in dripping regime)"
@@ -362,13 +362,10 @@ def analysis():
     return redirect(url_for('index'))
 
 
-@nn_blueprint.route("/metrics_results")
-def metrics_results():
+@nn_blueprint.route("/metrics_results/<file_name>")
+def metrics_results(file_name):
     directory = os.path.join(os.getcwd(),'app', 'resources')
-    for filename in os.listdir(directory):
-        if "Hz" in filename:
-            break
-    return send_from_directory(directory=directory, filename=filename, as_attachment=True)
+    return send_from_directory(directory=directory, filename=file_name, as_attachment=True)#, cache_timeout=10)
 
 
 

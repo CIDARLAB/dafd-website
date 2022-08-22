@@ -4,5 +4,5 @@ sort_by=flow_stability
 CONSTRAINTS
 regime=1:1
 DESIRED_VALS
-generation_rate=100
+generation_rate=50
 droplet_size=100

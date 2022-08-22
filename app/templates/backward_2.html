@@ -216,7 +216,7 @@
             <h1>Design Quality Metrics:</h1>
             <p>Using <strong>{{metrics_results["top_k"]}}</strong> candidate designs, the versatility and flow stability metrics of each candidate
                 generator was calculated. Output designs were ranked according to <strong>{{metrics_results["sort_by"]}}</strong>.
-                <strong><a href="{{metrics_results["filepath"]}}"download>CLICK HERE</a></strong> to download the designs and quality metrics for all candidates.
+                <strong><a href="{{url_for("nn.metrics_results", file_name=metrics_results["file_name"])}}">CLICK HERE</a></strong> to download the designs and quality metrics for all candidates.
                 Below, you can see the performance ranges of the top-ranked devices regime (versatility) as well as how
                 close the device is to a regime boundary (flow stability). More info on this methodology can be found
                 here (Note: this link currently not active, publication is in review).</p>
