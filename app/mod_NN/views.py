@@ -247,6 +247,8 @@ def backward_2():
             sort_by = metric_options[int(sort_by) - 1]
         metrics["sort_by"] = sort_by
         metrics["top_k"] = request.form.get("top_k")
+        if metrics["top_k"] is None:
+            metrics["top_k"] = 3
         if metrics["sort_by"] is not None or metrics["top_k"] is not None:
             strOutput, filepath = runReverse_2(constraints, desired_vals, metrics)
         else:
