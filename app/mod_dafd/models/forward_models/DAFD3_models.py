@@ -40,6 +40,7 @@ class NeuralNetModel_DAFD3:
         self.model.add(Dense(units=16, activation='relu', name='scratch_dense_2',
                         kernel_regularizer=regularizers.l2(0.001)))  # more options to avoid over-fitting
 
+
         self.model.add(Dense(units=1, name='scratch_dense_6'))
                 ### Optimizer
         adam = optimizers.Adam(lr=0.0003, beta_1=0.9, beta_2=0.999, amsgrad=False)

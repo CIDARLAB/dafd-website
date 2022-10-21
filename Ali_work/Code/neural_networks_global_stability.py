@@ -25,7 +25,7 @@ from sklearn import model_selection
 from sklearn.linear_model import Ridge
 from sklearn.utils import check_array
 from keras import regularizers
-import xgboost as xgb
+#import xgboost as xgb
 
 #-----------------------------------------------------------------------------
 #  Custom Loss Functions
