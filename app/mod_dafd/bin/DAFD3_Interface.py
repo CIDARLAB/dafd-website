@@ -2,8 +2,8 @@
 from app.mod_dafd.core_logic.ForwardModel3 import ForwardModel3
 from app.mod_dafd.core_logic.InterModel3 import InterModel3
 
-from app.mod_dafd.helper_scripts.ModelHelper import ModelHelper
-
+from app.mod_dafd.helper_scripts.ModelHelper3 import ModelHelper3
+import numpy as np
 
 class DAFD3_Interface:
 	"""A class that provides an interface for DAFD"""
@@ -12,9 +12,8 @@ class DAFD3_Interface:
 		self.it = InterModel3()
 		self.fw = ForwardModel3()
 
-		self.MH = ModelHelper.get_instance() # type: ModelHelper
+		self.MH = ModelHelper3.get_instance() # type: ModelHelper
 
-		self.ranges_dict = self.MH.ranges_dict
 		self.input_headers = self.MH.input_headers
 		self.output_headers = self.MH.output_headers
 
@@ -24,16 +23,13 @@ class DAFD3_Interface:
 
 	def runForward(self, features):
 		# features is a dictionary containing the name of each feature as the key and the feature value as the value
-		raw_features = [features[x] for x in self.input_headers]
-		results = self.fw.predict(raw_features)
+		raw_features = np.array([features[x] for x in self.input_headers])
+		results = {}
+		results["droplet_size"] = self.fw.predict(raw_features)
 		design_params = {}
 		for feature in features:
 			design_params[feature] = features[feature]
-		for result in results:
-			design_params[result] = results[result]
-		oil_rate, water_rate, inferred_droplet_size = self.MH.calculate_formulaic_relations(design_params)
-		results["oil_rate"] = oil_rate
-		results["water_rate"] = water_rate
-		results["inferred_droplet_size"] = inferred_droplet_size
+		design_params["droplet_size"] = results["droplet_size"]
+		results["oil_rate"], results["water_rate"], results["generation_rate"] = self.MH.calculate_formulaic_relations(design_params)
 		return results
 

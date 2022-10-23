@@ -3,33 +3,28 @@ Created on Thurs Oct 20 2:39 PM 2022
 
 @author: dpmcintyre
 """
-
-
+import keras.models
 import numpy as np #array & sqrt stats
-import pandas as pd #data frame excel for python
-import matplotlib.pyplot as plt #plots
-from keras.layers import Dense, Activation, Dropout
+from keras.layers import Dense
 from keras.models import Sequential
-from keras.models import model_from_json
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import PolynomialFeatures
-from keras.callbacks import EarlyStopping
+
 from keras import backend
 from keras import optimizers
 import os
-import h5py
-import sklearn.metrics, math
-from sklearn import model_selection
-from sklearn.linear_model import Ridge
-from sklearn.utils import check_array
 from keras import regularizers
 import xgboost as xgb
 
+
 class NeuralNetModel_DAFD3:
     model = None
-    filepath = "resources/inputs/DAFD3_data.csv"
 
-    def train_model(self, output_name, regime):
+    def __init__(self, load=True):
+        if load:
+            self.load_model()
+        else:
+            self.build_model()
+
+    def build_model(self):
         # Initializing NN
         self.model = Sequential()
         # more layers result in high over-fitting, a simple 2 layer model is used here.
@@ -48,127 +43,72 @@ class NeuralNetModel_DAFD3:
         self.model.compile(optimizer=adam, loss='mean_squared_error', metrics=['mean_squared_error', rmse, r_square])
 
 
-
-
+    def train_model(self, X_train, Y_train, X_test, Y_test):
         ### Fitting the model to the train set
-        X_train, Y_train, X_test, Y_test = self.prep_data()
+        if self.model is None:
+            self.build_model()
+
         self.model.fit(X_train, Y_train, validation_data=(X_test, Y_test), batch_size=32,
                            epochs=5000)  # , callbacks=[earlystopping])
 
-    def load_model(self, output_name):
-        model_name = output_name
-
-        # load json and create model
-        json_file = open(os.path.dirname(os.path.abspath(__file__)) + "/saved/" + model_name + ".json", 'r')
-        loaded_model_json = json_file.read()
-        json_file.close()
-        loaded_model = model_from_json(loaded_model_json)
-        # load weights into new model
-        loaded_model.load_weights(os.path.dirname(os.path.abspath(__file__)) + "/saved/" + model_name + ".h5")
-        self.model = loaded_model
+    def load_model(self, model_name="DAFD3_NNmodel"):
+        # load file
+        file = os.path.dirname(os.path.abspath(__file__)) + "/saved/" + model_name
+        self.model = keras.models.load_model(file, custom_objects={"rmse": rmse, "r_square":r_square})
 
     def predict(self, features):
-        return self.model.predict(np.asarray(features).reshape(1, -1))[0]
+        return self.model.predict(np.asarray(features).reshape(1, -1))[0][0]
 
-    def prep_data(self):
-        df = pd.read_csv(self.filepath)
-        X = df.loc[:, ['Orifice width (um)', 'Aspect ratio', 'Flow rate ratio', 'New_ca_number', 'Normalized oil inlet',
-                       'Normalized water inlet', 'Expansion ratio', 'viscosity ratio']]
-
-        Y = df.loc[:,
-            'Norm hyd size']  # make sure to update Ori parameter to be the same parameter for normaliztion if Y is Norm Hyd size, Ori should be Hydraulic diameter; if Y is Norm size Ori should be orifice
-        D = df.loc[:, 'Observed droplet diameter (um)']
-        Z = df.loc[:, ['Observed generation rate (Hz)', 'Qin']]
-
-        Ori = df.loc[:, 'Hyd_d']  # swap out to orifice when normalizing by orifice width
-        Ori = np.array(Ori)
-
-        X = np.array(X)
-        Y = np.array(Y)  # Regime labels
-        Z = np.array(Z)
-
-        X1 = []  # Regime 1 data-set
-        X2 = []  # Regime 2 data-set
-        Y11 = []  # Regime 1 Output 1 (generation rate)
-        Y12 = []  # Regime 1 Output 2 (size)
-        Y21 = []  # Regime 2 Output 1 (generation rate)
-        Y22 = []  # Regime 2 Output 2 (size)
-
-        Y12 = Y
-        X1 = X
-
-        ###train-test split
-        validation_size = 0.20
-        X_train, X_test, Y_train, Y_test, Ori_train, Ori_test, D_train, D_test, Z_train, Z_test = model_selection.train_test_split(
-            X1, Y12, Ori, D, Z, test_size=validation_size)  # Regime 1 Output 2
-
-        ###data scaling
-        scaler = StandardScaler().fit(X_train)
-        X_train = scaler.transform(X_train)
-        X_test = scaler.transform(X_test)
-
-        X_train = np.array(X_train)
-        Y_train = np.array(Y_train)
-        X_test = np.array(X_test)
-        Y_test = np.array(Y_test)
-        return X_train, Y_train, X_test, Y_test
 
 class XGBoost_DAFD3:
     model = None
-    filepath = "resources/inputs/DAFD3_data.csv"
 
-    def train_model(self, output_name, regime):
+    def __init__(self, load=True):
+        if load:
+            self.load_model()
+        else:
+            self.build_model()
+
+    def build_model(self):
+        self.model = xgb.XGBRegressor(tree_method="hist")
+
+    def train_model(self, X_train, Y_train):
+        if self.model is None:
+            self.build_model()
         ### Fitting the model to the train set
-        X_train, Y_train, X_test, Y_test = self.prep_data()
-        self.model = xgb.XGBRegressor(tree_method="hist").fit(X_train, Y_train)
+        self.model.fit(X_train, Y_train)
 
-    def load_model(self, output_name):
-        #TODO: figure out how/if I need to load weights for the XGboost model
-        return None
+    def load_model(self, model_name="DAFD3_xgbmodel.json"):
+        # load file
+        file = os.path.dirname(os.path.abspath(__file__)) + "/saved/" + model_name
+        if self.model is None:
+            self.build_model()
+        self.model.load_model(file)
 
     def predict(self, features):
         return self.model.predict(np.asarray(features).reshape(1, -1))[0]
 
-    def prep_data(self):
-        df = pd.read_csv(self.filepath)
-        X = df.loc[:, ['Orifice width (um)', 'Aspect ratio', 'Flow rate ratio', 'New_ca_number', 'Normalized oil inlet',
-                       'Normalized water inlet', 'Expansion ratio', 'viscosity ratio']]
 
-        Y = df.loc[:,
-            'Norm hyd size']  # make sure to update Ori parameter to be the same parameter for normaliztion if Y is Norm Hyd size, Ori should be Hydraulic diameter; if Y is Norm size Ori should be orifice
-        D = df.loc[:, 'Observed droplet diameter (um)']
-        Z = df.loc[:, ['Observed generation rate (Hz)', 'Qin']]
 
-        Ori = df.loc[:, 'Hyd_d']  # swap out to orifice when normalizing by orifice width
-        Ori = np.array(Ori)
+# root mean squared error (rmse) for regression
+def rmse(y_obs, y_pred):
+    return backend.sqrt(backend.mean(backend.square(y_pred - y_obs), axis=-1))
 
-        X = np.array(X)
-        Y = np.array(Y)  # Regime labels
-        Z = np.array(Z)
+# mean squared error (mse) for regression
+def mse(y_obs, y_pred):
+    return backend.mean(backend.square(y_pred - y_obs), axis=-1)
 
-        X1 = []  # Regime 1 data-set
-        X2 = []  # Regime 2 data-set
-        Y11 = []  # Regime 1 Output 1 (generation rate)
-        Y12 = []  # Regime 1 Output 2 (size)
-        Y21 = []  # Regime 2 Output 1 (generation rate)
-        Y22 = []  # Regime 2 Output 2 (size)
+# coefficient of determination (R^2) for regression
+def r_square(y_obs, y_pred):
+    SS_res =  backend.sum(backend.square(y_obs - y_pred))
+    SS_tot = backend.sum(backend.square(y_obs - backend.mean(y_obs)))
+    return (1 - SS_res/(SS_tot + backend.epsilon()))
 
-        Y12 = Y
-        X1 = X
+def mean_absolute_percentage_error(y_obs, y_pred):
+    y_obs, y_pred = np.array(y_obs), np.array(y_pred)
+    y_obs=y_obs.reshape(-1,1)
+    return  np.mean(np.abs((y_obs - y_pred) / y_obs)) * 100
 
-        ###train-test split
-        validation_size = 0.20
-        X_train, X_test, Y_train, Y_test, Ori_train, Ori_test, D_train, D_test, Z_train, Z_test = model_selection.train_test_split(
-            X1, Y12, Ori, D, Z, test_size=validation_size)  # Regime 1 Output 2
-
-        ###data scaling
-        scaler = StandardScaler().fit(X_train)
-        X_train = scaler.transform(X_train)
-        X_test = scaler.transform(X_test)
-
-        X_train = np.array(X_train)
-        Y_train = np.array(Y_train)
-        X_test = np.array(X_test)
-        Y_test = np.array(Y_test)
-        return X_train, Y_train, X_test, Y_test
-
+def mean_absolute_percentage_error2(y_obs, y_pred): #for when the MAPE doesnt need reshaping
+    y_obs, y_pred = np.array(y_obs), np.array(y_pred)
+    return  np.mean(np.abs((y_obs - y_pred) / y_obs)) * 100

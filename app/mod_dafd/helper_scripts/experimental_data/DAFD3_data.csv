@@ -1,4 +1,4 @@
-Orifice width (um),Aspect ratio,Flow rate ratio,New_ca_number,Normalized oil inlet,Normalized water inlet,Expansion ratio,Depth,Hyd_d,Observed droplet diameter (um),Norm size,Norm hyd size,Observed generation rate (Hz),Qin,viscosity ratio
+orifice_width,aspect_ratio,flow_rate_ratio,capillary_number,normalized_oil_inlet,normalized_water_inlet,expansion_ratio,depth,hyd_d,observed_size,normalized_size,normalized_hyd_size,observed_rate,q_in,viscosity_ratio
 22.5,1,1.217391304,0.777085457,1,1,1,22.5,22.5,29.44,1.308444444,1.308444444,4779.899744,230,1.63392405
 22.5,1,1.695652174,1.082369029,1,1,1,22.5,22.5,27.314,1.213955556,1.213955556,5985.16723,230,1.63392405
 22.5,1,1.717391304,1.096245555,1,1,1,22.5,22.5,27.42,1.218666667,1.218666667,5916.022993,230,1.63392405
@@ -867,15 +867,3 @@ Orifice width (um),Aspect ratio,Flow rate ratio,New_ca_number,Normalized oil inl
 30,1,7.142857143,3.162609675,1,1,1,30,30,27.3874,0.912913333,0.912913333,9034.830275,350,0.80780911
 30,1,8.333333333,3.162609675,1,1,1,30,30,27.5273,0.917576667,0.917576667,7626.666844,300,0.80780911
 30,1,7.936507937,3.162609675,1,1,1,30,30,27.6777,0.92259,0.92259,7878.162405,315,0.80780911
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,

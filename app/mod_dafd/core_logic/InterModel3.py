@@ -27,7 +27,7 @@ def resource_path(relative_path):
 
 	return os.path.join(base_path, relative_path)
 
-class InterModel:
+class InterModel3:
 	"""
 	This class handles interpolation over our forward models to make the reverse predictions
 	"""

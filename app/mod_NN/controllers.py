@@ -419,7 +419,7 @@ def runForward(forward):
 
 	return runDAFD()
 
-def runForward3(forward):
+def runForward_3(forward):
 
 	with open("app/mod_dafd/cmd_inputs.txt", "w") as f:
 		f.write("FORWARD\n")
@@ -427,7 +427,7 @@ def runForward3(forward):
 			if forward[key] != None:
 				f.write(key + '=' + str(forward[key]) + '\n')
 
-	return runDAFD3()
+	return runDAFD_3()
 
 
 def runReverse(constraints, desired_vals):

@@ -1,46 +1,36 @@
-from app.mod_dafd.helper_scripts.ModelHelper import ModelHelper
-from app.mod_dafd.core_logic.Regressor import Regressor
-
+from app.mod_dafd.helper_scripts.ModelHelper3 import ModelHelper3
+from app.mod_dafd.models.forward_models.DAFD3_models import NeuralNetModel_DAFD3, XGBoost_DAFD3
+import numpy as np
 
 class ForwardModel3:
 	"""
-	Bundles regime and regression models together.
+	Bundles both DAFD3 models together.
 	This is meant to be a kind of end interface.
 	Plug in features, get predicted outputs. Simple!
 
-	Works by constructing r*o forward models,
-		where r is the number of regimes and o is the number of outputs (like droplet size and generation rate)
-
-	When you want to predict outputs,
-		1. Model predicts regime based on inputs
-		2. For each output variable, the model returns a
-
+	Works by predicting droplet size with both XG boost and neural networks, and then averaging them.
+	Generation rate is predicted with conservation of mass.
 	"""
 
-	regime_classifier = None
-	regressor = None
+	regressor_nn = None
+	regressor_xgb = None
 
 	def __init__(self):
-		self.MH = ModelHelper.get_instance() # type: ModelHelper
+		self.MH = ModelHelper3.get_instance() # type: ModelHelper
+		self.regressor_nn = NeuralNetModel_DAFD3()
+		self.regressor_xgb = XGBoost_DAFD3()
 
-		self.model_dict = {}
-		for regime in self.MH.regime_indices:
-			for header in self.MH.output_headers:
-				self.model_dict[header+str(regime)] = Regressor(header, regime)
-
-
-	def predict(self, features, normalized = False, regime=0):
+	def predict(self, features, normalized = False):
 		# regime is an optional parameter that tells the prediction to override the regime prediction
 		ret_dict = {}
 		if normalized:
 			norm_features = features
 		else:
-			norm_features = self.MH.normalize_set(features)
-		if regime == 0:
-			regime = self.regime_classifier.predict(norm_features)
-		ret_dict["regime"] = regime
-		for header in self.MH.output_headers:
-			ret_dict[header] = self.model_dict[header+str(int(regime))].predict(norm_features)[0]
-		return ret_dict
+			norm_features = self.MH.normalize(features)
+		return np.mean([self.predict_nn(norm_features), self.predict_xgb(norm_features)])*features[0]
 
+	def predict_nn(self, features):
+		return self.regressor_nn.predict(features)
 
+	def predict_xgb(self, features):
+		return self.regressor_xgb.predict(features)

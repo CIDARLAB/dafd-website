@@ -265,7 +265,7 @@ def runDAFD_2():
 	return result_str, file_name
 
 
-def runDAFD3():
+def runDAFD_3():
 	if K.backend() == 'tensorflow':
 		K.clear_session()
 
