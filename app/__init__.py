@@ -40,6 +40,12 @@ def index_1():
 def index_2():
     return render_template('/index_2.html', nn_server=domain, tl_server=tl_domain)
 
+@app.route("/index_3.html")
+@app.route("/index_3")
+def index_3():
+    return render_template('/index_3.html', nn_server=domain, tl_server=tl_domain)
+
+
 
 @app.route("/information.html")
 @app.route("/information")

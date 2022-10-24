@@ -420,7 +420,7 @@ def runForward(forward):
 	return runDAFD()
 
 def runForward_3(forward):
-
+	print(forward)
 	with open("app/mod_dafd/cmd_inputs.txt", "w") as f:
 		f.write("FORWARD\n")
 		for key in forward:

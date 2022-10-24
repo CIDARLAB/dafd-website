@@ -27,6 +27,10 @@ def index_1():
 def index_2():
     return render_template('index_2.html')
 
+@nn_blueprint.route("/index_3.html")
+@nn_blueprint.route("/index_3")
+def index_3():
+    return render_template('index_3.html')
 
 @nn_blueprint.route('/forward_1', methods=['GET', 'POST'])
 def forward_1():
@@ -156,29 +160,28 @@ def forward_3():
     if request.method == 'POST':
 
         forward = {}
-        forward['orifice_size'] = request.form.get('oriWid3')
-        forward['aspect_ratio'] = request.form.get('aspRatio3')
-        forward['expansion_ratio'] = request.form.get('expRatio3')
-        forward['normalized_water_inlet'] = request.form.get('normInlet3')
-        forward['normalized_oil_inlet'] = request.form.get('normOil3')
-        forward['flow_rate_ratio'] = request.form.get('flowRatio3')
-        forward['capillary_number'] = request.form.get('capNum3')
-        forward['viscosity_ratio'] = request.form.get('viscRatio')
+        forward['orifice_width'] = request.form.get('oriWid2')
+        forward['aspect_ratio'] = request.form.get('aspRatio2')
+        forward['expansion_ratio'] = request.form.get('expRatio2')
+        forward['normalized_water_inlet'] = request.form.get('normInlet2')
+        forward['normalized_oil_inlet'] = request.form.get('normOil2')
+        forward['flow_rate_ratio'] = request.form.get('flowRatio2')
+        forward['capillary_number'] = request.form.get('capNum2')
+        forward['viscosity_ratio'] = request.form.get('viscRatio2')
 
         strOutput = runForward_3(forward)
         parsed = strOutput.split(':')[1].split('|')[:-1]
 
         perform = {}
-        perform['Generation Rate (Hz)'] = round(float(parsed[0]), 1)
-        perform['Droplet Diameter (\u03BCm)'] = round(float(parsed[1]), 1)
+        perform['Droplet Diameter (\u03BCm)'] = round(float(parsed[0]), 1)
+        perform['Generation Rate (Hz)'] = round(float(parsed[3]), 1)
 
         values = {}
-        values['Oil Flow Rate (ml/hr)'] = round(float(parsed[2]), 3)
-        values['Water Flow Rate (\u03BCl/min)'] = round(float(parsed[3]), 3)
-        values['Droplet Inferred Size (\u03BCm)'] = round(float(parsed[4]), 1)
+        values['Oil Flow Rate (ml/hr)'] = round(float(parsed[1]), 3)
+        values['Water Flow Rate (\u03BCl/min)'] = round(float(parsed[2]), 3)
 
         forward3 = {}
-        forward3['Orifice Width'] = forward['orifice_size']
+        forward3['Orifice Width'] = forward['orifice_width']
         forward3['Aspect Ratio'] = forward['aspect_ratio']
         forward3['Expansion Ratio'] = forward['expansion_ratio']
         forward3['Normalized Water Inlet'] = forward['normalized_water_inlet']
@@ -187,16 +190,10 @@ def forward_3():
         forward3['Capillary Number'] = forward['capillary_number']
         forward3['Viscosity Ratio'] = forward['viscosity_ratio']
 
-        tolerance = request.form.get('tolerance')
-        if tolerance is not None:
-            features_denormalized, fig_names = run_tolerance(forward, tolerance)
-        else:
-            features_denormalized = None
-            fig_names = None
+        features_denormalized = None
+        fig_names = None
 
-        return render_template('forward_3.html', perform=perform, values=values, forward3=forward3,
-                               tolTest=(tolerance is not None), features=features_denormalized,
-                               fig_names=fig_names, tolerance=tolerance)
+        return render_template('forward_3.html', perform=perform, values=values, forward3=forward3)
 
     return redirect(url_for('index_3'))
 
@@ -370,6 +367,12 @@ def backward_2():
                                metrics_results=metrics_results, metrics_fig_name=metrics_fig_name, metricTest=(metrics_results is not None))
 
     return redirect(url_for('index_2'))
+
+
+@nn_blueprint.route('/backward_3', methods=['GET', 'POST'])
+def backward_3():
+
+    return redirect(url_for('index_3'))
 
 
 @nn_blueprint.route('/dummy', methods=['GET', 'POST'])
