@@ -1,9 +1,9 @@
 FORWARD
-orifice_width=15
+orifice_width=150
 aspect_ratio=1
-expansion_ratio=1
+expansion_ratio=3.5
 normalized_water_inlet=1
 normalized_oil_inlet=1
-flow_rate_ratio=0.69
-capillary_number=3.014
-viscosity_ratio=1
+flow_rate_ratio=5.61
+capillary_number=0.014
+viscosity_ratio=2.73

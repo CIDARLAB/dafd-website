@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 from config import CONFIG, HYPERPARAMS
 #from app.mod_NN.models import TUNABLE_MODELS, NO_TUNABLE_MODELS
 
-from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 
