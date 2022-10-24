@@ -361,7 +361,7 @@ def analysis():
         
         return render_template('analysis.html', columns=columns, data=df.values, filename=filename, model_name=model_name)
 
-    return redirect(url_for('index'))
+    return redirect(url_for('index_1'))
 
 
 @nn_blueprint.route("/metrics_results/<file_name>")
@@ -464,7 +464,7 @@ def run():
         
         return render_template('result.html', columns=cols, data=vals, architecture=config)
         
-    return redirect(url_for('index'))
+    return redirect(url_for('index_1'))
 
 @nn_blueprint.route('/download_weights', methods=['GET', 'POST'])
 def download_weights():
@@ -473,8 +473,8 @@ def download_weights():
 
         directory = os.path.join(APP_ROOT, '../resources/inputs/')
         return send_from_directory(directory=directory, filename='weights-classification.h5', as_attachment=True)
-    
-    return redirect(url_for('index'))
+
+    return redirect(url_for('download_weights'))
 
 @nn_blueprint.route('/tolerance', methods=['GET', 'POST'])
 def run_tolerance(features, tolerance):

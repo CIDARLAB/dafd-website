@@ -90,11 +90,11 @@ def publications():
 	
 	return render_template('publications.html')
 
-@app.route("/download_weights.html")
-@app.route("/download_weights")
-def download_weights():
+@app.route("/datasets.html")
+@app.route("/datasets")
+def datasets():
 	
-	return render_template('download_weights.html')
+	return render_template('datasets.html')
 
 
 @app.route("/tolerance.html")
