@@ -129,22 +129,25 @@ class ModelHelper3:
 		normalized_oil_inlet = design_inputs["normalized_oil_inlet"]
 		flow_rate_ratio = design_inputs["flow_rate_ratio"]
 		capillary_number = design_inputs["capillary_number"]
-		droplet_diameter = design_inputs["droplet_size"]
+		normalized_diameter = design_inputs["normalized_diameter"]
+		surface_tension = design_inputs["surface_tension"]
+		oil_viscosity = design_inputs["oil_viscosity"]
 
 		# Calculate oil flow rate
 		channel_height = orifice_size * aspect_ratio
 		water_inlet_width = orifice_size * normalized_water_inlet
 		oil_inlet = orifice_size * normalized_oil_inlet
 		#TODO: NEED TO GET NEW FLOW RATE FROM CAP NUMBER, its giving me the wrong values
-		oil_flow_rate = (capillary_number * 0.005 * channel_height * oil_inlet * 1e-12) / \
-						(0.0572 * ((water_inlet_width*1e-6)) * ((1 / (orifice_size*1e-6)) - (1 / (2 * oil_inlet * 1e-6))))
-		oil_flow_rate_ml_per_hour = oil_flow_rate * 3600 * 1e6
+		oil_flow_rate = capillary_number * orifice_size**2 * aspect_ratio * surface_tension / oil_viscosity * (10**6/60**2)
 
 		# Calculate water flow rate
-		water_flow_rate = oil_flow_rate_ml_per_hour / flow_rate_ratio
-		water_flow_rate_ul_per_min = water_flow_rate * 1000 / 60
+		water_flow_rate = oil_flow_rate / flow_rate_ratio
+
+		# Calculate droplet diameter
+		hydraulic_diameter = (2*aspect_ratio*orifice_size)/(1+aspect_ratio)
+		droplet_diameter = normalized_diameter*hydraulic_diameter
 
 		# Calculate generation rate
 		droplet_volume_uL = 4/3 * np.pi * (droplet_diameter/2)**3 * 10E-9
-		generation_rate = droplet_volume_uL/water_flow_rate_ul_per_min/60
-		return oil_flow_rate_ml_per_hour, water_flow_rate_ul_per_min, generation_rate
+		generation_rate = droplet_volume_uL/water_flow_rate/3600
+		return oil_flow_rate, water_flow_rate, droplet_diameter, generation_rate

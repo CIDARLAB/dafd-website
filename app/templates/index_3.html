@@ -415,7 +415,7 @@
 								<!--2nd column-->
 								<div class="col-md-1 text-center"></div>
 								<div class="col-md-4 text-left">
-									<p class="field-tip">Normalized water inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+									<p class="field-tip">Normalized dispersed phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
 									<input type="range" min="100" max="400" value="100" class="slider-activated" id="normInletRange2" oninput="updateFloatInput(this.value, 'normInlet2', this.id);">
@@ -432,7 +432,7 @@
 								<!--2nd column-->
 								<div class="col-md-1 text-center"></div>
 								<div class="col-md-4 text-left">
-									<p class="field-tip">Normalized oil inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+									<p class="field-tip">Normalized continuous phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
 									<input type="range" min="100" max="400" value="100" class="slider-activated" id="normOilRange2" oninput="updateFloatInput(this.value, 'normOil2', this.id);">
@@ -449,33 +449,33 @@
 								<!--2nd column-->
 								<div class="col-md-1 text-center"></div>
 								<div class="col-md-4 text-left">
-									<p class="field-tip">Flow rate ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+									<p class="field-tip">Dispersed phase flow rate (uL / hour)<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
-									<input type="range" min="69" max="2200" value="69" class="slider-activated" id="flowRatioRange2" oninput="updateFloatInput(this.value, 'flowRatio2', this.id);">
+									<input type="range" min="69" max="2200" value="69" class="slider-activated" id="dispFlowRange2" oninput="updateFloatInput(this.value, 'dispFlow2', this.id);">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="flowRatio2" name="flowRatio2" value="0.69" oninput="updateFloatSlider('flowRatioRange2', this.id)" onchange="floatSliderChange('flowRatioRange2', this.id, 69, 2200)">
+									<input size="4" type="text" id="dispFlow2" name="dispFlow2" value="0.69" oninput="updateFloatSlider('dispFlowRange2', this.id)" onchange="floatSliderChange('dispFlowRange2', this.id, 69, 2200)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Oil flow rate divided by water flow rate.</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Flow rate of the dispersed phase (droplet content) in uL / hour.</span></div>
 								</div>
 							</div>
-							<!--7th row-->
+							<!--7th row TODO: UPDATE ranges to be correct with dataset -->
 							<div class="row slider-row">
 								<!--2nd column-->
 								<div class="col-md-1 text-center"></div>
 								<div class="col-md-4 text-left">
-									<p class="field-tip">Capillary number<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+									<p class="field-tip">Dispersed phase dynamic viscosity (mPa s)<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
-									<input type="range" min="1.4" max="939" value="1.4" class="slider-activated" id="capNumRange2" oninput="updateFloatInput(this.value, 'capNum2', this.id);">
+									<input type="range" min="1.4" max="939" value="1.4" class="slider-activated" id="dispViscRange2" oninput="updateFloatInput(this.value, 'dispVisc2', this.id);">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="capNum2" name="capNum2" value="0.014" oninput="updateFloatSlider('capNumRange2', this.id)" onchange="floatSliderChange('capNumRange2', this.id, 1.4, 939)">
+									<input size="4" type="text" id="dispVisc2" name="dispVisc2" value="0.014" oninput="updateFloatSlider('dispViscRange2', this.id)" onchange="floatSliderChange('dispViscRange2', this.id, 1.4, 939)">
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Capillary number is the ratio of viscous forces and the interfacial tension.</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the disperse phase (droplet content) in Pa s.</span></div>
 								</div>
 							</div>
 							<!--8th row-->
@@ -483,19 +483,52 @@
 								<!--1st column-->
 								<div class="col-md-1 text-center"></div>
 								<div class="col-md-4 text-left">
-									<p class="field-tip">Viscosity Ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
+									<p class="field-tip">Continuous phase flow rate (uL / hour)<!--<span class="tip-content">unit in &#181;m</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
-									<input type="range" min="100" max="300" value="100" class="slider-activated" id="viscRange2" oninput="updateFloatInput(this.value, 'viscRatio2', this.id);">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="contFlowRange2" oninput="updateFloatInput(this.value, 'contFlow2', this.id);">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="viscRatio2" name="viscRatio2" value="1" oninput="updateFloatSlider('viscRange2', this.id)" onchange="floatSliderChange('viscRange2', this.id, 100, 300)"> <!--TODO: add in range-->
+									<input size="4" type="text" id="contFlow2" name="contFlow2" value="1" oninput="updateFloatSlider('contFlowRange2', this.id)" onchange="floatSliderChange('contFlowRange2', this.id, 100, 300)"> <!--TODO: add in range-->
 								</div>
 								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Viscosity ratio between continuous and dispersed fluids.</span></div>
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Flow rate of the continuous phase (sheath fluid) in uL / hour.</span></div>
 								</div>
 							</div>
-
+                            <!--9th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Continuous phase dynamic viscosity (mPa s)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="contViscRange2" oninput="updateFloatInput(this.value, 'contVisc2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="contVisc2" name="contVisc2" value="1" oninput="updateFloatSlider('contViscRange2', this.id)" onchange="floatSliderChange('contViscRange2', this.id, 100, 300)"> <!--TODO: add in range-->
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the disperse phase (sheath fluid) in Pa s.</span></div>
+								</div>
+							</div>
+                            <!--10th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Interfacial surface tension (mN/m) <!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="surfTensionRange2" oninput="updateFloatInput(this.value, 'surfTension2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="surfTension2" name="surfTension2" value="1" oninput="updateFloatSlider('surfTensionRange2', this.id)" onchange="floatSliderChange('surfTensionRange2', this.id, 100, 300)"> <!--TODO: add in range-->
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Interfacial surface tension betweeen the continuous and dispersed phases in mN/m.</span></div>
+								</div>
+							</div>
 							<div class="row">
 								<div class="col-md-12">
 									<input type="submit" class="btn-section-2" value="Predict Performance"/>

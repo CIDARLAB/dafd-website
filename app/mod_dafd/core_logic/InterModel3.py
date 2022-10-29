@@ -11,7 +11,7 @@ import itertools
 import csv
 import sys
 import os
-from app.mod_dafd.core_logic.ForwardModel import ForwardModel
+from app.mod_dafd.core_logic.ForwardModel3 import ForwardModel3
 from app.mod_dafd.helper_scripts.ModelHelper import ModelHelper
 import tensorflow as tf
 
@@ -27,7 +27,7 @@ def resource_path(relative_path):
 
 	return os.path.join(base_path, relative_path)
 
-class InterModel3:
+class InterModel3_se:
 	"""
 	This class handles interpolation over our forward models to make the reverse predictions
 	"""

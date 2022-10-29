@@ -158,16 +158,25 @@ def forward_2():
 def forward_3():
 
     if request.method == 'POST':
-
+        # Get data
         forward = {}
         forward['orifice_width'] = request.form.get('oriWid2')
         forward['aspect_ratio'] = request.form.get('aspRatio2')
         forward['expansion_ratio'] = request.form.get('expRatio2')
         forward['normalized_water_inlet'] = request.form.get('normInlet2')
         forward['normalized_oil_inlet'] = request.form.get('normOil2')
-        forward['flow_rate_ratio'] = request.form.get('flowRatio2')
-        forward['capillary_number'] = request.form.get('capNum2')
-        forward['viscosity_ratio'] = request.form.get('viscRatio2')
+        forward['oil_flow_rate'] = request.form.get('contFlow2')
+        forward['water_flow_rate'] = request.form.get('dispFlow2')
+        forward['oil_viscosity'] = request.form.get('contVisc2')
+        forward['water_viscosity'] = request.form.get('dispVisc2')
+        forward['surface_tension'] = request.form.get('surfTension2')
+
+        #normalize to correct values
+        forward = {key:float(forward[key]) for key in forward.keys()}
+        forward['flow_rate_ratio'] = forward["oil_flow_rate"]/forward["water_flow_rate"]
+        forward['viscosity_ratio'] = forward["oil_viscosity"]/forward["water_viscosity"]
+        ca_num = forward["oil_viscosity"]*forward["oil_flow_rate"]/(forward["orifice_width"]**2*forward["aspect_ratio"]) * (1/3.6)
+        forward['capillary_number'] = ca_num/forward["surface_tension"] #(Ca = mu * (Qc/(OriW*depth)))/surf
 
         strOutput = runForward_3(forward)
         parsed = strOutput.split(':')[1].split('|')[:-1]
