@@ -12,7 +12,7 @@ import csv
 import sys
 import os
 from app.mod_dafd.core_logic.ForwardModel3 import ForwardModel3
-from app.mod_dafd.helper_scripts.ModelHelper import ModelHelper
+from app.mod_dafd.helper_scripts.ModelHelper3 import ModelHelper3
 import tensorflow as tf
 
 from matplotlib import pyplot as plt
@@ -34,8 +34,8 @@ class InterModel3_se:
 
 	def __init__(self):
 		"""Make and save the interpolation models"""
-		self.MH = ModelHelper.get_instance() # type: ModelHelper
-		self.fwd_model = ForwardModel()
+		self.MH = ModelHelper3.get_instance() # type: ModelHelper
+		self.fwd_model = ForwardModel3()
 
 
 	def get_closest_point(self, desired_vals, constraints={}, max_drop_exp_error=-1, skip_list = []):
@@ -53,44 +53,28 @@ class InterModel3_se:
 			Therefore, this class should be the baseline level of accuracy for DAFD.
 		"""
 
-		use_regime_2 = False
-		if "orifice_size" in constraints and "droplet_size" in desired_vals and self.MH.denormalize(constraints["orifice_size"][1],"orifice_size") < self.MH.denormalize(desired_vals["droplet_size"],"droplet_size"):
-			use_regime_2 = True
-
 		closest_point = {}
 		min_val = float("inf")
 		match_index = -1
 		for i in range(self.MH.train_data_size):
 			if i in skip_list:
 				continue
-			if use_regime_2 and self.MH.train_regime_dat[i] != 2:
-				continue
 
 			if max_drop_exp_error != -1 and "droplet_size" in desired_vals:
-				exp_error = abs(self.MH.denormalize(desired_vals["droplet_size"],"droplet_size") - self.MH.train_labels_dat["droplet_size"][i])
+				exp_error = abs(self.MH.denormalize(desired_vals["droplet_size"],"droplet_size") - self.MH.labels["droplet_size"][i])
 				if exp_error > max_drop_exp_error:
 					continue
 
-			feat_point = self.MH.train_features_dat[i]
+			feat_point = self.MH.features[i]
 			prediction = self.fwd_model.predict(feat_point, normalized=True)
 
-			if prediction["regime"] != self.MH.train_regime_dat[i]:
-				continue
-
-			if self.constrained_regime != -1 and prediction["regime"] != self.constrained_regime:
-				continue
-
-			nval = sum([abs(self.MH.normalize(self.MH.train_labels_dat[x][i], x) - desired_vals[x]) for x in desired_vals])
+			nval = sum([abs(self.MH.normalize(self.MH.labels[x][i], x) - desired_vals[x]) for x in desired_vals])
 			if "droplet_size" in desired_vals:
 				nval += abs(self.MH.normalize(prediction["droplet_size"],"droplet_size") - desired_vals["droplet_size"])
 
 				denorm_feat_list = self.MH.denormalize_set(feat_point)
 				denorm_feat = {x:denorm_feat_list[i] for i,x in enumerate(self.MH.input_headers)}
 				denorm_feat["generation_rate"] = prediction["generation_rate"]
-
-				_,_,inferred_size = self.MH.calculate_formulaic_relations(denorm_feat)
-				inferred_size_error = abs(desired_vals["droplet_size"] - self.MH.normalize(inferred_size,"droplet_size"))
-				nval+=inferred_size_error
 
 			if "generation_rate" in desired_vals:
 				nval += abs(self.MH.normalize(prediction["generation_rate"],"generation_rate") - desired_vals["generation_rate"])
@@ -116,16 +100,8 @@ class InterModel3_se:
 		prediction = self.fwd_model.predict(x, normalized=True)
 		val_dict = {self.MH.input_headers[i]:self.MH.denormalize(val,self.MH.input_headers[i]) for i,val in enumerate(x)}
 		val_dict["generation_rate"] = prediction["generation_rate"]
-		_, _, droplet_inferred_size = self.MH.calculate_formulaic_relations(val_dict)
-		if "droplet_size" in self.desired_vals_global:
-			denorm_drop_error = abs(droplet_inferred_size - self.desired_vals_global["droplet_size"])
-			drop_error = abs(self.MH.normalize(droplet_inferred_size,"droplet_size") - self.norm_desired_vals_global["droplet_size"])
-		else:
-			denorm_drop_error = abs(droplet_inferred_size - prediction["droplet_size"])
-			drop_error = abs(self.MH.normalize(droplet_inferred_size,"droplet_size") - self.MH.normalize(prediction["droplet_size"],"droplet_size"))
-
 		merrors = [abs(self.MH.normalize(prediction[head], head) - self.norm_desired_vals_global[head]) for head in self.norm_desired_vals_global]
-		return sum(merrors) + drop_error*1
+		return sum(merrors)
 
 	def callback_func(self, x):
 		"""Returns how far each solution mapped on the model deviates from the desired value
@@ -135,22 +111,15 @@ class InterModel3_se:
 		#merrors = [abs(self.MH.normalize(prediction[head], head) - self.norm_desired_vals_global_adjusted[head]) for head in self.norm_desired_vals_global_adjusted]
 		val_dict = {self.MH.input_headers[i]:self.MH.denormalize(val,self.MH.input_headers[i]) for i,val in enumerate(x)}
 		val_dict["generation_rate"] = prediction["generation_rate"]
-		_, _, droplet_inferred_size = self.MH.calculate_formulaic_relations(val_dict)
-		if "droplet_size" in self.desired_vals_global:
-			denorm_drop_error = abs(droplet_inferred_size - self.desired_vals_global["droplet_size"])
-			drop_error = abs(self.MH.normalize(droplet_inferred_size,"droplet_size") - self.norm_desired_vals_global["droplet_size"])
-		else:
-			denorm_drop_error = abs(droplet_inferred_size - prediction["droplet_size"])
-			drop_error = abs(self.MH.normalize(droplet_inferred_size,"droplet_size") - self.MH.normalize(prediction["droplet_size"],"droplet_size"))
 		print(prediction["droplet_size"])
 		print(prediction["generation_rate"])
 		merrors = [abs(self.MH.normalize(prediction[head], head) - self.norm_desired_vals_global[head]) for head in self.norm_desired_vals_global]
-		all_errors = sum(merrors) + drop_error
+		all_errors = sum(merrors)
 		print(all_errors)
 		print()
 
 		with open("InterResults.csv","a") as f:
-			f.write(",".join(map(str,self.MH.denormalize_set(x))) + "," + str(prediction['regime']) + "," + str(prediction['generation_rate']) +
+			f.write(",".join(map(str,self.MH.denormalize_set(x))) + "," + str(prediction['generation_rate']) +
 					"," + str(prediction['droplet_size']) + "," + str(all_errors) + "\n")
 
 	def correct_by_constraints(self,values,constraints):
@@ -174,9 +143,6 @@ class InterModel3_se:
 				The acceptable range should be a tuple with the min as the first val and the max as the second val
 				Again, just leave input types you don't care about blank
 		"""
-
-		self.constrained_regime = constraints.pop("regime", -1)
-
 		norm_constraints = {}
 		for cname in constraints:
 			cons_low = self.MH.normalize(constraints[cname][0],cname)
@@ -201,7 +167,7 @@ class InterModel3_se:
 			skip_list.append(closest_index)
 
 			prediction = self.fwd_model.predict(start_pos, normalized=True)
-			all_dat_labels = ["chip_number"] + self.MH.input_headers + ["regime"] + self.MH.output_headers
+			all_dat_labels = ["chip_number"] + self.MH.input_headers +  self.MH.output_headers
 			print(",".join(all_dat_labels))
 			print("Starting point")
 			print(self.MH.all_dat[closest_index])
@@ -218,10 +184,6 @@ class InterModel3_se:
 				this_val = self.MH.all_dat[closest_index][constraint]
 				if this_val < cons_range[0] or this_val > cons_range[1]:
 					should_skip_optim_constraints = False
-
-
-			if self.constrained_regime != -1 and self.MH.all_dat[closest_index]["regime"] != self.constrained_regime:
-				should_skip_optim_constraints = False
 
 			if "generation_rate" in desired_val_dict:
 				if desired_val_dict["generation_rate"] > 100:
@@ -242,11 +204,7 @@ class InterModel3_se:
 				pred_point = {x:self.MH.all_dat[closest_index][x] for x in self.MH.all_dat[closest_index]}
 				pred_point["generation_rate"] = prediction["generation_rate"]
 				print(self.MH.all_dat[closest_index])
-				_,_,inferred_size = self.MH.calculate_formulaic_relations(pred_point)
-				inferred_size_error = abs(desired_val_dict["droplet_size"] - inferred_size)
-				print(inferred_size)
-				print(inferred_size_error)
-				if pred_size_error > 10 or inferred_size_error > 10 or exp_size_error > 5:
+				if pred_size_error > 10 or exp_size_error > 5:
 					should_skip_optim_size = False
 
 			if should_skip_optim_rate and should_skip_optim_size and should_skip_optim_constraints:
@@ -269,7 +227,7 @@ class InterModel3_se:
 				des_size = str(desired_val_dict["droplet_size"])
 
 			f.write("Desired outputs:"+des_rate+","+des_size+"\n")
-			f.write(",".join(self.MH.input_headers) + ",regime,generation_rate,droplet_size,cost_function\n")
+			f.write(",".join(self.MH.input_headers) + ",generation_rate,droplet_size,cost_function\n")
 
 		pos = start_pos
 		self.callback_func(pos)
@@ -280,31 +238,6 @@ class InterModel3_se:
 		samplesize = 1e-3
 		stepsize = 1e-2
 		ftol = 1e-9
-
-		#for i in range(5000):
-		#	new_pos = [x for x in pos]
-		#	new_loss = loss
-		#	for index, val in enumerate(pos):
-		#		copy = [x for x in pos]
-		#		copy[index] = val+samplesize
-		#		self.correct_by_constraints(copy,norm_constraints)
-		#		sampled_derivative = (loss - self.model_error(copy))/samplesize
-		#		new_pos[index] = val + sampled_derivative*stepsize
-
-		#	new_loss = self.model_error(new_pos)
-
-
-
-
-		#	if loss - new_loss < ftol and loss > new_loss:
-		#		print(loss)
-		#		print(new_loss)
-		#		break
-
-		#	pos = new_pos
-		#	loss = new_loss
-
-		#	self.callback_func(pos)
 
 		for i in range(5000):
 			new_pos = pos

@@ -19,7 +19,7 @@ class ModelHelper3:
 	instance = None				# Singleton
 	input_headers = ['orifice_width', 'aspect_ratio', 'flow_rate_ratio', 'capillary_number', 'normalized_oil_inlet',
 					'normalized_water_inlet', 'expansion_ratio', 'viscosity_ratio']		# Feature names (orifice size, aspect ratio, etc...)
-	output_headers = []			# Output names (droplet size, generation rate)
+	output_headers = ["droplet_size", "generation_rate"]			# Output names (droplet size, generation rate)
 	all_dat = []				# Raw experimental data
 	train_data_size = 0			# Number of data points in the training set
 	train_features_dat = []		# Normalized and reduced features from all_dat
@@ -31,6 +31,11 @@ class ModelHelper3:
 	scaler = None
 
 	def __init__(self):
+		self.Ori = None
+		self.observed_rate = None
+		self.observed_diameter = None
+		self.labels = None
+		self.features = None
 		if ModelHelper3.instance is None:
 			self.get_data()
 			ModelHelper3.instance = self

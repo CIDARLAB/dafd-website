@@ -1,6 +1,6 @@
 """ Interface class for DAFD"""
 from app.mod_dafd.core_logic.ForwardModel3 import ForwardModel3
-from app.mod_dafd.core_logic.InterModel3 import InterModel3
+from app.mod_dafd.core_logic.InterModel3 import InterModel3_se
 
 from app.mod_dafd.helper_scripts.ModelHelper3 import ModelHelper3
 import numpy as np
