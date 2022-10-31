@@ -345,8 +345,10 @@ def runDAFD_3():
 		all_params.update(fwd_results)
 		all_params.update(fluid_properties)
 		oil_flow_rate, water_flow_rate = di.MH.calculate_formulaic_relations(all_params, flow_only=True)
+		all_params["oil_flow_rate"] = oil_flow_rate
+		all_params["water_flow_rate"] = water_flow_rate
 		result_str += str(oil_flow_rate) + "|"
 		result_str += str(water_flow_rate)
 		print(result_str)
 
-	return result_str
+	return result_str, all_params
