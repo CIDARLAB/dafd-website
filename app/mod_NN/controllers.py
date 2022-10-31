@@ -490,3 +490,7 @@ def runReverse_3(constraints, desired_vals, fluid_properties):
 					f.write(key + '=' + str(desired_vals[key]) + '\n')
 
 	return runDAFD_3()
+
+
+def runReverse_3DE(device, desired_vals, fluid_properties):
+	return None

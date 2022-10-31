@@ -8,7 +8,7 @@ import time
 nn_blueprint = Blueprint('nn', __name__)
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-from app.mod_NN.controllers import validFile, getDataType, runNN, runForward, runForward_3, runReverse, runReverse_2, runReverse_3
+from app.mod_NN.controllers import validFile, getDataType, runNN, runForward, runForward_3, runReverse, runReverse_2, runReverse_3, runReverse_3DE
 #
 # @nn_blueprint.route('/')
 # @nn_blueprint.route('/index')
@@ -442,6 +442,62 @@ def backward_3():
         return render_template('backward_3.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
                                gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate)
     return redirect(url_for('index_3'))
+
+
+@nn_blueprint.route('/backward_3DE', methods=['GET', 'POST'])
+def backward_3DE():
+    if request.method == 'POST':
+
+        fluid_properties = {}
+        fluid_properties['inner_aq_viscosity'] = request.form.get('innerAqVisc')
+        fluid_properties['oil_viscosity'] = request.form.get('oilVisc')
+        fluid_properties['outer_aq_viscosity'] = request.form.get('outerAqVisc')
+        fluid_properties['inner_surface_tension'] = request.form.get('innerSurfTension')
+        fluid_properties['outer_surface_tension'] = request.form.get('outerSurfTension')
+        fluid_properties = {key: float(fluid_properties[key]) for key in fluid_properties.keys()}
+
+        desired_vals = {}
+        desired_vals['inner_droplet_size'] = request.form.get('innerDropSize')
+        desired_vals['outer_droplet_size'] = request.form.get('outerDropSize')
+        desired_vals = {key: float(desired_vals[key]) for key in desired_vals.keys()}
+
+        device = float(request.form.get('device'))
+
+        strOutput, reverse_results = runReverse_3DE(device, desired_vals, fluid_properties)
+
+        parsed = strOutput.split(':')[1].split('|')[:-1]
+        geo = {}
+        geo['Orifice Width (\u03BCm)'] = np.round(reverse_results["orifice_width"], 3)
+        geo['Channel Depth (\u03BCm)'] = np.round(reverse_results["aspect_ratio"]*reverse_results["orifice_width"], 3)
+        geo['Outlet Channel Width (\u03BCm)'] = np.round(reverse_results["expansion_ratio"]*reverse_results["orifice_width"], 3)
+        geo['Dispersed Inlet Width (\u03BCm)'] = np.round(reverse_results["normalized_water_inlet"]*reverse_results["orifice_width"], 3)
+        geo['Continuous Inlet Width (\u03BCm)'] = np.round(reverse_results["normalized_oil_inlet"]*reverse_results["orifice_width"], 3)
+
+        flow = {}
+        flow['Flow Rate Ratio '] = np.round(reverse_results["flow_rate_ratio"], 3)
+        flow['Capillary Number'] = np.round(reverse_results["capillary_number"], 3)
+        flow['Continuous Phase Dynamic Viscosity'] = np.round(fluid_properties['oil_viscosity'], 3)
+        flow['Dispersed Phase Dynamic Viscosity'] = np.round(fluid_properties['water_viscosity'], 3)
+        flow['Interfacial Surface Tension'] = np.round(fluid_properties['surface_tension'], 3)
+
+        opt = {}
+        opt['Point Source'] = reverse_results['point_source']
+
+        perform = {}
+        perform['Generation Rate (Hz)'] = np.round(reverse_results["generation_rate"], 3)
+        perform['Droplet Diameter (\u03BCm)'] = np.round(reverse_results["droplet_size"], 3)
+
+        flowrate = {}
+        flowrate['Continuous Phase Flow  Rate (\u03BCl/hr)'] = np.round(reverse_results["oil_flow_rate"], 3)
+        flowrate['Dispersed Phase Flow Rate (\u03BCl/hr)'] = np.round(reverse_results["water_flow_rate"], 3)
+
+        gen_rate = np.round(reverse_results["generation_rate"], 3)
+        flow_rate = np.round(reverse_results["droplet_size"], 3)
+        return render_template('backward_3.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
+                               gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate)
+    return redirect(url_for('index_3'))
+
+
 
 
 @nn_blueprint.route('/dummy', methods=['GET', 'POST'])
