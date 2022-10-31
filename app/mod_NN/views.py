@@ -427,7 +427,7 @@ def backward_3():
         flow['Interfacial Surface Tension'] = np.round(fluid_properties['surface_tension'], 3)
 
         opt = {}
-        opt['Point Source'] = fluid_properties['point_source']
+        opt['Point Source'] = reverse_results['point_source']
 
         perform = {}
         perform['Generation Rate (Hz)'] = np.round(reverse_results["generation_rate"], 3)

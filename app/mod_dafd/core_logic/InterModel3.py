@@ -100,6 +100,7 @@ class InterModel3_se:
 		prediction = self.fwd_model.predict_size_rate(x, self.fluid_properties, normalized=True, as_dict=True)
 		val_dict = {self.MH.input_headers[i]:self.MH.denormalize(val,self.MH.input_headers[i]) for i,val in enumerate(x)}
 		val_dict["generation_rate"] = prediction["generation_rate"]
+		#TODO: Add in area where xgb and nn disagree on the droplet size
 		merrors = [abs(self.MH.normalize(prediction[head], head) - self.norm_desired_vals_global[head]) for head in self.norm_desired_vals_global]
 		return sum(merrors)
 
