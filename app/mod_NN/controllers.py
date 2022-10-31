@@ -469,3 +469,24 @@ def runReverse_2(constraints, desired_vals, metrics):
 					f.write(key + '=' + str(desired_vals[key]) + '\n')
 
 	return runDAFD_2()
+
+def runReverse_3(constraints, desired_vals, fluid_properties):
+
+	with open("app/mod_dafd/cmd_inputs.txt", "w") as f:
+		if fluid_properties:
+			f.write("FLUID_PROPERTIES\n")
+			for key in fluid_properties:
+				if fluid_properties[key] != None:
+					f.write(key + '=' + str(fluid_properties[key]) + '\n')
+		if constraints:
+			f.write("CONSTRAINTS\n")
+			for key in constraints:
+				if constraints[key] != None:
+					f.write(key + '=' + str(constraints[key]) + ':' + str(constraints[key]) + '\n')
+		if desired_vals:
+			f.write("DESIRED_VALS\n")
+			for key in desired_vals:
+				if desired_vals[key] != None:
+					f.write(key + '=' + str(desired_vals[key]) + '\n')
+
+	return runDAFD_3()

@@ -26,7 +26,7 @@ class ForwardModel3:
 		if normalized:
 			norm_features = features
 		else:
-			norm_features = self.MH.normalize(features)
+			norm_features = self.MH.normalize_set(features)
 		return np.mean([self.predict_nn(norm_features), self.predict_xgb(norm_features)])*features[0]
 
 	def predict_nn(self, features):
@@ -34,3 +34,13 @@ class ForwardModel3:
 
 	def predict_xgb(self, features):
 		return self.regressor_xgb.predict(features)
+
+	def predict_size_rate(self, features, fluid_properties, normalized = False, as_dict = True):
+		input_dict = {self.MH.input_headers[i]: features[i] for i in range(len(features))}
+		input_dict["normalized_diameter"] = self.predict(features, normalized=normalized)
+		input_dict.update(fluid_properties)
+		_,_,droplet_size, generation_rate = self.MH.calculate_formulaic_relations(input_dict)
+		if as_dict:
+			return {"droplet_size": droplet_size, "generation_rate": generation_rate}
+		else:
+			return droplet_size, generation_rate

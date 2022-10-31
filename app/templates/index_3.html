@@ -118,6 +118,63 @@
 							</div>
 							<div class="row">
 								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Fluid Properties :.</h6>
+								</div>
+							</div>
+							<!--7th row TODO: UPDATE ranges to be correct with dataset -->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Dispersed phase dynamic viscosity (mPa s)<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="1.4" max="939" value="1.4" class="slider-activated" id="dispViscRange" oninput="updateFloatInput(this.value, 'dispVisc', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="dispVisc" name="dispVisc" value="0.014" oninput="updateFloatSlider('dispViscRange', this.id)" onchange="floatSliderChange('dispViscRange2', this.id, 1.4, 939)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the disperse phase (droplet content) in Pa s.</span></div>
+								</div>
+							</div>
+                            <!--9th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Continuous phase dynamic viscosity (mPa s)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="contViscRange" oninput="updateFloatInput(this.value, 'contVisc', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="contVisc" name="contVisc" value="1" oninput="updateFloatSlider('contViscRange', this.id)" onchange="floatSliderChange('contViscRange', this.id, 100, 300)"> <!--TODO: add in range-->
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the disperse phase (sheath fluid) in Pa s.</span></div>
+								</div>
+							</div>
+                            <!--10th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Interfacial surface tension (mN/m) <!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="surfTensionRange" oninput="updateFloatInput(this.value, 'surfTension', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="surfTension" name="surfTension" value="1" oninput="updateFloatSlider('surfTensionRange', this.id)" onchange="floatSliderChange('surfTensionRange2', this.id, 100, 300)"> <!--TODO: add in range-->
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Interfacial surface tension betweeen the continuous and dispersed phases in mN/m.</span></div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-12">
 									<h6 class="vspace-subtitle">.: Design Constraints :.</h6>
 								</div>
 							</div>
@@ -241,25 +298,6 @@
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dispersed flow rate.</span></div>
 								</div>
 							</div>
-							<!--7th row-->
-							<div class="row slider-one-col">
-								<!--2nd column-->
-								<div class="col-md-1 text-center">
-									<input type="checkbox" id="dispViscCheck" onclick="disableSlider(this.id, 'dispViscRange', 'dispVisc');">
-								</div>
-								<div class="col-md-4 text-left">
-									<p class="field-tip">Dispersed phase dynamic viscosity<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
-								</div>
-								<div class="col-md-5 text-left">
-									<input type="range" min="200" max="400" value="200" class="slider" id="dispViscRange" oninput="updateFloatInput(this.value, 'dispVisc', this.id);" disabled>
-								</div>
-								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="dispVisc" name="dispVisc" value="2" disabled oninput="updateFloatSlider('dispViscRange', this.id)" onchange="floatSliderChange('dispViscRange', this.id, 200, 400)">
-								</div>
-								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dispersed phase dynamic viscosity.</span></div>
-								</div>
-							</div>
 							<!--8th row-->
 							<div class="row slider-one-col">
 								<!--2nd column-->
@@ -279,45 +317,6 @@
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Continuous flow rate.</span></div>
 								</div>
 							</div>
-							<!--9th row-->
-							<div class="row slider-one-col">
-								<!--2nd column-->
-								<div class="col-md-1 text-center">
-									<input type="checkbox" id="contViscCheck" onclick="disableSlider(this.id, 'contViscRange', 'contVisc');">
-								</div>
-								<div class="col-md-4 text-left">
-									<p class="field-tip">Continuous phase dynamic viscosity<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
-								</div>
-								<div class="col-md-5 text-left">
-									<input type="range" min="200" max="400" value="200" class="slider" id="contViscRange" oninput="updateFloatInput(this.value, 'contVisc', this.id);" disabled>
-								</div>
-								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="contVisc" name="contVisc" value="2" disabled oninput="updateFloatSlider('contViscRange', this.id)" onchange="floatSliderChange('contViscRange', this.id, 200, 400)">
-								</div>
-								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Continuous phase dynamic viscosity.</span></div>
-								</div>
-							</div>
-							<!--10th row-->
-							<div class="row slider-one-col">
-								<!--2nd column-->
-								<div class="col-md-1 text-center">
-									<input type="checkbox" id="surfTensionCheck" onclick="disableSlider(this.id, 'surfTensionRange', 'surfTension');">
-								</div>
-								<div class="col-md-4 text-left">
-									<p class="field-tip">Interfacial Surface Tension<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
-								</div>
-								<div class="col-md-5 text-left">
-									<input type="range" min="200" max="400" value="200" class="slider" id="surfTensionRange" oninput="updateFloatInput(this.value, 'surfTension', this.id);" disabled>
-								</div>
-								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="surfTension" name="surfTension" value="2" disabled oninput="updateFloatSlider('surfTensionRange', this.id)" onchange="floatSliderChange('surfTensionRange', this.id, 200, 400)">
-								</div>
-								<div class="col-md-1 text-center">
-									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Interfacial surface tension between the continuous and dispersed phases.</span></div>
-								</div>
-							</div>
-
 							<div class="row">
 								<div class="col-md-12">
 									<input type="submit" class="btn-section-2" value="Generate Design" onclick="validityBackward()"/>

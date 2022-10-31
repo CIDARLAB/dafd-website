@@ -274,12 +274,16 @@ def runDAFD_3():
 	constraints = {}
 	desired_vals = {}
 	features = {}
+	fluid_properties = {}
 
 	stage = 0
 	with open(os.path.dirname(os.path.abspath(__file__)) + "/" + "cmd_inputs.txt", "r") as f:
 		for line in f:
 			line = line.strip()
-			if line == "CONSTRAINTS":
+			if line == "FLUID_PROPERTIES":
+				stage = -1
+				continue
+			elif line == "CONSTRAINTS":
 				stage = 0
 				continue
 			elif line == "DESIRED_VALS":
@@ -289,6 +293,10 @@ def runDAFD_3():
 				stage = 2
 				continue
 
+			if stage == -1:
+				param_name = line.split("=")[0]
+				param_val = line.split("=")[1]
+				fluid_properties[param_name] = float(param_val)
 			if stage == 0:
 				param_name = line.split("=")[0]
 				param_pair = line.split("=")[1].split(":")
@@ -310,7 +318,7 @@ def runDAFD_3():
 				features[param_name] = param_val
 
 	if stage == 2:
-		fwd_results = di.runForward(features)
+		fwd_results = di.runForward(features, fluid_properties)
 
 		result_str = "BEGIN:"
 
@@ -319,8 +327,8 @@ def runDAFD_3():
 		print(result_str)
 
 	else:
-		rev_results = di.runInterp(desired_vals, constraints)
-		fwd_results = di.runForward(rev_results)
+		rev_results = di.runInterpSE(desired_vals, constraints, fluid_properties)
+		fwd_results = di.runForward(rev_results, fluid_properties)
 
 		print(rev_results)
 		print(fwd_results)
@@ -333,10 +341,12 @@ def runDAFD_3():
 
 		for x in di.MH.get_instance().output_headers:
 			result_str += str(fwd_results[x]) + "|"
-		result_str += str(fwd_results["oil_rate"]) + "|"
-		result_str += str(fwd_results["water_rate"]) + "|"
-		result_str += str(fwd_results["inferred_droplet_size"]) + "|"
-
+		all_params = rev_results.copy()
+		all_params.update(fwd_results)
+		all_params.update(fluid_properties)
+		oil_flow_rate, water_flow_rate = di.MH.calculate_formulaic_relations(all_params, flow_only=True)
+		result_str += str(oil_flow_rate) + "|"
+		result_str += str(water_flow_rate)
 		print(result_str)
 
 	return result_str

@@ -8,7 +8,7 @@ import time
 nn_blueprint = Blueprint('nn', __name__)
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-from app.mod_NN.controllers import validFile, getDataType, runNN, runForward, runForward_3, runReverse, runReverse_2
+from app.mod_NN.controllers import validFile, getDataType, runNN, runForward, runForward_3, runReverse, runReverse_2, runReverse_3
 #
 # @nn_blueprint.route('/')
 # @nn_blueprint.route('/index')
@@ -186,8 +186,8 @@ def forward_3():
         perform['Generation Rate (Hz)'] = round(float(parsed[3]), 1)
 
         values = {}
-        values['Oil Flow Rate (ml/hr)'] = round(float(parsed[1]), 3)
-        values['Water Flow Rate (\u03BCl/min)'] = round(float(parsed[2]), 3)
+        values['Oil Flow Rate (\u03BCL/hr)'] = round(float(parsed[1]), 3)
+        values['Water Flow Rate (\u03BCL/hr)'] = round(float(parsed[2]), 3)
 
         forward3 = {}
         forward3['Orifice Width'] = forward['orifice_width']
@@ -198,9 +198,6 @@ def forward_3():
         forward3['Flow Rate Ratio'] = forward['flow_rate_ratio']
         forward3['Capillary Number'] = forward['capillary_number']
         forward3['Viscosity Ratio'] = forward['viscosity_ratio']
-
-        features_denormalized = None
-        fig_names = None
 
         return render_template('forward_3.html', perform=perform, values=values, forward3=forward3)
 
@@ -380,6 +377,84 @@ def backward_2():
 
 @nn_blueprint.route('/backward_3', methods=['GET', 'POST'])
 def backward_3():
+    if request.method == 'POST':
+
+        constraints = {}
+        constraints['orifice_width'] = request.form.get('oriWid')
+        constraints['aspect_ratio'] = request.form.get('aspRatio')
+        constraints['expansion_ratio'] = request.form.get('expRatio')
+        constraints['normalized_water_inlet'] = request.form.get('normInlet')
+        constraints['normalized_oil_inlet'] = request.form.get('normOil')
+        constraints['oil_flow_rate'] = request.form.get('contFlow')
+        constraints['water_flow_rate'] = request.form.get('dispFlow')
+
+
+        fluid_properties = {}
+        fluid_properties['oil_viscosity'] = request.form.get('contVisc')
+        fluid_properties['water_viscosity'] = request.form.get('dispVisc')
+        fluid_properties['surface_tension'] = request.form.get('surfTension')
+        fluid_properties = {key: float(fluid_properties[key]) for key in fluid_properties.keys()}
+        # normalize to correct values
+        #TODO: issue here if there aren't any constraints on the flow rates,
+        constraints = {key:float(constraints[key]) for key in constraints.keys() if constraints[key] is not None}
+        constraints['viscosity_ratio'] = fluid_properties["oil_viscosity"]/fluid_properties["water_viscosity"]
+
+        if "oil_flow_rate" in constraints.keys():
+            ca_num = constraints["oil_viscosity"]*constraints["oil_flow_rate"]/(constraints["orifice_width"]**2*constraints["aspect_ratio"]) * (1/3.6)
+            constraints['capillary_number'] = ca_num/constraints["surface_tension"] #TODO: handle weird capillary numbers without surface tension
+            if "water_flow_rate" in constraints.keys():
+                #TODO: need to handle case where water flow is a constraint but oil flow is not
+                constraints['flow_rate_ratio'] = constraints["oil_flow_rate"] / constraints["water_flow_rate"]
+
+        desired_vals = {}
+        desired_vals['generation_rate'] = request.form.get('genRate')
+        desired_vals['droplet_size'] = request.form.get('dropSize')
+
+        strOutput = runReverse_3(constraints, desired_vals, fluid_properties)
+        parsed = strOutput.split(':')[1].split('|')[:-1]
+        geo = {}
+        geo['Orifice Width (\u03BCm)'] = round(float(parsed[0]), 3)
+        geo['Channel Depth (\u03BCm)'] = round(float(parsed[1]) * float(parsed[0]), 3)
+        geo['Orifice Length (\u03BCm)'] = round(float(parsed[2]) * float(parsed[0]), 3)
+        geo['Dispersed Inlet Width (\u03BCm)'] = round(float(parsed[3]) * float(parsed[0]), 3)
+        geo['Continuous Inlet Width (\u03BCm)'] = round(float(parsed[4]) * float(parsed[0]), 3)
+
+        flow = {}
+        flow['Flow Rate Ratio '] = round(float(parsed[6]), 3)
+        flow['Capillary Number'] = round(float(parsed[7]), 3)
+        flow['Continuous Phase Dynamic Viscosity'] = round(float(parsed[8]), 3)
+        flow['Dispersed Phase Dynamic Viscosity'] = round(float(parsed[9]), 3)
+        flow['Interfacial Surface Tension'] = round(float(parsed[10]), 3)
+
+
+
+        opt = {}
+        opt['Point Source'] = parsed[8]
+
+        perform = {}
+        perform['Generation Rate (Hz)'] = round(float(parsed[9]), 1)
+        perform['Droplet Diameter (\u03BCm)'] = round(float(parsed[10]), 1)
+        perform['Inferred Droplet Diameter (\u03BCm)'] = round(float(parsed[14]), 1)
+        perform['Regime'] = 'Dripping' if parsed[11] == '1' else 'Jetting'
+
+        flowrate = {}
+        flowrate['Oil Flow Rate (ml/hr)'] = round(float(parsed[12]), 3)
+        flowrate['Water Flow Rate (\u03BCl/min)'] = round(float(parsed[13]), 3)
+
+        gen_rate = float(parsed[9])
+        flow_rate = float(parsed[13])
+
+        tolerance = request.form.get('tolerance')
+        if tolerance is not None:
+            features = {key: round(float(parsed[i]), 3) for i, key in enumerate(list(constraints.keys())[:-1])}
+            flowrate['Droplet Inferred Size (\u03BCm)'] = perform['Inferred Droplet Diameter (\u03BCm)']
+            features_denormalized, fig_names = run_tolerance(features, tolerance)
+        else:
+            features_denormalized = None
+            fig_names = None
+        return render_template('backward_3.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
+                               gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, features=features_denormalized,
+                               fig_names=fig_names, tolTest=(tolerance is not None), tolerance=tolerance)
 
     return redirect(url_for('index_3'))
 
