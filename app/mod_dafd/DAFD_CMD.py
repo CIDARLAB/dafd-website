@@ -352,3 +352,12 @@ def runDAFD_3():
 		print(result_str)
 
 	return result_str, all_params
+
+def runDAFD_3_DE(inner_features, outer_features, desired_vals, fluid_properties):
+	if K.backend() == 'tensorflow':
+		K.clear_session()
+
+	di = DAFD3_Interface()
+	inner_resuts, outer_results = di.runInterpDE(inner_features, outer_features, desired_vals, fluid_properties)
+
+	return inner_resuts, outer_results

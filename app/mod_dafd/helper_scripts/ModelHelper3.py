@@ -106,31 +106,41 @@ class ModelHelper3:
 		self.Z_test = np.array(Z_test)
 
 
-	def normalize_set(self, values):
+	def normalize_set(self, values, as_dict = False):
 		""" Normalizes a set of features
 		Args:
 			values: list of features to be normalized (same order as input_headers)
 
 		Returns list of normalized features in the same order as input_headers
 		"""
-		ret_list = []
-		for i, header in enumerate(self.input_headers):
-			ret_list.append(self.normalize(values[i], header))
+		if as_dict:
+			ret = {}
+			for k in values.keys():
+				ret[k] = self.MH.normalize(values[k], k)
 
-		return ret_list
+		else:
+			ret = []
+			for i, header in enumerate(self.input_headers):
+				ret.append(self.normalize(values[i], header))
+		return ret
 
-	def denormalize_set(self, values):
+	def denormalize_set(self, values, as_dict = False):
 		""" Denormalizes a set of features
 		Args:
 			values: list of features to be denormalized (same order as input_headers)
 
 		Returns list of denormalized features in the same order as input_headers
 		"""
-		ret_list = []
-		for i, header in enumerate(self.input_headers):
-			ret_list.append(self.denormalize(values[i], header))
+		if as_dict:
+			ret = {}
+			for k in values.keys():
+				ret[k] = self.MH.denormalize(values[k], k)
 
-		return ret_list
+		else:
+			ret = []
+			for i, header in enumerate(self.input_headers):
+				ret.append(self.denormalize(values[i], header))
+		return ret
 
 	def normalize(self, value, inType):
 		"""Return min max normalization of a variable

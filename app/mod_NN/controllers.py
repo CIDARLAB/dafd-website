@@ -30,7 +30,7 @@ from app.mod_NN.models import createClassifier, createRegressor
 from keras import backend as K
 from keras.callbacks import EarlyStopping
 
-from app.mod_dafd.DAFD_CMD import runDAFD, runDAFD_2, runDAFD_3
+from app.mod_dafd.DAFD_CMD import runDAFD, runDAFD_2, runDAFD_3, runDAFD_3_DE
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 RESOURCES = os.path.join(APP_ROOT, '../resources/inputs/')
@@ -492,5 +492,5 @@ def runReverse_3(constraints, desired_vals, fluid_properties):
 	return runDAFD_3()
 
 
-def runReverse_3DE(device, desired_vals, fluid_properties):
-	return None
+def runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties):
+	return runDAFD_3_DE(inner_features, outer_features, desired_vals, fluid_properties)

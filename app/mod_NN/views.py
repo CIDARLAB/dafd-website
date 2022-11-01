@@ -462,8 +462,26 @@ def backward_3DE():
         desired_vals = {key: float(desired_vals[key]) for key in desired_vals.keys()}
 
         device = float(request.form.get('device'))
+        inner_features = {'orifice_width': None, 'aspect_ratio': 1, 'normalized_oil_inlet': 1,
+                'normalized_water_inlet': 1, 'expansion_ratio': 1}
+        outer_features = inner_features.copy()
+        if device == 1:
+            inner_features['orifice_width'] = 15
+            outer_features['orifice_width'] = 30
 
-        strOutput, reverse_results = runReverse_3DE(device, desired_vals, fluid_properties)
+        elif device == 2:
+            inner_features['orifice_width'] = 22.5
+            outer_features['orifice_width'] = 45
+        else:
+            inner_features['orifice_width'] = 30
+            outer_features['orifice_width'] = 60
+
+        inner_features['viscosity_ratio'] = fluid_properties["oil_viscosity"]/fluid_properties["inner_aq_viscosity"]
+        outer_features['viscosity_ratio'] = fluid_properties["outer_aq_viscosity"]/fluid_properties["oil_viscosity"]
+
+
+
+        strOutput, reverse_results = runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties)
 
         parsed = strOutput.split(':')[1].split('|')[:-1]
         geo = {}

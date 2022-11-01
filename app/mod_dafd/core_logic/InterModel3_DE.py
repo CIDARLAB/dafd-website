@@ -13,6 +13,9 @@ import sys
 import os
 from app.mod_dafd.core_logic.ForwardModel3 import ForwardModel3
 from app.mod_dafd.helper_scripts.ModelHelper3 import ModelHelper3
+from app.mod_dafd.helper_scripts.DEHelper import DEHelper
+import pandas as pd
+
 import tensorflow as tf
 
 from matplotlib import pyplot as plt
@@ -27,16 +30,17 @@ def resource_path(relative_path):
 
 	return os.path.join(base_path, relative_path)
 
-class InterModel3:
+class InterModel3_DE:
 	"""
-	This class handles interpolation over our forward models to make the reverse predictions
+	This class handles interpolation over our forward models to make the reverse predictions for double emulsions
 	"""
 
 	def __init__(self):
 		"""Make and save the interpolation models"""
 		self.MH = ModelHelper3.get_instance() # type: ModelHelper
 		self.fwd_model = ForwardModel3()
-
+		self.fluid_properties = None
+		self.DH = None
 
 	def get_closest_point(self, desired_vals, constraints={}, max_drop_exp_error=-1, skip_list = []):
 		"""Return closest real data point to our desired values that is within the given constraints
@@ -97,11 +101,7 @@ class InterModel3:
 		"""Returns how far each solution mapped on the model deviates from the desired value
 		Used in our minimization function
 		"""
-		prediction = self.fwd_model.predict_size_rate(x, self.fluid_properties, normalized=True, as_dict=True)
-		val_dict = {self.MH.input_headers[i]:self.MH.denormalize(val,self.MH.input_headers[i]) for i,val in enumerate(x)}
-		val_dict["generation_rate"] = prediction["generation_rate"]
-		#TODO: Add in area where xgb and nn disagree on the droplet size
-		merrors = [abs(self.MH.normalize(prediction[head], head) - self.norm_desired_vals_global[head]) for head in self.norm_desired_vals_global]
+		merrors =
 		return sum(merrors)
 
 	def callback_func(self, x):
@@ -133,22 +133,63 @@ class InterModel3:
 					values[i] = constraints[head][1]
 
 
-	def interpolate(self,desired_val_dict,constraints, fluid_properties):
+	def predict_sweep(self, feature_sweep):
+		results = []
+		for feature_set in feature_sweep:
+			fwd_results = self.fwd_model.predict_size_rate([feature_set[x] for x in self.MH.input_headers],
+														   self.fluid_properties, as_dict=True)
+			feature_set.update(fwd_results)
+			results.append(feature_set)
+		return results
+
+	def optimize(self, inner, outer):
+		for pt in inner.iterrows():
+			adjacent = outer.loc[self.pct_difference(pt["generation_rate"], outer.generation_rate) < 15,:]
+			adjacent = adjacent.sort_values("size_err")
+
+
+	def pct_difference(self, ref, pt):
+		return np.abs((ref - pt)/ref)*100
+
+	def interpolate(self,inner_features, outer_features, desired_values, fluid_properties):
 		"""Return an input set within the given constraints that produces the output set
 		The core part of DAFD
 		Args:
-			desired_val_dict: Dict with output type as the key and desired value as the value
-				Just don't include other output type if you just want to interpolate on one
-
-			constraints: Dict with input type as key and acceptable range as the value
-				The acceptable range should be a tuple with the min as the first val and the max as the second val
-				Again, just leave input types you don't care about blank
+				inner_features:
+				outer_features:
+				desired_values:
+				fluid_properties:
 		"""
-		norm_constraints = {}
-		for cname in constraints:
-			cons_low = self.MH.normalize(constraints[cname][0], cname)
-			cons_high = self.MH.normalize(constraints[cname][1],cname)
-			norm_constraints[cname] = (cons_low, cons_high)
+		#TODO: need to add flow rates in before normalizing set
+		self.fluid_properties = fluid_properties
+		self.DH = DEHelper(self.MH, fluid_properties)
+		inner_generator_sweep = self.DH.generate_inner_grid(inner_features)
+		inner_generator_results = pd.DataFrame(self.predict_sweep(inner_generator_sweep))
+
+		outer_generator_sweep = self.DH.generate_outer_grid(outer_features)
+		outer_generator_results = pd.DataFrame(self.predict_sweep(outer_generator_sweep))
+
+		### ALGORITHM ###
+		# INNER: find and rank by distance between sweep sizes and desired sizes
+		inner_generator_results.loc[:, "size_err"] = inner_generator_results.loc[:,"droplet_size"] - desired_values["inner_droplet_size"]
+		# OUTER: find and rank by distance between sweep sizes and desired sizes
+		outer_generator_results.loc[:, "size_err"] = outer_generator_results.loc[:, "droplet_size"] - desired_values["outer_droplet_size"]
+		# For each INNER point
+		self.optimize(inner_generator_results, outer_generator_sweep)
+			# ID all outer points it is within 15% difference in generation rate
+			# Pick outer point with minimum size difference from outer point
+			#### TODO: check with ali that this is fine, prefernce for size over rate here
+			# Return that solution, as well as the total score (size err + rate err)
+		# Finally, choose top-k solutions for TOTAL size err (inner_err% + outer_err%)
+		# Return results
+
+
+
+
+
+
+
+
 
 		norm_desired_vals = {}
 		for lname in desired_val_dict:
