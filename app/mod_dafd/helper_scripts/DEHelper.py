@@ -25,7 +25,6 @@ class DEHelper:
 
 	def __init__(self, MH, fluid_properties):
 		if DEHelper.instance is None:
-			self.get_data()
 			DEHelper.instance = self
 		self.MH = MH
 		self.fluid_properties = fluid_properties

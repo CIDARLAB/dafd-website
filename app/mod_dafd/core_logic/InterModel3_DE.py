@@ -97,12 +97,6 @@ class InterModel3_DE:
 
 		return closest_point, match_index
 
-	def model_error(self, x):
-		"""Returns how far each solution mapped on the model deviates from the desired value
-		Used in our minimization function
-		"""
-		merrors =
-		return sum(merrors)
 
 	def callback_func(self, x):
 		"""Returns how far each solution mapped on the model deviates from the desired value
@@ -133,19 +127,45 @@ class InterModel3_DE:
 					values[i] = constraints[head][1]
 
 
-	def predict_sweep(self, feature_sweep):
+	def predict_sweep(self, feature_sweep, inner = False):
 		results = []
+		fluid_properties = self.fluid_properties.copy()
+		if inner:
+			fluid_properties["surface_tension"] = fluid_properties["inner_surface_tension"]
+		else:
+			try:
+				fluid_properties["surface_tension"] = fluid_properties["inner_surface_tension"]
+			except:
+				fluid_properties["surface_tension"] = fluid_properties["_surface_tension"]
 		for feature_set in feature_sweep:
 			fwd_results = self.fwd_model.predict_size_rate([feature_set[x] for x in self.MH.input_headers],
-														   self.fluid_properties, as_dict=True)
+														   fluid_properties, as_dict=True)
 			feature_set.update(fwd_results)
 			results.append(feature_set)
 		return results
 
-	def optimize(self, inner, outer):
-		for pt in inner.iterrows():
+	def optimize(self, inner, outer, k=5):
+		#### TODO: check with ali that this is fine, prefernce for size over rate here
+		pairs = []
+		for i, pt in inner.iterrows():
+			# ID all outer points it is within 15% difference in generation rate
 			adjacent = outer.loc[self.pct_difference(pt["generation_rate"], outer.generation_rate) < 15,:]
+			# Pick outer point with minimum size difference from outer point
 			adjacent = adjacent.sort_values("size_err")
+			if len(adjacent > 0):
+				pairs.append((pt, adjacent.iloc[0,:]))
+			else:
+				pairs.append(None)
+		# Finally, choose top-k solutions for TOTAL size err (inner_err% + outer_err%)
+		total_errs = []
+		for i, pair in enumerate(pairs):
+			if pair is None:
+				total_errs.append(np.inf)
+			else:
+				total_errs.append(pair[0].size_err + pair[1].size_err)
+		idx = np.argpartition(total_errs, k)[:k]  # Indices not sorted
+		idx[np.argsort(total_errs[idx])]
+		return pairs[idx]
 
 
 	def pct_difference(self, ref, pt):
@@ -164,168 +184,19 @@ class InterModel3_DE:
 		self.fluid_properties = fluid_properties
 		self.DH = DEHelper(self.MH, fluid_properties)
 		inner_generator_sweep = self.DH.generate_inner_grid(inner_features)
-		inner_generator_results = pd.DataFrame(self.predict_sweep(inner_generator_sweep))
+		inner_generator_results = pd.DataFrame(self.predict_sweep(inner_generator_sweep, inner = True))
 
 		outer_generator_sweep = self.DH.generate_outer_grid(outer_features)
-		outer_generator_results = pd.DataFrame(self.predict_sweep(outer_generator_sweep))
+		outer_generator_results = pd.DataFrame(self.predict_sweep(outer_generator_sweep, inner=False))
 
 		### ALGORITHM ###
 		# INNER: find and rank by distance between sweep sizes and desired sizes
-		inner_generator_results.loc[:, "size_err"] = inner_generator_results.loc[:,"droplet_size"] - desired_values["inner_droplet_size"]
+		inner_generator_results.loc[:, "size_err"] = self.pct_difference(desired_values["inner_droplet_size"], inner_generator_results.loc[:,"droplet_size"])
 		# OUTER: find and rank by distance between sweep sizes and desired sizes
-		outer_generator_results.loc[:, "size_err"] = outer_generator_results.loc[:, "droplet_size"] - desired_values["outer_droplet_size"]
-		# For each INNER point
-		self.optimize(inner_generator_results, outer_generator_sweep)
-			# ID all outer points it is within 15% difference in generation rate
-			# Pick outer point with minimum size difference from outer point
-			#### TODO: check with ali that this is fine, prefernce for size over rate here
-			# Return that solution, as well as the total score (size err + rate err)
-		# Finally, choose top-k solutions for TOTAL size err (inner_err% + outer_err%)
-		# Return results
-
-
-
-
-
-
-
-
-
-		norm_desired_vals = {}
-		for lname in desired_val_dict:
-			norm_desired_vals[lname] = self.MH.normalize(desired_val_dict[lname], lname)
-
-		self.norm_desired_vals_global = norm_desired_vals
-		self.desired_vals_global = desired_val_dict
-		self.fluid_properties = fluid_properties
-
-
-		skip_list = []
-		while(True):
-			start_pos, closest_index = self.get_closest_point(norm_desired_vals, constraints=norm_constraints, max_drop_exp_error=5, skip_list=skip_list)
-			if closest_index == -1:
-				start_pos, closest_index = self.get_closest_point(norm_desired_vals, constraints=norm_constraints)
-				break
-			skip_list.append(closest_index)
-
-			closest_point = self.MH.all_dat[closest_index]
-
-
-
-			all_dat_labels = self.MH.input_headers +  self.MH.output_headers
-			print(",".join(all_dat_labels))
-			print("Starting point")
-			print(closest_point)
-			print([closest_point[x] for x in all_dat_labels])
-
-			should_skip_optim_rate = True
-			should_skip_optim_size = True
-			should_skip_optim_constraints = True
-
-			for constraint in constraints:
-				cons_range = constraints[constraint]
-				this_val = self.MH.all_dat[closest_index][constraint]
-				if this_val < cons_range[0] or this_val > cons_range[1]:
-					should_skip_optim_constraints = False
-
-			if "generation_rate" in desired_val_dict:
-				if desired_val_dict["generation_rate"] > 100:
-					pred_rate_error = abs(desired_val_dict["generation_rate"] - closest_point["generation_rate"]) / desired_val_dict["generation_rate"]
-					exp_rate_error = abs(desired_val_dict["generation_rate"] - self.MH.all_dat[closest_index]["generation_rate"]) / self.MH.all_dat[closest_index]["generation_rate"]
-					if pred_rate_error > 0.15 or exp_rate_error > 0.15:
-						should_skip_optim_rate = False
-				else:
-					pred_rate_error = abs(desired_val_dict["generation_rate"] - closest_point["generation_rate"])
-					exp_rate_error = abs(desired_val_dict["generation_rate"] - self.MH.all_dat[closest_index]["generation_rate"])
-					if pred_rate_error > 15 or exp_rate_error > 15:
-						should_skip_optim_rate = False
-
-			if "droplet_size" in desired_val_dict:
-				pred_size_error = abs(desired_val_dict["droplet_size"] - closest_point["droplet_size"])
-				exp_size_error = abs(desired_val_dict["droplet_size"] - self.MH.all_dat[closest_index]["droplet_size"])
-				print(self.MH.all_dat[closest_index])
-				pred_point = {x:self.MH.all_dat[closest_index][x] for x in self.MH.all_dat[closest_index]}
-				pred_point["generation_rate"] = closest_point["generation_rate"]
-				print(self.MH.all_dat[closest_index])
-				if pred_size_error > 10 or exp_size_error > 5:
-					should_skip_optim_size = False
-
-			if should_skip_optim_rate and should_skip_optim_size and should_skip_optim_constraints:
-				results = {x: self.MH.all_dat[closest_index][x] for x in self.MH.input_headers}
-				results["point_source"] = "Experimental"
-				print(results)
-				return results
-
-		with open("InterResults.csv","w") as f:
-			f.write("Experimental outputs:"+str(self.MH.all_dat[closest_index]["generation_rate"])+","+str(self.MH.all_dat[closest_index]["droplet_size"])+"\n")
-
-			if "generation_rate" not in desired_val_dict:
-				des_rate = "-1"
-			else:
-				des_rate = str(desired_val_dict["generation_rate"])
-
-			if "droplet_size" not in desired_val_dict:
-				des_size = "-1"
-			else:
-				des_size = str(desired_val_dict["droplet_size"])
-
-			f.write("Desired outputs:"+des_rate+","+des_size+"\n")
-			f.write(",".join(self.MH.input_headers) + ",generation_rate,droplet_size,cost_function\n")
-
-		pos = start_pos
-		#self.callback_func(pos, current_point) #TODO: add in fluid info for normalization. doesnt look like it does anything...
-
-		self.correct_by_constraints(pos,norm_constraints)
-
-		loss = self.model_error(pos)
-		samplesize = 1e-3
-		stepsize = 1e-2
-		ftol = 1e-9
-
-		for i in range(5000):
-			new_pos = pos
-			new_loss = loss
-			for index, val in enumerate(pos):
-				copy = [x for x in pos]
-				copy[index] = val+stepsize
-				self.correct_by_constraints(copy,norm_constraints)
-				error = self.model_error(copy)
-				if error < new_loss:
-					new_pos = copy
-					new_loss = error
-
-				copy = [x for x in pos]
-				copy[index] = val-stepsize
-				self.correct_by_constraints(copy,norm_constraints)
-				error = self.model_error(copy)
-				if error < new_loss:
-					new_pos = copy
-					new_loss = error
-
-			if loss - new_loss < ftol:
-				print(loss)
-				print(new_loss)
-				break
-
-			pos = new_pos
-			loss = new_loss
-
-			#self.callback_func(pos)
-
-		self.last_point = pos
-
-		#Denormalize results
-		results = {x: self.MH.denormalize(pos[i], x) for i, x in enumerate(self.MH.input_headers)}
-		prediction = self.fwd_model.predict_size_rate([results[x] for x in self.MH.input_headers], self.fluid_properties, as_dict=True)
-		print("Final Suggestions")
-		print(",".join(self.MH.input_headers) + "," + "desired_size" + "," + "predicted_generation_rate" + "," + "predicted_droplet_size")
-		output_string = ",".join([str(results[x]) for x in self.MH.input_headers])
-		output_string += "," + str(desired_val_dict["droplet_size"])
-		output_string += "," + str(prediction["generation_rate"])
-		output_string += "," + str(prediction["droplet_size"])
-		print(output_string)
-		print("Final Prediction")
-		print(prediction)
-		results["point_source"] = "Predicted"
-		return results
+		outer_generator_results.loc[:, "size_err"] = self.pct_difference(desired_values["outer_droplet_size"], outer_generator_results.loc[:,"droplet_size"])
+		# Find optimal pairs for DE design automation
+		results = self.optimize(inner_generator_results, outer_generator_results)
+		inner_result = results[0]
+		outer_result = results[1]
+		return inner_result, outer_result
 
