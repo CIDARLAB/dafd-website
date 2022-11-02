@@ -181,7 +181,7 @@ class ModelHelper3:
 
 		# Calculate oil flow rate
 		#TODO: NEED TO GET NEW FLOW RATE FROM CAP NUMBER, its giving me the wrong values
-		oil_flow_rate = capillary_number * orifice_size**2 * aspect_ratio * surface_tension / oil_viscosity * (10**6/60**2)
+		oil_flow_rate = capillary_number * orifice_size**2 * aspect_ratio * surface_tension / oil_viscosity * 60**2 * 10**-3
 
 		# Calculate water flow rate
 		water_flow_rate = oil_flow_rate / flow_rate_ratio
@@ -194,6 +194,6 @@ class ModelHelper3:
 			droplet_diameter = normalized_diameter*hydraulic_diameter
 
 			# Calculate generation rate
-			droplet_volume_uL = 4/3 * np.pi * (droplet_diameter/2)**3 * 10E-9
-			generation_rate = droplet_volume_uL/water_flow_rate/3600
+			droplet_volume_uL = 1/6 * np.pi * (droplet_diameter)**3 * 10**-9
+			generation_rate = water_flow_rate / droplet_volume_uL / 60**2
 			return oil_flow_rate, water_flow_rate, droplet_diameter, generation_rate

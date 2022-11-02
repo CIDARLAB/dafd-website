@@ -145,11 +145,12 @@ class InterModel3_DE:
 		return results
 
 	def optimize(self, inner, outer, k=5):
-		#### TODO: check with ali that this is fine, prefernce for size over rate here
+		#### TODO: NEED TO FIX FLOW RATES
 		pairs = []
 		for i, pt in inner.iterrows():
 			# ID all outer points it is within 15% difference in generation rate
-			adjacent = outer.loc[self.pct_difference(pt["generation_rate"], outer.generation_rate) < 15,:]
+			adjacent = outer.loc[outer.dispersed_flow_rate == pt.continuous_flow_rate, :]
+			adjacent = adjacent.loc[self.pct_difference(pt["generation_rate"], adjacent.generation_rate) < 15,:]
 			# Pick outer point with minimum size difference from outer point
 			adjacent = adjacent.sort_values("size_err")
 			if len(adjacent > 0):
@@ -164,8 +165,8 @@ class InterModel3_DE:
 			else:
 				total_errs.append(pair[0].size_err + pair[1].size_err)
 		idx = np.argpartition(total_errs, k)[:k]  # Indices not sorted
-		idx[np.argsort(total_errs[idx])]
-		return pairs[idx]
+		idx[np.argsort(np.array(total_errs)[idx])]
+		return np.array(pairs)[idx]
 
 
 	def pct_difference(self, ref, pt):
@@ -196,7 +197,8 @@ class InterModel3_DE:
 		outer_generator_results.loc[:, "size_err"] = self.pct_difference(desired_values["outer_droplet_size"], outer_generator_results.loc[:,"droplet_size"])
 		# Find optimal pairs for DE design automation
 		results = self.optimize(inner_generator_results, outer_generator_results)
-		inner_result = results[0]
-		outer_result = results[1]
+		#TODO: make downloadable csv for all of the different results (top-k)
+		inner_result = results[0][0]
+		outer_result = results[0][1]
 		return inner_result, outer_result
 

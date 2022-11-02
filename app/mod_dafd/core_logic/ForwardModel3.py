@@ -27,7 +27,7 @@ class ForwardModel3:
 			norm_features = features
 		else:
 			norm_features = self.MH.normalize_set(features)
-		return np.mean([self.predict_nn(norm_features), self.predict_xgb(norm_features)])*features[0]
+		return np.mean([self.predict_nn(norm_features), self.predict_xgb(norm_features)])
 
 	def predict_nn(self, features):
 		return self.regressor_nn.predict(features)

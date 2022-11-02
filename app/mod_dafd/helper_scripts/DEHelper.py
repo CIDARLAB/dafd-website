@@ -49,6 +49,8 @@ class DEHelper:
 		for f in flows:
 			feature_copy = features.copy()
 			feature_copy["flow_rate_ratio"], feature_copy["capillary_number"] = self.normalize_flow(features, f, outer=False)
+			feature_copy["dispersed_flow_rate"] = f["dispersed_flow_rate"]
+			feature_copy["continuous_flow_rate"] = f["continuous_flow_rate"]
 			feature_list.append(feature_copy)
 		return feature_list
 
@@ -58,6 +60,9 @@ class DEHelper:
 		for f in flows:
 			feature_copy = features.copy()
 			feature_copy["flow_rate_ratio"], feature_copy["capillary_number"] = self.normalize_flow(features, f, outer=True)
+			feature_copy["dispersed_flow_rate"] = f["dispersed_flow_rate"]
+			feature_copy["continuous_flow_rate"] = f["continuous_flow_rate"]
+
 			feature_list.append(feature_copy)
 		return feature_list
 

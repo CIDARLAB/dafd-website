@@ -444,8 +444,8 @@ def backward_3():
     return redirect(url_for('index_3'))
 
 
-@nn_blueprint.route('/backward_3DE', methods=['GET', 'POST'])
-def backward_3DE():
+@nn_blueprint.route('/backward_3_de', methods=['GET', 'POST'])
+def backward_3_de():
     if request.method == 'POST':
 
         fluid_properties = {}
@@ -481,37 +481,49 @@ def backward_3DE():
 
 
 
-        strOutput, reverse_results = runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties)
+        inner_results, outer_results = runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties)
+        reverse_results = None
 
-        parsed = strOutput.split(':')[1].split('|')[:-1]
+#        parsed = strOutput.split(':')[1].split('|')[:-1]
         geo = {}
-        geo['Orifice Width (\u03BCm)'] = np.round(reverse_results["orifice_width"], 3)
-        geo['Channel Depth (\u03BCm)'] = np.round(reverse_results["aspect_ratio"]*reverse_results["orifice_width"], 3)
-        geo['Outlet Channel Width (\u03BCm)'] = np.round(reverse_results["expansion_ratio"]*reverse_results["orifice_width"], 3)
-        geo['Dispersed Inlet Width (\u03BCm)'] = np.round(reverse_results["normalized_water_inlet"]*reverse_results["orifice_width"], 3)
-        geo['Continuous Inlet Width (\u03BCm)'] = np.round(reverse_results["normalized_oil_inlet"]*reverse_results["orifice_width"], 3)
+        geo['Inner Orifice Width (\u03BCm)'] = np.round(inner_results["orifice_width"], 3)
+        geo['Inner Channel Depth (\u03BCm)'] = np.round(inner_results["aspect_ratio"]*inner_results["orifice_width"], 3)
+        geo['Inner Outlet Channel Width (\u03BCm)'] = np.round(inner_results["expansion_ratio"]*inner_results["orifice_width"], 3)
+        geo['Inner Dispersed Inlet Width (\u03BCm)'] = np.round(inner_results["normalized_water_inlet"]*inner_results["orifice_width"], 3)
+        geo['Inner Continuous Inlet Width (\u03BCm)'] = np.round(inner_results["normalized_oil_inlet"]*inner_results["orifice_width"], 3)
+
+        geo['Outer Orifice Width (\u03BCm)'] = np.round(outer_results["orifice_width"], 3)
+        geo['Outer Channel Depth (\u03BCm)'] = np.round(outer_results["aspect_ratio"]*outer_results["orifice_width"], 3)
+        geo['Outer Outlet Channel Width (\u03BCm)'] = np.round(outer_results["expansion_ratio"]*outer_results["orifice_width"], 3)
+        geo['Outer Dispersed Inlet Width (\u03BCm)'] = np.round(outer_results["normalized_water_inlet"]*outer_results["orifice_width"], 3)
+        geo['Outer Continuous Inlet Width (\u03BCm)'] = np.round(outer_results["normalized_oil_inlet"]*outer_results["orifice_width"], 3)
+
 
         flow = {}
-        flow['Flow Rate Ratio '] = np.round(reverse_results["flow_rate_ratio"], 3)
-        flow['Capillary Number'] = np.round(reverse_results["capillary_number"], 3)
-        flow['Continuous Phase Dynamic Viscosity'] = np.round(fluid_properties['oil_viscosity'], 3)
-        flow['Dispersed Phase Dynamic Viscosity'] = np.round(fluid_properties['water_viscosity'], 3)
-        flow['Interfacial Surface Tension'] = np.round(fluid_properties['surface_tension'], 3)
+        #TODO: See if it really helps to have frr and ca num outputter for the user
+        # flow['Flow Rate Ratio '] = np.round(reverse_results["flow_rate_ratio"], 3)
+        # flow['Capillary Number'] = np.round(reverse_results["capillary_number"], 3)
+        flow['Inner Aqueous Dynamic Viscosity (mPa s)'] = np.round(fluid_properties['inner_aq_viscosity'], 3)
+        flow['Oil Dynamic Viscosity (mPa s)'] = np.round(fluid_properties['oil_viscosity'], 3)
+        flow['Outer Aqueous Dynamic Viscosity (mPa s)'] = np.round(fluid_properties['outer_aq_viscosity'], 3)
 
-        opt = {}
-        opt['Point Source'] = reverse_results['point_source']
+        flow['Inner Aqueous / Oil Interfacial Surface Tension'] = np.round(fluid_properties['inner_surface_tension'], 3)
+        flow['Oil / Outer Aqueous Interfacial Surface Tension'] = np.round(fluid_properties['outer_surface_tension'], 3)
 
         perform = {}
-        perform['Generation Rate (Hz)'] = np.round(reverse_results["generation_rate"], 3)
-        perform['Droplet Diameter (\u03BCm)'] = np.round(reverse_results["droplet_size"], 3)
+        perform['Inner Droplet Diameter (\u03BCm)'] = np.round(inner_results["droplet_size"], 3)
+        perform['Inner Generation Rate (Hz)'] = np.round(inner_results["generation_rate"], 3)
+        perform['Outer Droplet Diameter (\u03BCm)'] = np.round(outer_results["droplet_size"], 3)
+        perform['Outer Generation Rate (Hz)'] = np.round(outer_results["generation_rate"], 3)
 
         flowrate = {}
-        flowrate['Continuous Phase Flow  Rate (\u03BCl/hr)'] = np.round(reverse_results["oil_flow_rate"], 3)
-        flowrate['Dispersed Phase Flow Rate (\u03BCl/hr)'] = np.round(reverse_results["water_flow_rate"], 3)
+        flowrate['Inner Aqueous Flow Rate (\u03BCl/hr)'] = np.round(inner_results["dispersed_flow_rate"], 3)
+        flowrate['Oil Flow Rate (\u03BCl/hr)'] = np.round(inner_results["continuous_flow_rate"], 3)
+        flowrate['Outer Aqueous Flow Rate (\u03BCl/hr)'] = np.round(outer_results["continuous_flow_rate"], 3)
 
-        gen_rate = np.round(reverse_results["generation_rate"], 3)
-        flow_rate = np.round(reverse_results["droplet_size"], 3)
-        return render_template('backward_3.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
+        gen_rate = np.round(inner_results["generation_rate"], 3)
+        flow_rate = np.round(inner_results["dispersed_flow_rate"], 3)
+        return render_template('backward_3_de.html', geo=geo, flow=flow, perform=perform, flowrate=flowrate,
                                gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate)
     return redirect(url_for('index_3'))
 
