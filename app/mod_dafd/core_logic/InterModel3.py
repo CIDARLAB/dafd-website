@@ -274,7 +274,7 @@ class InterModel3:
 		self.last_point = pos
 
 		#Denormalize results
-		results = {x: self.MH.denormalize(pos[i], x) for i, x in enumerate(self.MH.input_headers)}
+		results = {x: pos[i] for i, x in enumerate(self.MH.input_headers)}
 		prediction = self.fwd_model.predict_size_rate([results[x] for x in self.MH.input_headers], self.fluid_properties, as_dict=True)
 		print("Final Suggestions")
 		print(",".join(self.MH.input_headers) + "," + "desired_size" + "," + "predicted_generation_rate" + "," + "predicted_droplet_size")

@@ -145,12 +145,11 @@ class InterModel3_DE:
 		return results
 
 	def optimize(self, inner, outer, k=5):
-		#### TODO: NEED TO FIX FLOW RATES
 		pairs = []
 		for i, pt in inner.iterrows():
 			# ID all outer points it is within 15% difference in generation rate
-			adjacent = outer.loc[outer.dispersed_flow_rate == pt.continuous_flow_rate, :]
-			adjacent = adjacent.loc[self.pct_difference(pt["generation_rate"], adjacent.generation_rate) < 15,:]
+			adjacent = outer.loc[outer.dispersed_flow_rate == pt.continuous_flow_rate, :] # TODO: need to change this to be the sum of cont + dispersed
+			adjacent = adjacent.loc[self.pct_difference(pt["generation_rate"], adjacent.generation_rate) < 15,:] #TODO: add in if there isn't anything less than 15, increase to 30 and repeat
 			# Pick outer point with minimum size difference from outer point
 			adjacent = adjacent.sort_values("size_err")
 			if len(adjacent > 0):

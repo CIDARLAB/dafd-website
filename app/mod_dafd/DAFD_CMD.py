@@ -325,7 +325,7 @@ def runDAFD_3():
 		for x in fwd_results.keys():
 			result_str += str(fwd_results[x]) + "|"
 		print(result_str)
-
+		all_params = fwd_results.copy()
 	else:
 		rev_results = di.runInterpSE(desired_vals, constraints, fluid_properties)
 		fwd_results = di.runForward(rev_results, fluid_properties)

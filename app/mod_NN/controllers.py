@@ -418,13 +418,19 @@ def runForward(forward):
 
 	return runDAFD()
 
-def runForward_3(forward):
+def runForward_3(forward, fluid_properties):
 	print(forward)
 	with open("app/mod_dafd/cmd_inputs.txt", "w") as f:
-		f.write("FORWARD\n")
-		for key in forward:
-			if forward[key] != None:
-				f.write(key + '=' + str(forward[key]) + '\n')
+		if fluid_properties:
+			f.write("FLUID_PROPERTIES\n")
+			for key in fluid_properties:
+				if fluid_properties[key] != None:
+					f.write(key + '=' + str(fluid_properties[key]) + '\n')
+		if forward:
+			f.write("FORWARD\n")
+			for key in forward:
+				if forward[key] != None:
+					f.write(key + '=' + str(forward[key]) + '\n')
 
 	return runDAFD_3()
 

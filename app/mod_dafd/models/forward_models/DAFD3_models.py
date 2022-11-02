@@ -29,6 +29,7 @@ class NeuralNetModel_DAFD3:
         self.model = Sequential()
         # more layers result in high over-fitting, a simple 2 layer model is used here.
         # Adding the input layer and the first hidden layer
+        #TODO: make input dim 7 for NN only and update the weights that we are loading
         self.model.add(Dense(units=512, activation='relu', input_dim=8, name='scratch_dense_1',
                         kernel_regularizer=regularizers.l2(0.001)))  # more options to avoid over-fitting
 

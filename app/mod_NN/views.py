@@ -165,29 +165,32 @@ def forward_3():
         forward['expansion_ratio'] = request.form.get('expRatio2')
         forward['normalized_water_inlet'] = request.form.get('normInlet2')
         forward['normalized_oil_inlet'] = request.form.get('normOil2')
-        forward['oil_flow_rate'] = request.form.get('contFlow2')
-        forward['water_flow_rate'] = request.form.get('dispFlow2')
-        forward['oil_viscosity'] = request.form.get('contVisc2')
-        forward['water_viscosity'] = request.form.get('dispVisc2')
-        forward['surface_tension'] = request.form.get('surfTension2')
+
+        fluid_properties = {}
+        fluid_properties['oil_flow_rate'] = request.form.get('contFlow2')
+        fluid_properties['water_flow_rate'] = request.form.get('dispFlow2')
+        fluid_properties['oil_viscosity'] = request.form.get('contVisc2')
+        fluid_properties['water_viscosity'] = request.form.get('dispVisc2')
+        fluid_properties['surface_tension'] = request.form.get('surfTension2')
 
         #normalize to correct values
         forward = {key:float(forward[key]) for key in forward.keys()}
-        forward['flow_rate_ratio'] = forward["oil_flow_rate"]/forward["water_flow_rate"]
-        forward['viscosity_ratio'] = forward["oil_viscosity"]/forward["water_viscosity"]
-        ca_num = forward["oil_viscosity"]*forward["oil_flow_rate"]/(forward["orifice_width"]**2*forward["aspect_ratio"]) * (1/3.6)
-        forward['capillary_number'] = ca_num/forward["surface_tension"] #(Ca = mu * (Qc/(OriW*depth)))/surf
+        fluid_properties = {key: float(fluid_properties[key]) for key in fluid_properties.keys()}
 
-        strOutput = runForward_3(forward)
-        parsed = strOutput.split(':')[1].split('|')[:-1]
+        forward['flow_rate_ratio'] = fluid_properties["oil_flow_rate"]/fluid_properties["water_flow_rate"]
+        forward['viscosity_ratio'] = fluid_properties["oil_viscosity"]/fluid_properties["water_viscosity"]
+        ca_num = fluid_properties["oil_viscosity"]*fluid_properties["oil_flow_rate"]/(forward["orifice_width"]**2*forward["aspect_ratio"]) * (1/3.6)
+        forward['capillary_number'] = ca_num/fluid_properties["surface_tension"] #(Ca = mu * (Qc/(OriW*depth)))/surf
+
+        strOutput, fwd_results = runForward_3(forward, fluid_properties)
 
         perform = {}
-        perform['Droplet Diameter (\u03BCm)'] = round(float(parsed[0]), 1)
-        perform['Generation Rate (Hz)'] = round(float(parsed[3]), 1)
+        perform['Droplet Diameter (\u03BCm)'] = fwd_results["droplet_size"]
+        perform['Generation Rate (Hz)'] = fwd_results["generation_rate"]
 
         values = {}
-        values['Oil Flow Rate (\u03BCL/hr)'] = round(float(parsed[1]), 3)
-        values['Water Flow Rate (\u03BCL/hr)'] = round(float(parsed[2]), 3)
+        values['Dispersed Phase Flow Rate (\u03BCL/hr)'] = fluid_properties["water_flow_rate"]
+        values['Continuous Phase Flow Rate (\u03BCL/hr)'] = fluid_properties["oil_flow_rate"]
 
         forward3 = {}
         forward3['Orifice Width'] = forward['orifice_width']
