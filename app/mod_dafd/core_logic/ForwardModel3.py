@@ -22,22 +22,35 @@ class ForwardModel3:
 
 	def predict(self, features, normalized = False):
 		# regime is an optional parameter that tells the prediction to override the regime prediction
-		ret_dict = {}
 		if normalized:
 			norm_features = features
 		else:
 			norm_features = self.MH.normalize_set(features)
 		return np.mean([self.predict_nn(norm_features), self.predict_xgb(norm_features)])
 
-	def predict_nn(self, features):
-		return self.regressor_nn.predict(features)
+	def predict_nn(self, features, normalized = False):
+		if normalized:
+			norm_features = features
+		else:
+			norm_features = self.MH.normalize_set(features)
+		return self.regressor_nn.predict(norm_features[:-1]) #Taking out viscosity ratio here as an input
 
-	def predict_xgb(self, features):
-		return self.regressor_xgb.predict(features)
+	def predict_xgb(self, features, normalized = False):
+		if normalized:
+			norm_features = features
+		else:
+			norm_features = self.MH.normalize_set(features)
+		return self.regressor_xgb.predict(norm_features)
 
-	def predict_size_rate(self, features, fluid_properties, normalized = False, as_dict = True):
+
+	def predict_size_rate(self, features, fluid_properties, normalized = False, as_dict = True, prediction = "xgb"):
 		input_dict = {self.MH.input_headers[i]: features[i] for i in range(len(features))}
-		input_dict["normalized_diameter"] = self.predict(features, normalized=normalized)
+		if prediction == "xgb":
+			input_dict["normalized_diameter"] = self.predict_xgb(features, normalized=normalized)
+		elif prediction == "nn":
+			input_dict["normalized_diameter"] = self.predict_nn(features, normalized=normalized)
+		else:
+			input_dict["normalized_diameter"] = self.predict(features, normalized=normalized)
 		input_dict.update(fluid_properties)
 		_,_,droplet_size, generation_rate = self.MH.calculate_formulaic_relations(input_dict)
 		if as_dict:

@@ -185,7 +185,6 @@ for i in range(15):
 ### Early stopping
     earlystopping=EarlyStopping(monitor="mean_squared_error", patience=20, verbose=1, mode='auto')
 
-# TODO: figure out why there is an NN here if we are only using XGBoost here. Unclear exaclty what the point of it is
 ### Fitting the model to the train set
     result = model.fit(X_train, Y_train, validation_data=(X_test, Y_test), batch_size = 4, epochs = 1, callbacks=[earlystopping])
 # X_train = PolynomialFeatures(degree=3).fit_transform(X_train)

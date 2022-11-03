@@ -87,10 +87,8 @@ rmsel = []
 r2l = []
 mapel = []
 
-# TODO: why 15 iterations here?
 for i in range(15):
     #### add address of the dataset
-    # TODO: get correct file name for this
     loc = ("/Users/alilashkaripour/Desktop/Fordyce lab/Dropception modeling/Data/New corrected data pruned 15 per/NewAll_2in1_data_normalization.xlsx")
 
     ### Read data
@@ -327,7 +325,6 @@ for i in range(15):
     print("rate test R square (R^2):                 %f" % sklearn.metrics.r2_score(Rate2, pred_rate_test))
     print("rate test MAPE:   %f" % mean_absolute_percentage_error2(Rate2, pred_rate_test))
 
-## TODO: IGNORE THIS, not relevant for DAFD3
 #generalzibility to literature
     loc = ("/Users/alilashkaripour/Desktop/Fordyce lab/Dropception modeling/Data/New corrected data pruned 15 per/FF1_lit.xlsx")
 
@@ -368,7 +365,6 @@ for i in range(15):
     plt.plot(Y_lit, Y_lit, color='blue', linewidth=2,label = 'y=x')
     plt.show()
 
-    #TODO: Ignore this, not 100% needed for training
     loc = ("/Users/alilashkaripour/Desktop/Fordyce lab/Dropception modeling/Data/New corrected data pruned 15 per/FF1_RPMI_Dropception.xlsx")
 
     ### Read data
@@ -409,7 +405,6 @@ for i in range(15):
     plt.plot(Y_lit, Y_lit, color='blue', linewidth=2,label = 'y=x')
     plt.show()
 
-# TODO: End for loop, this is just printing here
 print(f'Size Mean absolute error (MAE) for train-set: {np.mean(maes_train):.2f} +- {1.96 * np.std(maes_train) / np.sqrt(len(maes_train)):.2f}')
 print(f'Size Root mean squared error (RMSE) for train-set: {np.mean(rmses_train):.2f} +- {1.96 * np.std(rmses_train) / np.sqrt(len(rmses_train)):.2f}')
 print(f'Size R square (R^2) for train-set: {np.mean(r2s_train):.2f} +- {1.96 * np.std(r2s_train) / np.sqrt(len(r2s_train)):.2f}')

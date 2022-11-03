@@ -1,9 +1,9 @@
 FLUID_PROPERTIES
-oil_viscosity=1.161
-water_viscosity=0.9875
-surface_tension=0.319
+oil_viscosity=1.0
+water_viscosity=0.014
+surface_tension=1.0
 CONSTRAINTS
-viscosity_ratio=1.1756962025316455:1.1756962025316455
+viscosity_ratio=71.42857142857143:71.42857142857143
 DESIRED_VALS
-generation_rate=500
+generation_rate=5
 droplet_size=25

@@ -36,6 +36,15 @@ class InterModel3:
 		"""Make and save the interpolation models"""
 		self.MH = ModelHelper3.get_instance() # type: ModelHelper
 		self.fwd_model = ForwardModel3()
+		self.fluid_properties = None
+
+
+	def xgb_nn_error(self, features):
+		xgb_size, xgb_rate = self.fwd_model.predict_size_rate(features, self.fluid_properties, as_dict=False, prediction="xgb")
+#		nn_size, nn_rate = self.fwd_model.predict_size_rate(features, self.fluid_properties, as_dict=False, prediction="nn")
+		return 0
+
+		# return np.abs(self.MH.normalize(xgb_size, "droplet_size") - self.MH.normalize(nn_size, "droplet_size"))
 
 
 	def get_closest_point(self, desired_vals, constraints={}, max_drop_exp_error=-1, skip_list = []):
@@ -76,6 +85,10 @@ class InterModel3:
 				denorm_feat = {x:denorm_feat_list[i] for i,x in enumerate(self.MH.input_headers)}
 				denorm_feat["generation_rate"] = output_point["generation_rate"]
 
+				# nval+= self.xgb_nn_error(feat_point)
+
+
+
 			if "generation_rate" in desired_vals:
 				nval += abs(self.MH.normalize(output_point["generation_rate"],"generation_rate") - desired_vals["generation_rate"])
 
@@ -97,18 +110,19 @@ class InterModel3:
 		"""Returns how far each solution mapped on the model deviates from the desired value
 		Used in our minimization function
 		"""
-		prediction = self.fwd_model.predict_size_rate(x, self.fluid_properties, normalized=True, as_dict=True)
+		prediction = self.fwd_model.predict_size_rate(x, self.fluid_properties, normalized=True, as_dict=True, prediction="xgb")
 		val_dict = {self.MH.input_headers[i]:self.MH.denormalize(val,self.MH.input_headers[i]) for i,val in enumerate(x)}
 		val_dict["generation_rate"] = prediction["generation_rate"]
 		#TODO: Add in area where xgb and nn disagree on the droplet size
+		# model_error = self.xgb_nn_error(x)
 		merrors = [abs(self.MH.normalize(prediction[head], head) - self.norm_desired_vals_global[head]) for head in self.norm_desired_vals_global]
-		return sum(merrors)
+		return sum(merrors) #+ model_error
 
 	def callback_func(self, x):
 		"""Returns how far each solution mapped on the model deviates from the desired value
 		Used in our minimization function
 		"""
-		prediction = self.fwd_model.predict_size_rate(x, self.fluid_properties, normalized=True, as_dict=True)
+		prediction = self.fwd_model.predict_size_rate(x, self.fluid_properties, normalized=True, as_dict=True, prediction="xgb")
 		#merrors = [abs(self.MH.normalize(prediction[head], head) - self.norm_desired_vals_global_adjusted[head]) for head in self.norm_desired_vals_global_adjusted]
 		val_dict = {self.MH.input_headers[i]:self.MH.denormalize(val,self.MH.input_headers[i]) for i,val in enumerate(x)}
 		val_dict["generation_rate"] = prediction["generation_rate"]
@@ -160,7 +174,9 @@ class InterModel3:
 
 
 		skip_list = []
+		j = 0
 		while(True):
+			j+=1
 			start_pos, closest_index = self.get_closest_point(norm_desired_vals, constraints=norm_constraints, max_drop_exp_error=5, skip_list=skip_list)
 			if closest_index == -1:
 				start_pos, closest_index = self.get_closest_point(norm_desired_vals, constraints=norm_constraints)
@@ -206,6 +222,7 @@ class InterModel3:
 				pred_point = {x:self.MH.all_dat[closest_index][x] for x in self.MH.all_dat[closest_index]}
 				pred_point["generation_rate"] = closest_point["generation_rate"]
 				print(self.MH.all_dat[closest_index])
+				#TODO: if needed add model error into skip
 				if pred_size_error > 10 or exp_size_error > 5:
 					should_skip_optim_size = False
 
@@ -232,16 +249,15 @@ class InterModel3:
 			f.write(",".join(self.MH.input_headers) + ",generation_rate,droplet_size,cost_function\n")
 
 		pos = start_pos
-		#self.callback_func(pos, current_point) #TODO: add in fluid info for normalization. doesnt look like it does anything...
 
 		self.correct_by_constraints(pos,norm_constraints)
 
 		loss = self.model_error(pos)
 		samplesize = 1e-3
-		stepsize = 1e-2
-		ftol = 1e-9
+		stepsize = 0.1
+		ftol = 1e-18
 
-		for i in range(5000):
+		for i in range(500):
 			new_pos = pos
 			new_loss = loss
 			for index, val in enumerate(pos):
@@ -275,7 +291,7 @@ class InterModel3:
 
 		#Denormalize results
 		results = {x: pos[i] for i, x in enumerate(self.MH.input_headers)}
-		prediction = self.fwd_model.predict_size_rate([results[x] for x in self.MH.input_headers], self.fluid_properties, as_dict=True)
+		prediction = self.fwd_model.predict_size_rate([results[x] for x in self.MH.input_headers], self.fluid_properties, as_dict=True, prediction="xgb")
 		print("Final Suggestions")
 		print(",".join(self.MH.input_headers) + "," + "desired_size" + "," + "predicted_generation_rate" + "," + "predicted_droplet_size")
 		output_string = ",".join([str(results[x]) for x in self.MH.input_headers])

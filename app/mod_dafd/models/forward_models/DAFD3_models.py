@@ -29,8 +29,7 @@ class NeuralNetModel_DAFD3:
         self.model = Sequential()
         # more layers result in high over-fitting, a simple 2 layer model is used here.
         # Adding the input layer and the first hidden layer
-        #TODO: make input dim 7 for NN only and update the weights that we are loading
-        self.model.add(Dense(units=512, activation='relu', input_dim=8, name='scratch_dense_1',
+        self.model.add(Dense(units=512, activation='relu', input_dim=7, name='scratch_dense_1',
                         kernel_regularizer=regularizers.l2(0.001)))  # more options to avoid over-fitting
 
         self.model.add(Dense(units=16, activation='relu', name='scratch_dense_2',
@@ -52,7 +51,7 @@ class NeuralNetModel_DAFD3:
         self.model.fit(X_train, Y_train, validation_data=(X_test, Y_test), batch_size=32,
                            epochs=5000)  # , callbacks=[earlystopping])
 
-    def load_model(self, model_name="DAFD3_NNmodel"):
+    def load_model(self, model_name="DAFD3_NNmodel_7weights"):
         # load file
         file = os.path.dirname(os.path.abspath(__file__)) + "/saved/" + model_name
         self.model = keras.models.load_model(file, custom_objects={"rmse": rmse, "r_square":r_square})
@@ -60,6 +59,10 @@ class NeuralNetModel_DAFD3:
     def predict(self, features):
         return self.model.predict(np.asarray(features).reshape(1, -1))[0][0]
 
+
+    def save_model(self, model_name = "my_model"):
+        file = os.path.dirname(os.path.abspath(__file__)) + "/saved/" + model_name
+        self.model.save(file)
 
 class XGBoost_DAFD3:
     model = None
