@@ -37,7 +37,10 @@ class InterModel3:
 		self.MH = ModelHelper3.get_instance() # type: ModelHelper
 		self.fwd_model = ForwardModel3()
 		self.fluid_properties = None
-
+		self.param_bounds = {"orifice_width":(15.0, 175.0), "aspect_ratio": (1.0,3.0), "flow_rate_ratio": (0.69,22.0),
+							 "capillary_number":(0.014, 9.399), "normalized_oil_inlet":(1.0,4.0),
+							 "normalized_water_inlet":(1.0,4.0), "expansion_ratio":(1.0,6.0)}
+		self.param_bounds_list = [self.param_bounds[k] for k in self.param_bounds.keys()]
 
 	def xgb_nn_error(self, features):
 		xgb_size, xgb_rate = self.fwd_model.predict_size_rate(features, self.fluid_properties, as_dict=False, prediction="xgb")
@@ -73,7 +76,6 @@ class InterModel3:
 				exp_error = abs(self.MH.denormalize(desired_vals["droplet_size"],"droplet_size") - self.MH.all_dat[i]["droplet_size"])
 				if exp_error > max_drop_exp_error:
 					continue
-
 			feat_point = self.MH.features[i]
 			output_point = self.MH.outputs[i]
 
@@ -110,7 +112,7 @@ class InterModel3:
 		"""Returns how far each solution mapped on the model deviates from the desired value
 		Used in our minimization function
 		"""
-		prediction = self.fwd_model.predict_size_rate(x, self.fluid_properties, normalized=True, as_dict=True, prediction="xgb")
+		prediction = self.fwd_model.predict_size_rate(x, self.fluid_properties, normalized=False, as_dict=True, prediction="xgb")
 		val_dict = {self.MH.input_headers[i]:self.MH.denormalize(val,self.MH.input_headers[i]) for i,val in enumerate(x)}
 		val_dict["generation_rate"] = prediction["generation_rate"]
 		#TODO: Add in area where xgb and nn disagree on the droplet size
@@ -159,10 +161,13 @@ class InterModel3:
 				Again, just leave input types you don't care about blank
 		"""
 		norm_constraints = {}
+		denorm_constraints = {}
+
 		for cname in constraints:
 			cons_low = self.MH.normalize(constraints[cname][0], cname)
 			cons_high = self.MH.normalize(constraints[cname][1],cname)
 			norm_constraints[cname] = (cons_low, cons_high)
+			denorm_constraints[cname] = (constraints[cname][0], constraints[cname][1])
 
 		norm_desired_vals = {}
 		for lname in desired_val_dict:
@@ -250,28 +255,36 @@ class InterModel3:
 
 		pos = start_pos
 
-		self.correct_by_constraints(pos,norm_constraints)
+		self.correct_by_constraints(pos,denorm_constraints)
 
 		loss = self.model_error(pos)
-		samplesize = 1e-3
-		stepsize = 0.1
-		ftol = 1e-18
 
-		for i in range(500):
+		stepsize = [5, 0.25, 2, 0.025, 0.25, 0.25, 0.25, 0]
+		ftol = 1e-9
+
+
+
+		for i in range(5000):
 			new_pos = pos
 			new_loss = loss
-			for index, val in enumerate(pos):
+			for index, val in enumerate(pos[:-1]): #do not do viscosity ratio
 				copy = [x for x in pos]
-				copy[index] = val+stepsize
-				self.correct_by_constraints(copy,norm_constraints)
+				if val + stepsize[index] > self.param_bounds_list[index][1]:
+					copy[index] = self.param_bounds_list[index][1]
+				else:
+					copy[index] = val+stepsize[index]
+				self.correct_by_constraints(copy,denorm_constraints)
 				error = self.model_error(copy)
 				if error < new_loss:
 					new_pos = copy
 					new_loss = error
 
 				copy = [x for x in pos]
-				copy[index] = val-stepsize
-				self.correct_by_constraints(copy,norm_constraints)
+				if val - stepsize[index] < self.param_bounds_list[index][0]:
+					copy[index] = self.param_bounds_list[index][0]
+				else:
+					copy[index] = val-stepsize[index]
+				self.correct_by_constraints(copy,denorm_constraints)
 				error = self.model_error(copy)
 				if error < new_loss:
 					new_pos = copy
