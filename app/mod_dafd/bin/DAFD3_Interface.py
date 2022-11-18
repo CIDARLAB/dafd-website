@@ -27,10 +27,10 @@ class DAFD3_Interface:
 		inner_results, outer_results = self.it_de.interpolate(inner_features, outer_features, desired_vals, fluid_properties)
 		return inner_results, outer_results
 
-	def runForward(self, features, fluid_properties):
+	def runForward(self, features, fluid_properties, model="xgb"):
 		# features is a dictionary containing the name of each feature as the key and the feature value as the value
 		raw_features = np.array([features[x] for x in self.input_headers])
-		results = self.fw.predict_size_rate(raw_features, fluid_properties)
+		results = self.fw.predict_size_rate(raw_features, fluid_properties, prediction=model)
 
 		return results
 

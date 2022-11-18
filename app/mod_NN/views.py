@@ -4,6 +4,7 @@ import numpy as np
 import os
 from werkzeug.utils import secure_filename
 import time
+from app.mod_dafd.helper_scripts.TolHelper3 import TolHelper3
 
 nn_blueprint = Blueprint('nn', __name__)
 
@@ -442,6 +443,14 @@ def backward_3():
 
         gen_rate = np.round(reverse_results["generation_rate"], 3)
         flow_rate = np.round(reverse_results["droplet_size"], 3)
+
+        features = reverse_results.copy()
+        del features["point_source"]
+        features = {key: float(features[key]) for key in features.keys()}
+        TH = TolHelper3(features, fluid_properties)
+        TH.run_all()
+        fig_names = TH.plot_all()
+
         return render_template('backward_3.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
                                gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate)
     return redirect(url_for('index_3'))

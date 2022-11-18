@@ -259,7 +259,7 @@ class InterModel3:
 
 		loss = self.model_error(pos)
 
-		stepsize = [5, 0.25, 2, 0.025, 0.25, 0.25, 0.25, 0]
+		stepsize = [2.5, 0.25, 2, 0.025, 0.25, 0.25, 0.25, 0]
 		ftol = 1e-9
 
 

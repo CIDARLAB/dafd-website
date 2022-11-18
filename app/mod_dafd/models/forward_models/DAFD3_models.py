@@ -82,6 +82,9 @@ class XGBoost_DAFD3:
         ### Fitting the model to the train set
         self.model.fit(X_train, Y_train)
 
+    def save_model(self, name):
+        self.model.save_model(name)
+
     def load_model(self, model_name="DAFD3_xgbmodel.json"):
         # load file
         file = os.path.dirname(os.path.abspath(__file__)) + "/saved/" + model_name

@@ -180,7 +180,6 @@ class ModelHelper3:
 		oil_viscosity = design_inputs["oil_viscosity"]
 
 		# Calculate oil flow rate
-		#TODO: NEED TO GET NEW FLOW RATE FROM CAP NUMBER, its giving me the wrong values
 		oil_flow_rate = capillary_number * orifice_size**2 * aspect_ratio * surface_tension / oil_viscosity * 60**2 * 10**-3
 
 		# Calculate water flow rate

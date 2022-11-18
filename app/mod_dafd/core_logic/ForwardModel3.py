@@ -26,7 +26,7 @@ class ForwardModel3:
 			norm_features = features
 		else:
 			norm_features = self.MH.normalize_set(features)
-		return np.mean([self.predict_nn(norm_features), self.predict_xgb(norm_features)])
+		return np.mean([self.predict_nn(norm_features, normalized=True), self.predict_xgb(norm_features, normalized=True)])
 
 	def predict_nn(self, features, normalized = False):
 		if normalized:
@@ -46,7 +46,7 @@ class ForwardModel3:
 	def predict_size_rate(self, features, fluid_properties, normalized = False, as_dict = True, prediction = "xgb"):
 		input_dict = {self.MH.input_headers[i]: features[i] for i in range(len(features))}
 		if prediction == "xgb":
-			input_dict["normalized_diameter"] = self.predict_xgb(features, normalized=normalized)
+			input_dict["normalized_diameter"] = self.predict_xgb(features, normalized=normalized) #TODO: figure out why xgb isn't changing with flow rate ratio....
 		elif prediction == "nn":
 			input_dict["normalized_diameter"] = self.predict_nn(features, normalized=normalized)
 		else:
