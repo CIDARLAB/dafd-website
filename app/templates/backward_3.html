@@ -19,11 +19,6 @@
             {% endfor %}
             <div class="spacer"></div>
             <br/>
-            <div class="row">
-                <div class="col-md-6 col-sm-12 col-xs-12">
-                    <img height="30px" style="cursor:pointer" id="open_in_3duf_button" src="{{ url_for('static', filename='img/open-in-3duf-button.png') }}"/>
-                </div>
-            </div>
             <h5>Predicted performance</h5>
             {% for key, value in perform.items() %}
             <div class="row">
@@ -75,127 +70,18 @@
     </div>
 </div>
 <!-- /page content -->
-{% if tolTest %}
 <div class="container content-container">
     <div class="row">
         <div class="col-md-12 twelve columns">
-            <H1 class="title"> DAFD Design Report</H1>
-                <p>Thank you for using DAFD, the first machine-learning design automation tool for droplet microfluidics.
-                Below is a summary of your design, along with helpful information in troubleshooting possible
-                fabrication or testing errors (tolerances).</p>
-            <h3>Assembly Information</h3>
-            <p><img class="img" src="{{ url_for('static', filename='img/drop_assembly.png') }}" width="100%"></p>
-            <h1>Droplet Generator Overview</h1>
-            <h3>Fluid Properties:</h3>
-
-
-            <html>
-            <head>
-                <style>
-                    table, th, td {
-                        border: 2px solid black;
-                        border-collapse: collapse;
-                        text-align: center;
-                        font-size: 14px;
-                        padding: 4px;
-                    }
-
-                    th {
-                        background-color: #c0c0c0;
-                    }
-
-                </style>
-            </head>
-            <body>
-            <table style="width:60%;margin-left:auto;margin-right:auto;">
-                <tr>
-                    <th>Dispersed phase</th>
-                    <th>Continuous phase</th>
-                    <th>Surfactant</th>
-                </tr>
-                <tr>
-                    <td>DI Water</td>
-                    <td>350 nf Mineral oil (viscosity: 57.2 mPa.s )</td>
-                    <td>5% V/V Span 80</td>
-                </tr>
-            </table>
-            </body>
-            </html>
-            <h3>Droplet Generator Design:</h3>
-
-            <table style="width:100%;margin-left:auto;margin-right:auto;">
-
-                <tr>
-                    <th colspan="6">Geometric Parameters:</th>
-                    <th colspan="2">Flow Parameters:</th>
-                </tr>
-                <tr>
-                    <th>Orifice width (μm)</th>
-                    <th>Depth (μm)</th>
-                    <th>Outlet width (μm)</th>
-                    <th>Orifice length (μm)</th>
-                    <th>Water inlet width (μm)</th>
-                    <th>Oil inlet width (μm)</th>
-                    <th>Oil flow rate (mL/hr)</th>
-                    <th>Water flow rate (μL/min)</th>
-                </tr>
-                <tr>
-                    <td>{{ geo['Orifice Width (\u03BCm)']}}</td>
-                    <td>{{ geo['Channel Depth (\u03BCm)']}}</td>
-                    <td>{{ geo['Outlet Channel Width (\u03BCm)']}}</td>
-                    <td>{{ geo['Orifice Length (\u03BCm)']}}</td>
-                    <td>{{ geo['Water Inlet Width (\u03BCm)']}}</td>
-                    <td>{{  geo['Oil Inlet Width (\u03BCm)'] }}</td>
-                    <td>{{ flowrate['Oil Flow Rate (ml/hr)']}}</td>
-                    <td>{{ flowrate['Water Flow Rate (\u03BCl/min)'] }}</td>
-                </tr>
-            </table>
-            <h3>Expected Performance:</h3>
-
-            <table style="width:60%;margin-left:auto;margin-right:auto;">
-                <tr>
-                    <th>Generation rate (Hz)</th>
-                    <th>Droplet diameter (μm)</th>
-                    <th>Inferred droplet diameter (μm)</th>
-                    <th>Regime</th>
-                </tr>
-                <tr>
-                    <td>{{perform['Generation Rate (Hz)']}}</td>
-                    <td>{{perform['Droplet Diameter (\u03BCm)']}}</td>
-                    <td>{{values['Droplet Inferred Size (\u03BCm)']}}</td>
-                    <td>{{perform['Regime']}}</td>
-                </tr>
-            </table>
-            <br/>
-
-            <h1>Tolerances of your Design:</h1>
-            <p>Using your input tolerance of <strong>{{tolerance}}%</strong>, variance-based sensitivity analysis was
-                performed to identify the principal design features
-                for droplet diameter and generation rate to better troubleshoot any issues from device fabrication (top
-                left bar plots).
-                Large difference between predicted and observed behavior could be due to this. Once the principal feature was identified,
-                a 10-by-10 feature grid was constructed between that and all other features. Each combination was then run through DAFD
-                and visualized in a heatmap to show how changes to each feature can change the output performance.
-                More information about
-                the underlying analysis can be found in the DAFD paper.</p>
-            <p><em>Note: If you see multiple distinct regions (sharp jumps) within the heatmaps, then your current
-                performance is right
-                at the regime change boundary. Droplet generation will be unstable, and therefore we recommend re-running
-                DAFD with different
-                constraints</em></p>
-            <h3>Droplet Diameter:</h3>
-            <p><img class="img" src="{{ url_for('static', filename='img/'+fig_names[0]) }}" width="100%"></p>
-            <h3>Generation Rate:</h3>
-            <p><img class="img" src="{{ url_for('static', filename='img/'+fig_names[1]) }}" width="100%"></p>
             <h1>Flow Rate Map:</h1>
             <p>To troubleshoot your device performance without fabricating a brand new device, below are heatmaps
                 visualizing the performance
                 changes caused by <strong>only</strong> changing flow rates. This provides a visual guide to
                 understanding how changing these rates
                 affect both droplet diameter and generation rate, rather than doing so through trial and error.
-            <p><img class="img" src="{{ url_for('static', filename='img/'+fig_names[2]) }}" width="100%"></p>
+            <p><img class="img" src="{{ url_for('static', filename='img/'+figname) }}" width="100%"></p>
             <h3>Questions? Contact Us:</h3>
-            <p>Ali Lashkaripour (<a href="lashkari@bu.edu">lashkari@bu.edu</a>) &amp; Prof.
+            <p>Ali Lashkaripour (<a href="alilp@stanford.edu">alilp@stanford.edu</a>), David McIntyre (<a href="dpmc@bu.edu">dpmc@bu.edu</a>) & Prof.
                 Douglas Densmore (<a href="dougd@bu.edu">dougd@bu.edu</a>)</p>
             <div class="spacer"></div>
             <br/>
@@ -227,7 +113,6 @@
         </div>
     </div>
 </div>
-{% endif %}
 {% endblock %}
 
 

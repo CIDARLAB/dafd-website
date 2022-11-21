@@ -449,10 +449,10 @@ def backward_3():
         features = {key: float(features[key]) for key in features.keys()}
         TH = TolHelper3(features, fluid_properties)
         TH.run_all()
-        fig_names = TH.plot_all()
+        fig_name = TH.plot_all()
 
         return render_template('backward_3.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
-                               gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate)
+                               gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, figname=fig_name)
     return redirect(url_for('index_3'))
 
 
@@ -473,7 +473,9 @@ def backward_3_de():
         desired_vals['outer_droplet_size'] = request.form.get('outerDropSize')
         desired_vals = {key: float(desired_vals[key]) for key in desired_vals.keys()}
 
-        device = float(request.form.get('device'))
+        device = request.form.get('device')
+        if device is not None:
+            device = float(device)
         inner_features = {'orifice_width': None, 'aspect_ratio': 1, 'normalized_oil_inlet': 1,
                 'normalized_water_inlet': 1, 'expansion_ratio': 1}
         outer_features = inner_features.copy()
@@ -484,9 +486,14 @@ def backward_3_de():
         elif device == 2:
             inner_features['orifice_width'] = 22.5
             outer_features['orifice_width'] = 45
-        else:
+        elif device == 3:
             inner_features['orifice_width'] = 30
             outer_features['orifice_width'] = 60
+        else:
+            #TODO: Add in combo for all of them
+            inner_features['orifice_width'] = [15, 22.5, 30]
+            outer_features['orifice_width'] = [30, 45, 60]
+
 
         inner_features['viscosity_ratio'] = fluid_properties["oil_viscosity"]/fluid_properties["inner_aq_viscosity"]
         outer_features['viscosity_ratio'] = fluid_properties["outer_aq_viscosity"]/fluid_properties["oil_viscosity"]
@@ -494,9 +501,30 @@ def backward_3_de():
 
 
         inner_results, outer_results = runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties)
-        reverse_results = None
+        fig_names = []
+        for i, result in enumerate([inner_results, outer_results]):
+            if i == 0:
+                base = "inner"
+                fprop = {
+                    "surface_tension": fluid_properties["inner_surface_tension"],
+                    "water_viscosity": fluid_properties["inner_aq_viscosity"],
+                    "oil_viscosity": fluid_properties["oil_viscosity"],
+                    "viscosity_ratio": inner_features["viscosity_ratio"]
+                }
+            else:
+                base = "outer"
+                fprop = {
+                    "surface_tension": fluid_properties["outer_surface_tension"],
+                    "water_viscosity": fluid_properties["oil_viscosity"],
+                    "oil_viscosity": fluid_properties["outer_aq_viscosity"],
+                    "viscosity_ratio": outer_features["viscosity_ratio"]
+                }
+            features = result.copy()
+            features = {key: float(features[key]) for key in features.keys()}
+            TH = TolHelper3(features, fprop)
+            TH.run_all()
+            fig_names.append(TH.plot_all(base=base))
 
-#        parsed = strOutput.split(':')[1].split('|')[:-1]
         geo = {}
         geo['Inner Orifice Width (\u03BCm)'] = np.round(inner_results["orifice_width"], 3)
         geo['Inner Channel Depth (\u03BCm)'] = np.round(inner_results["aspect_ratio"]*inner_results["orifice_width"], 3)
@@ -523,9 +551,9 @@ def backward_3_de():
         flow['Oil / Outer Aqueous Interfacial Surface Tension'] = np.round(fluid_properties['outer_surface_tension'], 3)
 
         perform = {}
-        perform['Inner Droplet Diameter (\u03BCm)'] = np.round(inner_results["droplet_size"], 3)
+        perform['Inner DE Diameter (\u03BCm)'] = np.round(inner_results["droplet_size"], 3)
         perform['Inner Generation Rate (Hz)'] = np.round(inner_results["generation_rate"], 3)
-        perform['Outer Droplet Diameter (\u03BCm)'] = np.round(outer_results["droplet_size"], 3)
+        perform['Outer DE Diameter (\u03BCm)'] = np.round(outer_results["droplet_size"], 3)
         perform['Outer Generation Rate (Hz)'] = np.round(outer_results["generation_rate"], 3)
 
         flowrate = {}
@@ -536,7 +564,7 @@ def backward_3_de():
         gen_rate = np.round(inner_results["generation_rate"], 3)
         flow_rate = np.round(inner_results["dispersed_flow_rate"], 3)
         return render_template('backward_3_de.html', geo=geo, flow=flow, perform=perform, flowrate=flowrate,
-                               gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate)
+                               gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, fignames=fig_names)
     return redirect(url_for('index_3'))
 
 

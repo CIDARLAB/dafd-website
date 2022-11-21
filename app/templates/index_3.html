@@ -100,16 +100,16 @@
 							<div class="row slider-one-col">
 								<!--first column-->
 								<div class="col-md-1 text-center">
-									<input type="checkbox" id="genRateCheck" onclick="disableSlider(this.id, 'genRateRange', 'genRate');" checked>
+									<input type="checkbox" id="genRateCheck" onclick="disableSlider(this.id, 'genRateRange', 'genRate');">
 								</div>
 								<div class="col-md-4 text-left">
 									<p class="field-tip">Generation rate (Hz)<!--<span class="tip-content">unit in Hz</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
-									<input type="range" min="5" max="500" value="5" class="slider-activated" id="genRateRange" oninput="updateIntInput(this.value, 'genRate', this.id);">
+									<input type="range" min="5" max="500" value="5" class="slider-activated" id="genRateRange" oninput="updateIntInput(this.value, 'genRate', this.id);" disabled>
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="genRate" name="genRate" value="5" oninput="updateIntSlider('genRateRange', this.id)" onchange="intSliderChange('genRateRange', this.id, 5, 500)">
+									<input size="4" type="text" id="genRate" name="genRate" value="5" oninput="updateIntSlider('genRateRange', this.id)" onchange="intSliderChange('genRateRange', this.id, 5, 500)" disabled>
 								</div>
 								<div class="col-md-1 text-center">
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired generation rate between 5 Hz and 500 Hz.</span></div>
@@ -473,11 +473,14 @@
 							<!--nth row-->
 							<div class="row slider-one-col">
 								<!--2nd column-->
-								<div class="col-md-5 text-left">
+                                <div class="col-md-1 text-center">
+									<input type="checkbox" id="deviceCheck" onclick="disableCombo(this.id, 'deviceCombo');">
+								</div>
+								<div class="col-md-4 text-left">
 									<p class="field-tip">Double emulsion generator device<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
-								<div class="col-md-5 text-left">
-									<select class="cmbox" name="device" id="deviceCombo" enabled>
+  								<div class="col-md-5 text-left">
+									<select class="cmbox" name="device" id="deviceCombo" disabled>
 										<option value="1">15 &mu;m orifice generator</option>
                                         <option value="2">22.5 &mu;m orifice generator</option>
                                         <option value="3">30 &mu;m orifice generator</option>

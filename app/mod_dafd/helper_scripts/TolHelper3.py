@@ -40,20 +40,18 @@ class TolHelper3:
     def run_all(self):
         self.flow_heatmaps()
 
-    def plot_all(self, base="toltest"):
-        self.file_base = base
+    def plot_all(self, base=""):
         if self.flow_heatmap_size is None or self.flow_heatmap_gen is None:
             self.run_all()
         folder_path = os.path.join(os.getcwd(),"app","static","img")
         for filename in os.listdir(folder_path):
-            if filename.startswith('flow_hm'):
+            if filename.startswith(base+'flow_hm'):
                 os.remove(os.path.join(folder_path, filename))
 
-        fname = "flow_hm_" + str(time.time()) + ".png"
-        self.plot_flow_heatmaps(self.flow_heatmap_size, self.flow_heatmap_gen)
+        fname = base+"flow_hm_" + str(time.time()) + ".png"
+        self.plot_flow_heatmaps(self.flow_heatmap_size, self.flow_heatmap_gen, base=base)
         plt.savefig(os.path.join(folder_path, fname))
         sns.set_style("ticks")
-
         return fname
 
     def flow_heatmaps(self, range_mult=None):
@@ -179,7 +177,7 @@ class TolHelper3:
             }
         return ret_dict
 
-    def plot_flow_heatmaps(self, size_df, rate_df):
+    def plot_flow_heatmaps(self, size_df, rate_df, base=""):
         SMALL_SIZE = 12
         BIGGER_SIZE = 16
 
@@ -211,4 +209,12 @@ class TolHelper3:
         axs[1].tick_params(axis='x', labelrotation=30)
         plt.setp(axs[1], xlabel="Oil Flow Rate (\u03BCL/hr)", ylabel="Water Flow Rate (\u03BCL/hr)")
         axs[1].scatter(len(size_df.columns) / 2, len(size_df.columns) / 2, marker="*", color="w", s=200)
+
+        if base == "inner":
+            plt.setp(axs[0], xlabel=" Oil Flow Rate (\u03BCL/hr)", ylabel="Inner Aq. Flow Rate (\u03BCL/hr)")
+            plt.setp(axs[1], xlabel=" Oil Flow Rate  (\u03BCL/hr)", ylabel="Inner Aq. Flow Rate (\u03BCL/hr)")
+        else:
+            plt.setp(axs[0], xlabel="Outer Aq. Flow Rate (\u03BCL/hr)", ylabel="Inner Aq. & Oil Flow Rate (\u03BCL/hr)")
+            plt.setp(axs[1], xlabel="Outer Aq. Flow Rate (\u03BCL/hr)", ylabel="Inner Aq. & Oil Flow Rate (\u03BCL/hr)")
+
         return fig

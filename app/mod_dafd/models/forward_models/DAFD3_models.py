@@ -85,7 +85,7 @@ class XGBoost_DAFD3:
     def save_model(self, name):
         self.model.save_model(name)
 
-    def load_model(self, model_name="DAFD3_xgbmodel.json"):
+    def load_model(self, model_name="xgb_ali.json"):
         # load file
         file = os.path.dirname(os.path.abspath(__file__)) + "/saved/" + model_name
         if self.model is None:
