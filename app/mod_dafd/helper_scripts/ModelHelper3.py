@@ -72,7 +72,8 @@ class ModelHelper3:
 		self.outputs = self.all_dat_df.loc[:, ['droplet_size', 'generation_rate']].to_dict(orient="records")
 
 		self.Ori = np.array(self.all_dat_df.loc[:, 'hyd_d'])  # swap out to orifice when normalizing by orifice width
-		# self.scaler = StandardScaler()
+		self.scaler = StandardScaler()
+		self.scaler.fit(self.features)
 
 		for i, head in enumerate(self.all_dat_df.columns):
 			values = np.array(self.all_dat_df.loc[:,head])
@@ -81,7 +82,7 @@ class ModelHelper3:
 			self.ranges_dict[head] = (min(values), max(values))
 			self.ranges_dict_normalized[head] = (self.transform_dict[head].transform([[min(values)]])[0][0],
 									  			 self.transform_dict[head].transform([[max(values)]])[0][0])
-
+		self.normalized_features = self.scaler.transform(self.features)
 
 	def train_test_split(self, validation_size=0.20):
 		###train-test split

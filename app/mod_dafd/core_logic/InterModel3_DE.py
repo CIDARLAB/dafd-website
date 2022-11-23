@@ -150,7 +150,7 @@ class InterModel3_DE:
 			# ID all outer points within 15% difference in generation rate
 			FF1_flow = pt.continuous_flow_rate + pt.dispersed_flow_rate
 			adjacent = outer.loc[outer.dispersed_flow_rate == FF1_flow, :] # TODO: need to change this to be the sum of cont + dispersed
-			adjacent = adjacent.loc[self.pct_difference(pt["generation_rate"], adjacent.generation_rate) < 15,:] #TODO: add in if there isn't anything less than 15, increase to 30 and repeat
+			adjacent = adjacent.loc[self.DH.pct_difference(pt["generation_rate"], adjacent.generation_rate) < 15,:] #TODO: add in if there isn't anything less than 15, increase to 30 and repeat
 			# Pick outer point with minimum size difference from outer point
 			adjacent = adjacent.sort_values("size_err")
 			if len(adjacent > 0):
@@ -167,10 +167,6 @@ class InterModel3_DE:
 		idx = np.argpartition(total_errs, k)[:k]  # Indices not sorted
 		idx = idx[np.argsort(np.array(total_errs)[idx])]
 		return np.array(pairs)[idx], np.array(total_errs)[idx]
-
-
-	def pct_difference(self, ref, pt):
-		return np.abs((ref - pt)/ref)*100
 
 	def interpolate(self,inner_features, outer_features, desired_values, fluid_properties):
 		"""Return an input set within the given constraints that produces the output set
@@ -204,9 +200,9 @@ class InterModel3_DE:
 
 				### ALGORITHM ###
 				# INNER: find and rank by distance between sweep sizes and desired sizes
-				inner_generator_results.loc[:, "size_err"] = self.pct_difference(desired_values["inner_droplet_size"], inner_generator_results.loc[:,"droplet_size"])
+				inner_generator_results.loc[:, "size_err"] = self.DH.pct_difference(desired_values["inner_droplet_size"], inner_generator_results.loc[:,"droplet_size"])
 				# OUTER: find and rank by distance between sweep sizes and desired sizes
-				outer_generator_results.loc[:, "size_err"] = self.pct_difference(desired_values["outer_droplet_size"], outer_generator_results.loc[:,"droplet_size"])
+				outer_generator_results.loc[:, "size_err"] = self.DH.pct_difference(desired_values["outer_droplet_size"], outer_generator_results.loc[:,"droplet_size"])
 				# Find optimal pairs for DE design automation
 				results, err = self.optimize(inner_generator_results, outer_generator_results)
 				#TODO: make downloadable csv for all of the different results (top-k)
@@ -226,9 +222,9 @@ class InterModel3_DE:
 
 			### ALGORITHM ###
 			# INNER: find and rank by distance between sweep sizes and desired sizes
-			inner_generator_results.loc[:, "size_err"] = self.pct_difference(desired_values["inner_droplet_size"], inner_generator_results.loc[:,"droplet_size"])
+			inner_generator_results.loc[:, "size_err"] = self.DH.pct_difference(desired_values["inner_droplet_size"], inner_generator_results.loc[:,"droplet_size"])
 			# OUTER: find and rank by distance between sweep sizes and desired sizes
-			outer_generator_results.loc[:, "size_err"] = self.pct_difference(desired_values["outer_droplet_size"], outer_generator_results.loc[:,"droplet_size"])
+			outer_generator_results.loc[:, "size_err"] = self.DH.pct_difference(desired_values["outer_droplet_size"], outer_generator_results.loc[:,"droplet_size"])
 			# Find optimal pairs for DE design automation
 			results, err = self.optimize(inner_generator_results, outer_generator_results)
 			#TODO: make downloadable csv for all of the different results (top-k)

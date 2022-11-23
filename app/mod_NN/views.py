@@ -502,6 +502,9 @@ def backward_3_de():
 
         inner_results, outer_results = runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties)
         fig_names = []
+        size_hms = []
+        gen_hms = []
+
         for i, result in enumerate([inner_results, outer_results]):
             if i == 0:
                 base = "inner"
@@ -523,6 +526,8 @@ def backward_3_de():
             features = {key: float(features[key]) for key in features.keys()}
             TH = TolHelper3(features, fprop)
             TH.run_all()
+            size_hms.append(TH.flow_heatmap_size)
+            gen_hms.append(TH.flow_heatmap_gen)
             fig_names.append(TH.plot_all(base=base))
 
         geo = {}

@@ -19,9 +19,18 @@ class DEHelper:
 	input_headers = ['orifice_width', 'aspect_ratio', 'flow_rate_ratio', 'capillary_number', 'normalized_oil_inlet',
 					'normalized_water_inlet', 'expansion_ratio', 'viscosity_ratio']	# Feature names (orifice size, aspect ratio, etc...)
 	output_headers = ["droplet_size", "generation_rate"] # Output names (droplet size, generation rate)
-	inner_flow_range = (50,650)
-	oil_flow_range = (200,1200)
-	outer_flow_range = (2500,7000)
+	# inner_flow_range = (50,650)
+	# oil_flow_range = (200,1200)
+	# outer_flow_range = (2500,7000)
+
+
+	#Full solution
+	inner_flow_range = (50, 650)
+	oil_flow_range = (200, 1200)
+	outer_flow_range = (1500, 10000)
+
+	#For solution specific, do +/- 50%
+
 
 	def __init__(self, MH, fluid_properties):
 		if DEHelper.instance is None:
@@ -35,7 +44,7 @@ class DEHelper:
 			DEHelper()
 		return DEHelper.instance
 
-	def generate_grid(self, features, disp_flow_range, cont_flow_range, grid_size=25):
+	def generate_grid(self, disp_flow_range, cont_flow_range, grid_size=25):
 		# generate list of flow_dicts
 		if len(disp_flow_range) == 2:
 			disp_flows = make_sweep_range(disp_flow_range, grid_size)
@@ -47,7 +56,7 @@ class DEHelper:
 		return flows
 
 	def generate_inner_grid(self, features):
-		flows = self.generate_grid(features, self.inner_flow_range, self.oil_flow_range)
+		flows = self.generate_grid(self.inner_flow_range, self.oil_flow_range)
 		self.total_inner_flows = np.unique([np.sum(list(item.values())) for item in flows])
 		feature_list = []
 		for f in flows:
@@ -58,8 +67,11 @@ class DEHelper:
 			feature_list.append(feature_copy)
 		return feature_list
 
+	def pct_difference(self, ref, pt):
+		return np.abs((ref - pt)/ref)*100
+
 	def generate_outer_grid(self, features):
-		flows = self.generate_grid(features, self.total_inner_flows, self.outer_flow_range)
+		flows = self.generate_grid(self.total_inner_flows, self.outer_flow_range, grid_size=18)
 		feature_list = []
 		for f in flows:
 			feature_copy = features.copy()
