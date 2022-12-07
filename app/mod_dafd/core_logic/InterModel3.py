@@ -112,7 +112,7 @@ class InterModel3:
 		"""Returns how far each solution mapped on the model deviates from the desired value
 		Used in our minimization function
 		"""
-		prediction = self.fwd_model.predict_size_rate(x, self.fluid_properties, normalized=False, as_dict=True, prediction="xgb")
+		prediction = self.fwd_model.predict_size_rate(x, self.fluid_properties, normalized=False, as_dict=True)
 		val_dict = {self.MH.input_headers[i]:self.MH.denormalize(val,self.MH.input_headers[i]) for i,val in enumerate(x)}
 		val_dict["generation_rate"] = prediction["generation_rate"]
 		#TODO: Add in area where xgb and nn disagree on the droplet size
@@ -124,7 +124,7 @@ class InterModel3:
 		"""Returns how far each solution mapped on the model deviates from the desired value
 		Used in our minimization function
 		"""
-		prediction = self.fwd_model.predict_size_rate(x, self.fluid_properties, normalized=True, as_dict=True, prediction="xgb")
+		prediction = self.fwd_model.predict_size_rate(x, self.fluid_properties, normalized=True, as_dict=True)
 		#merrors = [abs(self.MH.normalize(prediction[head], head) - self.norm_desired_vals_global_adjusted[head]) for head in self.norm_desired_vals_global_adjusted]
 		val_dict = {self.MH.input_headers[i]:self.MH.denormalize(val,self.MH.input_headers[i]) for i,val in enumerate(x)}
 		val_dict["generation_rate"] = prediction["generation_rate"]
@@ -304,7 +304,7 @@ class InterModel3:
 
 		#Denormalize results
 		results = {x: pos[i] for i, x in enumerate(self.MH.input_headers)}
-		prediction = self.fwd_model.predict_size_rate([results[x] for x in self.MH.input_headers], self.fluid_properties, as_dict=True, prediction="xgb")
+		prediction = self.fwd_model.predict_size_rate([results[x] for x in self.MH.input_headers], self.fluid_properties, as_dict=True)
 		print("Final Suggestions")
 		print(",".join(self.MH.input_headers) + "," + "desired_size" + "," + "predicted_generation_rate" + "," + "predicted_droplet_size")
 		output_string = ",".join([str(results[x]) for x in self.MH.input_headers])
