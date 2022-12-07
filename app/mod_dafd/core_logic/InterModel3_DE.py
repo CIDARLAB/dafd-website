@@ -179,7 +179,7 @@ class InterModel3_DE:
 		"""
 		#TODO: need to add flow rates in before normalizing set
 		self.fluid_properties = fluid_properties
-		self.DH = DEHelper(self.MH, fluid_properties)
+		self.DH = DEHelper(fluid_properties)
 
 
 		#TODO: Make this a loop if have a list for orifice width

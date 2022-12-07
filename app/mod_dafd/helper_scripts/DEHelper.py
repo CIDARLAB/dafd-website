@@ -6,7 +6,11 @@ from sklearn import model_selection
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from app.mod_dafd.metrics_study.metric_utils import make_sweep_range
+from app.mod_dafd.helper_scripts.ModelHelper3 import ModelHelper3
 import itertools
+from app.mod_dafd.core_logic.ForwardModel3 import ForwardModel3
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 class DEHelper:
 	"""
@@ -32,12 +36,12 @@ class DEHelper:
 	#For solution specific, do +/- 50%
 
 
-	def __init__(self, MH, fluid_properties):
+	def __init__(self, fluid_properties):
 		if DEHelper.instance is None:
 			DEHelper.instance = self
-		self.MH = MH
+		self.MH = ModelHelper3.get_instance()
 		self.fluid_properties = fluid_properties
-
+		self.fwd_model = ForwardModel3()
 	@staticmethod
 	def get_instance():
 		if DEHelper.instance is None:
@@ -54,6 +58,26 @@ class DEHelper:
 		flows = itertools.product(disp_flows, cont_flows)
 		flows = [{"dispersed_flow_rate": f[0], "continuous_flow_rate":f[1]} for f in flows]
 		return flows
+
+	def predict_sweep(self,feature_sweep, inner=False):
+		results = []
+		fprop = self.fluid_properties.copy()
+		if inner:
+			fprop["surface_tension"] = self.fluid_properties["inner_surface_tension"]
+		else:
+			try:
+				fprop["surface_tension"] = self.fluid_properties["inner_surface_tension"]
+			except:
+				fprop["surface_tension"] = self.fluid_properties["outer_surface_tension"]
+		for feature_set in feature_sweep:
+			fwd_results = self.fwd_model.predict_size_rate([feature_set[x] for x in self.MH.input_headers],
+													  		fprop, as_dict=True)
+			if type(feature_set) is not dict:
+				feature_set = feature_set.to_dict()
+			feature_set.update(fwd_results)
+			results.append(feature_set)
+		return results
+
 
 	def generate_inner_grid(self, features):
 		flows = self.generate_grid(self.inner_flow_range, self.oil_flow_range)
@@ -93,3 +117,79 @@ class DEHelper:
 						design["orifice_width"] ** 2 * design["aspect_ratio"]) * (1 / 3.6)
 			ca_num = ca_num / self.fluid_properties["inner_surface_tension"]
 		return frr, ca_num
+
+	def plot_stability(self, in_hm, out_hm, stab_mask, outer_flow_rate):
+		dx = 0.15
+		dy = 1
+		figsize = plt.figaspect(float(dx * 2) / float(dy * 1))
+		fig, axs = plt.subplots(1, 2, facecolor="w", figsize=figsize)
+		fig.suptitle('Device stability with outer flow rate of ' + str(outer_flow_rate) + " (\u03BCL/hr)", fontsize=16)
+		plt.subplots_adjust(wspace=0.3, bottom=0.2)
+		axs[0].set_facecolor("#bebebe")
+		axs[1].set_facecolor("#bebebe")
+
+		sns.heatmap(in_hm, vmin=in_hm.min().min(), vmax=in_hm.max().max(), cmap="viridis",
+					mask=stab_mask, ax=axs[0], cbar_kws={'label': 'Inner Droplet Size (\u03BCm)'})
+		sns.heatmap(out_hm, vmin=out_hm.min().min(), vmax=out_hm.max().max(), cmap="plasma",
+					mask=stab_mask, ax=axs[1], cbar_kws={'label': 'Outer Droplet Size (\u03BCm)'})
+		axs[0].set_xlabel('Dispersed Phase Flow Rate (\u03BCL/hr)')
+		axs[0].set_ylabel('Continuous Phase Flow Rate (\u03BCL/hr)')
+		axs[1].set_xlabel('Dispersed Phase Flow Rate (\u03BCL/hr)')
+		axs[1].set_ylabel('Continuous Phase Flow Rate (\u03BCL/hr)')
+		return fig
+
+
+	def run_stability(self, inner_features, outer_features):
+		inner_generator_sweep = self.generate_inner_grid(inner_features)
+		inner_generator_results = pd.DataFrame(self.predict_sweep(inner_generator_sweep, inner=True))
+
+		outer_generator_sweep = self.generate_outer_grid(outer_features)
+		outer_generator_results = pd.DataFrame(self.predict_sweep(outer_generator_sweep, inner=False))
+		in_fprop = {
+			"surface_tension": self.fluid_properties["inner_surface_tension"],
+			"water_viscosity": self.fluid_properties["inner_aq_viscosity"],
+			"oil_viscosity": self.fluid_properties["oil_viscosity"],
+			"viscosity_ratio": inner_features["viscosity_ratio"]
+		}
+
+		out_fprop = {
+			"surface_tension": self.fluid_properties["outer_surface_tension"],
+			"water_viscosity": self.fluid_properties["outer_aq_viscosity"],
+			"oil_viscosity": self.fluid_properties["outer_aq_viscosity"],
+			"viscosity_ratio": outer_features["viscosity_ratio"]
+
+		}
+		fnames = []
+		folder_path = os.path.join(os.getcwd(), "app", "static", "img")
+
+		for filename in os.listdir(folder_path):
+			if filename.startswith('stability'):
+				os.remove(os.path.join(folder_path, filename))
+
+		for outer in outer_generator_results.continuous_flow_rate.unique():
+			in_results = inner_generator_results.copy()
+			for i, row in in_results.iterrows():
+				total_flow = row.dispersed_flow_rate + row.continuous_flow_rate
+				outer_point = outer_generator_results.loc[outer_generator_results.continuous_flow_rate == outer, :]
+				outer_point = outer_point.loc[outer_point.dispersed_flow_rate == total_flow, :]
+				in_results.loc[i, "stability"] = float(
+					self.pct_difference(row["generation_rate"], outer_point.generation_rate) <= 15.0)
+				in_results.loc[i, "outer_diameter"] = float(outer_point.droplet_size)
+			# depending on the stability value, either have it be (1) colored or (2) greyed out
+			## Need to make a mask showing where things are stable or not
+			in_results.continuous_flow_rate = np.round(in_results.continuous_flow_rate, 1)
+			stab_mask = in_results.pivot(index="continuous_flow_rate", columns="dispersed_flow_rate",
+										 values="stability")
+			stab_mask = stab_mask[::-1].astype(bool)
+			stab_mask = ~stab_mask
+			inner_size_hm = in_results.pivot(index="continuous_flow_rate", columns="dispersed_flow_rate",
+											 values="droplet_size")[::-1]
+			outer_size_hm = in_results.pivot(index="continuous_flow_rate", columns="dispersed_flow_rate",
+											 values="outer_diameter")[::-1]
+			fig = self.plot_stability(inner_size_hm, outer_size_hm, stab_mask, outer)
+			fname = "stability_plot_" + str(int(outer)) + "_flow.png"
+			fnames.append(fname)
+			plt.savefig(os.path.join(folder_path, fname))
+		return fnames
+
+

@@ -5,6 +5,7 @@ import os
 from werkzeug.utils import secure_filename
 import time
 from app.mod_dafd.helper_scripts.TolHelper3 import TolHelper3
+from app.mod_dafd.helper_scripts.DEHelper import DEHelper
 
 nn_blueprint = Blueprint('nn', __name__)
 
@@ -529,6 +530,10 @@ def backward_3_de():
             size_hms.append(TH.flow_heatmap_size)
             gen_hms.append(TH.flow_heatmap_gen)
             fig_names.append(TH.plot_all(base=base))
+
+        DH = DEHelper(fluid_properties)
+        stab_names = DH.run_stability(inner_results, outer_results)
+        fig_names.extend(stab_names)
 
         geo = {}
         geo['Inner Orifice Width (\u03BCm)'] = np.round(inner_results["orifice_width"], 3)

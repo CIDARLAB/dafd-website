@@ -79,6 +79,63 @@
             <p><img class="img" src="{{ url_for('static', filename='img/'+fignames[1]) }}" width="100%"></p>
 
 
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 twelve columns">
+            <h1>Stability Plotting:</h1>
+            <p>Stable double emulsion generation requires both flow focusers to produce droplets at similar rates.
+                To better understand the performance of the produced double emulsion design, the stability and emulsion
+                sizes are displayed below as a function of the inner, oil, and outer flow rates. Stability is defined here
+                as double emulsion generation with inner and outer generation rates being within 15% of one another.
+
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[2]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[3]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[4]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[5]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[6]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[7]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[8]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[9]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[10]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[11]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[12]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[13]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[14]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[15]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[16]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[17]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[18]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[19]) }}" width="100%"></p>
+{##}
+{#            <br/><br/>#}
+{##}
+{#            <select id="dlist" onChange="swapImage()">#}
+{#            <option value={{fignames[2]}}> 1500 uL / hour</option>#}
+{#            <option value={{fignames[3]}}> 2000 uL / hour</option>#}
+{#            <option value={{fignames[4]}}> 2500 uL / hour</option>#}
+{#            <option value={{fignames[5]}}> 3000 uL / hour</option>#}
+{#            <option value={{fignames[6]}}> 3500 uL / hour</option>#}
+{#            <option value={{fignames[7]}}> 4000 uL / hour</option>#}
+{#            <option value={{fignames[8]}}> 4500 uL / hour</option>#}
+{#            <option value={{fignames[9]}}> 5000 uL / hour</option>#}
+{#            <option value={{fignames[10]}}> 5500 uL / hour</option>#}
+{#            <option value={{fignames[11]}}> 6000 uL / hour</option>#}
+{#            <option value={{fignames[12]}}> 6500 uL / hour</option>#}
+{#            <option value={{fignames[13]}}> 7000 uL / hour</option>#}
+{#            <option value={{fignames[14]}}> 7500 uL / hour</option>#}
+{#            <option value={{fignames[15]}}> 8000 uL / hour</option>#}
+{#            <option value={{fignames[16]}}> 8500 uL / hour</option>#}
+{#            <option value={{fignames[17]}}> 9000 uL / hour</option>#}
+{#            <option value={{fignames[18]}}> 9500 uL / hour</option>#}
+{#            <option value={{fignames[19]}}> 10000 uL / hour</option>#}
+{##}
+{#            </select>#}
+{##}
+
             <h3>Questions? Contact Us:</h3>
             <p>Ali Lashkaripour (<a href="alilp@stanford.edu">alilp@stanford.edu</a>), David McIntyre (<a href="dpmc@bu.edu">dpmc@bu.edu</a>) & Prof.
                 Douglas Densmore (<a href="dougd@bu.edu">dougd@bu.edu</a>)</p>
@@ -112,28 +169,19 @@
         </div>
     </div>
 </div>
+
+
+
 {% endblock %}
 
 
 {% block add_script %}
-
-<script src="{{ url_for('static', filename='js/bundle.js') }}"></script>
-<script>
-    window.onload = function() {
-        var button = document.getElementById("open_in_3duf_button");
-        button.onclick = function() {
-            //TODO: Put the individual parameter information here
-            var params = {
-                "orificeSize": {{ geo['Orifice Width (\u03BCm)'] }},
-                "orificeLength": {{ geo['Orifice Length (\u03BCm)'] }},
-                "oilInputWidth": {{ geo['Oil Inlet Width (\u03BCm)'] }},
-                "waterInputWidth": {{ geo['Water Inlet Width (\u03BCm)'] }},
-                "outputWidth": {{ geo['Outlet Channel Width (\u03BCm)'] }},
-                "outputLength": 5000,
-                "height": {{ geo['Channel Depth (\u03BCm)'] }}
-            };
-            ThreeDuFPlugin.openDesignWithDAFDParams(params);
-        }
-    }
+<script type="text/javascript">
+function swapImage(){
+	var image = document.getElementById("imageToSwap");
+	var dropd = document.getElementById("dlist");
+	image.src = url_for('static', filename='img/'+dropd.value);
+};
 </script>
+
 {% endblock %}
