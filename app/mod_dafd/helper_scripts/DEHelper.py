@@ -118,7 +118,7 @@ class DEHelper:
 			ca_num = ca_num / self.fluid_properties["inner_surface_tension"]
 		return frr, ca_num
 
-	def plot_stability(self, in_hm, out_hm, stab_mask, outer_flow_rate):
+	def plot_stability(self, in_hm, out_hm, stab_mask, outer_flow_rate, rate=False):
 		dx = 0.15
 		dy = 1
 		figsize = plt.figaspect(float(dx * 2) / float(dy * 1))
@@ -127,11 +127,15 @@ class DEHelper:
 		plt.subplots_adjust(wspace=0.3, bottom=0.2)
 		axs[0].set_facecolor("#bebebe")
 		axs[1].set_facecolor("#bebebe")
-
+		#TODO: take out if rate no longer needed
+		if rate:
+			cbar_kw = "Generation Rate (Hz)"
+		else:
+			cbar_kw = "Droplet Size (\u03BCm)"
 		sns.heatmap(in_hm, vmin=in_hm.min().min(), vmax=in_hm.max().max(), cmap="viridis",
-					mask=stab_mask, ax=axs[0], cbar_kws={'label': 'Inner Droplet Size (\u03BCm)'})
+					mask=stab_mask, ax=axs[0], cbar_kws={'label': 'Inner ' + cbar_kw})
 		sns.heatmap(out_hm, vmin=out_hm.min().min(), vmax=out_hm.max().max(), cmap="plasma",
-					mask=stab_mask, ax=axs[1], cbar_kws={'label': 'Outer Droplet Size (\u03BCm)'})
+					mask=stab_mask, ax=axs[1], cbar_kws={'label': 'Outer ' + cbar_kw})
 		axs[0].set_xlabel('Dispersed Phase Flow Rate (\u03BCL/hr)')
 		axs[0].set_ylabel('Continuous Phase Flow Rate (\u03BCL/hr)')
 		axs[1].set_xlabel('Dispersed Phase Flow Rate (\u03BCL/hr)')
@@ -175,6 +179,7 @@ class DEHelper:
 				in_results.loc[i, "stability"] = float(
 					self.pct_difference(row["generation_rate"], outer_point.generation_rate) <= 15.0)
 				in_results.loc[i, "outer_diameter"] = float(outer_point.droplet_size)
+				in_results.loc[i, "outer_rate"] = float(outer_point.generation_rate) #TODO: take out if needed
 			# depending on the stability value, either have it be (1) colored or (2) greyed out
 			## Need to make a mask showing where things are stable or not
 			in_results.continuous_flow_rate = np.round(in_results.continuous_flow_rate, 1)
@@ -190,6 +195,18 @@ class DEHelper:
 			fname = "stability_plot_" + str(int(outer)) + "_flow.png"
 			fnames.append(fname)
 			plt.savefig(os.path.join(folder_path, fname))
+
+			# TODO: TEMP, JUST FOR ALI, TAKE THIS OUT WHEN NOT NEEDED
+			inner_rate_hm = in_results.pivot(index="continuous_flow_rate", columns="dispersed_flow_rate",
+											 values="generation_rate")[::-1]
+			outer_rate_hm = in_results.pivot(index="continuous_flow_rate", columns="dispersed_flow_rate",
+											 values="outer_rate")[::-1]
+			fig = self.plot_stability(inner_rate_hm, outer_rate_hm, stab_mask, outer, rate=True)
+			fname = "stability_plot_" + str(int(outer)) + "_rate_flow.png"
+			fnames.append(fname)
+			plt.savefig(os.path.join(folder_path, fname))
+
+
 		return fnames
 
 
