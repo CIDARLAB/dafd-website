@@ -149,14 +149,19 @@ class InterModel3_DE:
 		for i, pt in inner.iterrows():
 			# ID all outer points within 15% difference in generation rate
 			FF1_flow = pt.continuous_flow_rate + pt.dispersed_flow_rate
-			adjacent = outer.loc[outer.dispersed_flow_rate == FF1_flow, :] # TODO: need to change this to be the sum of cont + dispersed
-			adjacent = adjacent.loc[self.DH.pct_difference(pt["generation_rate"], adjacent.generation_rate) < 15,:] #TODO: add in if there isn't anything less than 15, increase to 30 and repeat
-			# Pick outer point with minimum size difference from outer point
+			adjacent = outer.loc[outer.dispersed_flow_rate == FF1_flow, :]
+			adjacent.loc[:, "rate_err"] = self.DH.pct_difference(pt["generation_rate"], adjacent.generation_rate)
 			adjacent = adjacent.sort_values("size_err")
-			if len(adjacent > 0):
-				pairs.append((pt, adjacent.iloc[0,:]))
+			adj_15 = adjacent.loc[adjacent.rate_err < 15,:]
+			adj_30 = adjacent.loc[adjacent.rate_err < 30,:]
+
+			# Pick outer point with minimum size difference from outer point
+			if len(adj_15 > 0):
+				pairs.append((pt, adj_15.iloc[0,:]))
+			elif len(adj_30 > 0):
+				pairs.append((pt, adj_30.iloc[0,:]))
 			else:
-				pairs.append(None)
+				pairs.append((pt, adjacent.iloc[0,:]))
 		# Finally, choose top-k solutions for TOTAL size err (inner_err% + outer_err%)
 		total_errs = []
 		for i, pair in enumerate(pairs):
@@ -164,6 +169,12 @@ class InterModel3_DE:
 				total_errs.append(np.inf)
 			else:
 				total_errs.append(pair[0].size_err + pair[1].size_err)
+				#TODO: UPDATE THIS ALGORITHM DEPENDING ON WHAT WE WANT TO DO
+				if pair[1].rate_err > 15:
+					total_errs[-1] = total_errs[-1] + 1E3
+				if pair[1].rate_err > 30:
+					total_errs[-1] = total_errs[-1] + 1E3
+
 		idx = np.argpartition(total_errs, k)[:k]  # Indices not sorted
 		idx = idx[np.argsort(np.array(total_errs)[idx])]
 		return np.array(pairs)[idx], np.array(total_errs)[idx]
