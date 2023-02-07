@@ -350,10 +350,10 @@
 									<p class="field-tip">Inner droplet diameter (&mu;m)<!--<span class="tip-content">unit in &#181;m</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
-									<input type="range" min="15" max="250" value="15" class="slider-activated" id="innerDropSizeRange" oninput="updateIntInput(this.value, 'innerDropSize', this.id);">
+									<input type="range" min="15" max="45" value="15" class="slider-activated" id="innerDropSizeRange" oninput="updateIntInput(this.value, 'innerDropSize', this.id);">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="innerDropSize" name="innerDropSize" value="15" oninput="updateIntSlider('innerDropSizeRange', this.id)" onchange="intSliderChange('innerDropSizeRange', this.id, 15, 250)">
+									<input size="4" type="text" id="innerDropSize" name="innerDropSize" value="15" oninput="updateIntSlider('innerDropSizeRange', this.id)" onchange="intSliderChange('innerDropSizeRange', this.id, 15, 45)">
 								</div>
 								<div class="col-md-1 text-center">
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired inner droplet size.</span></div>
@@ -365,10 +365,10 @@
 									<p class="field-tip">Outer (total) double emulsion size (&mu;m)<!--<span class="tip-content">unit in Hz</span>--></p>
 								</div>
 								<div class="col-md-5 text-left">
-									<input type="range" min="5" max="12000" value="5" class="slider-activated" id="outerDropSizeRange" oninput="updateIntInput(this.value, 'outerDropSize', this.id);">
+									<input type="range" min="25" max="55" value="25" class="slider-activated" id="outerDropSizeRange" oninput="updateIntInput(this.value, 'outerDropSize', this.id);">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="outerDropSize" name="outerDropSize" value="5" oninput="updateIntSlider('outerDropSizeRange', this.id)" onchange="intSliderChange('outerDropSizeRange', this.id, 5, 12000)">
+									<input size="4" type="text" id="outerDropSize" name="outerDropSize" value="25" oninput="updateIntSlider('outerDropSizeRange', this.id)" onchange="intSliderChange('outerDropSizeRange', this.id, 25, 55)">
 								</div>
 								<div class="col-md-1 text-center">
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired outer (total) droplet size.</span></div>

@@ -96,6 +96,13 @@ def publications():
 	
 	return render_template('publications.html')
 
+
+@app.route("/fluid_properties.html")
+@app.route("/fluid_properties")
+def fluid_properties():
+    return render_template('fluid_properties.html')
+
+
 @app.route("/datasets.html")
 @app.route("/datasets")
 def datasets():
