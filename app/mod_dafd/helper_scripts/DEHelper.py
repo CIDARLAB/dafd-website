@@ -4,12 +4,16 @@ import sklearn
 import numpy as np
 from sklearn import model_selection
 import pandas as pd
+import time
 from sklearn.preprocessing import StandardScaler
 from app.mod_dafd.metrics_study.metric_utils import make_sweep_range
 from app.mod_dafd.helper_scripts.ModelHelper3 import ModelHelper3
 import itertools
 from app.mod_dafd.core_logic.ForwardModel3 import ForwardModel3
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
 import seaborn as sns
 
 class DEHelper:
@@ -192,9 +196,10 @@ class DEHelper:
 			outer_size_hm = in_results.pivot(index="continuous_flow_rate", columns="dispersed_flow_rate",
 											 values="outer_diameter")[::-1]
 			fig = self.plot_stability(inner_size_hm, outer_size_hm, stab_mask, outer)
-			fname = "stability_plot_" + str(int(outer)) + "_flow.png"
+			fname = "stability_plot_" + str(int(outer)) + "_" + str(time.time()) + "_flow.png"
 			fnames.append(fname)
-			plt.savefig(os.path.join(folder_path, fname))
+			fig.savefig(os.path.join(folder_path, fname))
+			plt.close(fig)
 
 			# TODO: TEMP, JUST FOR ALI, TAKE THIS OUT WHEN NOT NEEDED
 			inner_rate_hm = in_results.pivot(index="continuous_flow_rate", columns="dispersed_flow_rate",
@@ -202,10 +207,10 @@ class DEHelper:
 			outer_rate_hm = in_results.pivot(index="continuous_flow_rate", columns="dispersed_flow_rate",
 											 values="outer_rate")[::-1]
 			fig = self.plot_stability(inner_rate_hm, outer_rate_hm, stab_mask, outer, rate=True)
-			fname = "stability_plot_" + str(int(outer)) + "_rate_flow.png"
+			fname = "stability_plot_" + str(int(outer)) + "_" + str(time.time()) + "_rate_flow.png"
 			fnames.append(fname)
-			plt.savefig(os.path.join(folder_path, fname))
-
+			fig.savefig(os.path.join(folder_path, fname))
+			plt.close(fig)
 
 		return fnames
 
