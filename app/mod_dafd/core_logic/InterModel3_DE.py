@@ -220,7 +220,7 @@ class InterModel3_DE:
 				errors.append(err[0])
 				inner_results.append(results[0][0])
 				outer_results.append(results[0][1])
-			top_idx = np.argmin(err)
+			top_idx = np.argmin(errors)
 			inner_result = inner_results[top_idx]
 			outer_result = outer_results[top_idx]
 
