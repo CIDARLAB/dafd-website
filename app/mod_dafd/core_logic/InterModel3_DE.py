@@ -199,27 +199,31 @@ class InterModel3_DE:
 			outer_results = []
 			errors = []
 			for i in range(len(inner_features["orifice_width"])):
-				in_feat = inner_features.copy()
-				out_feat = outer_features.copy()
-				in_feat["orifice_width"] = in_feat["orifice_width"][i]
-				out_feat["orifice_width"] = out_feat["orifice_width"][i]
-				inner_generator_sweep = self.DH.generate_inner_grid(in_feat)
-				inner_generator_results = pd.DataFrame(self.predict_sweep(inner_generator_sweep, inner = True))
+				for j in range(len(inner_features["aspect_ratio"])):
+					in_feat = inner_features.copy()
+					out_feat = outer_features.copy()
+					in_feat["orifice_width"] = in_feat["orifice_width"][i]
+					out_feat["orifice_width"] = out_feat["orifice_width"][i]
+					in_feat["aspect_ratio"] = in_feat["aspect_ratio"][j]
+					out_feat["aspect_ratio"] = out_feat["aspect_ratio"][j]
 
-				outer_generator_sweep = self.DH.generate_outer_grid(out_feat)
-				outer_generator_results = pd.DataFrame(self.predict_sweep(outer_generator_sweep, inner=False))
+					inner_generator_sweep = self.DH.generate_inner_grid(in_feat)
+					inner_generator_results = pd.DataFrame(self.predict_sweep(inner_generator_sweep, inner = True))
 
-				### ALGORITHM ###
-				# INNER: find and rank by distance between sweep sizes and desired sizes
-				inner_generator_results.loc[:, "size_err"] = self.DH.pct_difference(desired_values["inner_droplet_size"], inner_generator_results.loc[:,"droplet_size"])
-				# OUTER: find and rank by distance between sweep sizes and desired sizes
-				outer_generator_results.loc[:, "size_err"] = self.DH.pct_difference(desired_values["outer_droplet_size"], outer_generator_results.loc[:,"droplet_size"])
-				# Find optimal pairs for DE design automation
-				results, err = self.optimize(inner_generator_results, outer_generator_results)
-				#TODO: make downloadable csv for all of the different results (top-k)
-				errors.append(err[0])
-				inner_results.append(results[0][0])
-				outer_results.append(results[0][1])
+					outer_generator_sweep = self.DH.generate_outer_grid(out_feat)
+					outer_generator_results = pd.DataFrame(self.predict_sweep(outer_generator_sweep, inner=False))
+
+					### ALGORITHM ###
+					# INNER: find and rank by distance between sweep sizes and desired sizes
+					inner_generator_results.loc[:, "size_err"] = self.DH.pct_difference(desired_values["inner_droplet_size"], inner_generator_results.loc[:,"droplet_size"])
+					# OUTER: find and rank by distance between sweep sizes and desired sizes
+					outer_generator_results.loc[:, "size_err"] = self.DH.pct_difference(desired_values["outer_droplet_size"], outer_generator_results.loc[:,"droplet_size"])
+					# Find optimal pairs for DE design automation
+					results, err = self.optimize(inner_generator_results, outer_generator_results)
+					#TODO: make downloadable csv for all of the different results (top-k)
+					errors.append(err[0])
+					inner_results.append(results[0][0])
+					outer_results.append(results[0][1])
 			top_idx = np.argmin(errors)
 			inner_result = inner_results[top_idx]
 			outer_result = outer_results[top_idx]

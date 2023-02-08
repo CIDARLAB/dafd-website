@@ -477,24 +477,45 @@ def backward_3_de():
         device = request.form.get('device')
         if device is not None:
             device = float(device)
-        inner_features = {'orifice_width': None, 'aspect_ratio': 1, 'normalized_oil_inlet': 1,
+        inner_features = {'orifice_width': None, 'aspect_ratio': None, 'normalized_oil_inlet': 1,
                 'normalized_water_inlet': 1, 'expansion_ratio': 1}
         outer_features = inner_features.copy()
         if device == 1:
             inner_features['orifice_width'] = 15
             outer_features['orifice_width'] = 30
-
+            inner_features['aspect_ratio'] = 1
+            outer_features['aspect_ratio'] = 1
         elif device == 2:
             inner_features['orifice_width'] = 22.5
             outer_features['orifice_width'] = 45
+            inner_features['aspect_ratio'] = 1
+            outer_features['aspect_ratio'] = 1
         elif device == 3:
             inner_features['orifice_width'] = 30
             outer_features['orifice_width'] = 60
+            inner_features['aspect_ratio'] = 1
+            outer_features['aspect_ratio'] = 1
+        elif device == 4:
+            inner_features['orifice_width'] = 15
+            outer_features['orifice_width'] = 30
+            inner_features['aspect_ratio'] = 1.33
+            outer_features['aspect_ratio'] = 1.33
+        elif device == 5:
+            inner_features['orifice_width'] = 22.5
+            outer_features['orifice_width'] = 45
+            inner_features['aspect_ratio'] = 1.33
+            outer_features['aspect_ratio'] = 1.33
+        elif device == 6:
+            inner_features['orifice_width'] = 30
+            outer_features['orifice_width'] = 60
+            inner_features['aspect_ratio'] = 1.33
+            outer_features['aspect_ratio'] = 1.33
         else:
             #TODO: Add in combo for all of them
             inner_features['orifice_width'] = [15, 22.5, 30]
             outer_features['orifice_width'] = [30, 45, 60]
-
+            inner_features['aspect_ratio'] = [1, 1.33]
+            outer_features['aspect_ratio'] = [1, 1.33]
 
         inner_features['viscosity_ratio'] = fluid_properties["oil_viscosity"]/fluid_properties["inner_aq_viscosity"]
         outer_features['viscosity_ratio'] = fluid_properties["outer_aq_viscosity"]/fluid_properties["oil_viscosity"]
