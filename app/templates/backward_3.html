@@ -55,8 +55,8 @@
                 <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="lambda" name="lambda" value="0.1" onchange="updateLambda(this.value, {{ gen_rate }}, {{ flow_rate }});"></div>
             </div>
             <div class="row">
-                <div class="col-md-6 col-sm-12 col-xs-12">Cell concentration (cells per &mu;l)</div>
-                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="conc" name="conc" value="{{(gen_rate*0.1*60/flow_rate)|int}}" readonly></div>
+                <div class="col-md-6 col-sm-12 col-xs-12">Cell concentration (million cells per mL)</div>
+                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="conc" name="conc" value="{{(gen_rate*0.1*60/(flow_rate*1000))|int}}" readonly></div>
             </div>
         </div>
     </div>
