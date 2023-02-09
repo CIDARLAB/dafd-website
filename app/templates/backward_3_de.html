@@ -49,7 +49,7 @@
             </div>
             <div class="row">
                 <div class="col-md-6 col-sm-12 col-xs-12">Cell concentration (million cells per mL)</div>
-                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="conc" name="conc" value="{{(gen_rate*0.1*60/(flow_rate*1000))|int}}" readonly></div>
+                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="conc" name="conc" value="{{(gen_rate*0.1*60/(flow_rate*1000))|float}}" readonly></div>
             </div>
         </div>
     </div>

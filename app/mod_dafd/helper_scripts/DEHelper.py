@@ -131,15 +131,30 @@ class DEHelper:
 		plt.subplots_adjust(wspace=0.3, bottom=0.2)
 		axs[0].set_facecolor("#bebebe")
 		axs[1].set_facecolor("#bebebe")
+
 		#TODO: take out if rate no longer needed
 		if rate:
 			cbar_kw = "Generation Rate (Hz)"
+			vmin = in_hm.min().min()
+			if out_hm.min().min() < vmin:
+				vmin = out_hm.min().min()
+
+			vmax = in_hm.max().max()
+			if out_hm.max().max() > vmax:
+				vmax = out_hm.max().max()
+
+			sns.heatmap(in_hm, vmin=vmin, vmax=vmax, cmap="viridis",
+						mask=stab_mask, ax=axs[0], cbar_kws={'label': 'Inner ' + cbar_kw})
+			sns.heatmap(out_hm, vmin=vmin, vmax=vmax, cmap="plasma",
+						mask=stab_mask, ax=axs[1], cbar_kws={'label': 'Outer ' + cbar_kw})
+
 		else:
 			cbar_kw = "Droplet Size (\u03BCm)"
-		sns.heatmap(in_hm, vmin=in_hm.min().min(), vmax=in_hm.max().max(), cmap="viridis",
-					mask=stab_mask, ax=axs[0], cbar_kws={'label': 'Inner ' + cbar_kw})
-		sns.heatmap(out_hm, vmin=out_hm.min().min(), vmax=out_hm.max().max(), cmap="plasma",
-					mask=stab_mask, ax=axs[1], cbar_kws={'label': 'Outer ' + cbar_kw})
+			sns.heatmap(in_hm, vmin=in_hm.min().min(), vmax=in_hm.max().max(), cmap="viridis",
+						mask=stab_mask, ax=axs[0], cbar_kws={'label': 'Inner ' + cbar_kw})
+			sns.heatmap(out_hm, vmin=out_hm.min().min(), vmax=out_hm.max().max(), cmap="plasma",
+						mask=stab_mask, ax=axs[1], cbar_kws={'label': 'Outer ' + cbar_kw})
+
 		axs[0].set_xlabel('Dispersed Phase Flow Rate (\u03BCL/hr)')
 		axs[0].set_ylabel('Continuous Phase Flow Rate (\u03BCL/hr)')
 		axs[1].set_xlabel('Dispersed Phase Flow Rate (\u03BCL/hr)')
