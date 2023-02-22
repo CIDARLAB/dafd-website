@@ -133,13 +133,11 @@ class InterModel3_DE:
 		if inner:
 			fluid_properties["surface_tension"] = fluid_properties["inner_surface_tension"]
 		else:
-			try:
-				fluid_properties["surface_tension"] = fluid_properties["inner_surface_tension"]
-			except:
-				fluid_properties["surface_tension"] = fluid_properties["_surface_tension"]
+			fluid_properties["surface_tension"] = fluid_properties["outer_surface_tension"]
+
 		for feature_set in feature_sweep:
 			fwd_results = self.fwd_model.predict_size_rate([feature_set[x] for x in self.MH.input_headers],
-														   fluid_properties, as_dict=True)
+														   fluid_properties, as_dict=True, inner=inner)
 			feature_set.update(fwd_results)
 			results.append(feature_set)
 		return results

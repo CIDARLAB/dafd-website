@@ -167,7 +167,7 @@ class ModelHelper3:
 	def arr_to_dict(self, X):
 		return {key: X[i] for i,key in enumerate(self.input_headers)}
 
-	def calculate_formulaic_relations(self, design_inputs, flow_only=False):
+	def calculate_formulaic_relations(self, design_inputs, inner=True, flow_only=False):
 
 		"""
 			Calculate water flow rate, oil flow rate, and inferred droplet size off the design inputs from DAFD forward model
@@ -178,8 +178,10 @@ class ModelHelper3:
 		flow_rate_ratio = design_inputs["flow_rate_ratio"]
 		capillary_number = design_inputs["capillary_number"]
 		surface_tension = design_inputs["surface_tension"]
-		oil_viscosity = design_inputs["oil_viscosity"]
-
+		if inner:
+			oil_viscosity = design_inputs["oil_viscosity"]
+		else:
+			oil_viscosity = design_inputs["outer_aq_viscosity"]
 		# Calculate oil flow rate
 		oil_flow_rate = capillary_number * orifice_size**2 * aspect_ratio * surface_tension / oil_viscosity * 60**2 * 10**-3
 

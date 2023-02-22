@@ -43,7 +43,7 @@ class ForwardModel3:
 		return self.regressor_xgb.predict(norm_features)
 
 
-	def predict_size_rate(self, features, fluid_properties, normalized = False, as_dict = True, prediction = ""):
+	def predict_size_rate(self, features, fluid_properties, inner=True, normalized = False, as_dict = True, prediction = ""):
 		input_dict = {self.MH.input_headers[i]: features[i] for i in range(len(features))}
 		if prediction == "xgb":
 			input_dict["normalized_diameter"] = self.predict_xgb(features, normalized=normalized) #TODO: figure out why xgb isn't changing with flow rate ratio....
@@ -52,7 +52,7 @@ class ForwardModel3:
 		else:
 			input_dict["normalized_diameter"] = self.predict(features, normalized=normalized)
 		input_dict.update(fluid_properties)
-		_,_,droplet_size, generation_rate = self.MH.calculate_formulaic_relations(input_dict)
+		_,_,droplet_size, generation_rate = self.MH.calculate_formulaic_relations(input_dict, inner=inner)
 		if as_dict:
 			return {"droplet_size": droplet_size, "generation_rate": generation_rate}
 		else:
