@@ -160,8 +160,8 @@ class InterModel3_DE:
 				pairs.append((pt, adj_15.iloc[0,:]))
 			elif len(adj_30 > 0):
 				pairs.append((pt, adj_30.iloc[0,:]))
-			else:
-				pairs.append((pt, adjacent.iloc[0,:]))
+			# else:
+			# 	pairs.append((pt, adjacent.iloc[0,:]))
 		# Finally, choose top-k solutions for TOTAL size err (inner_err% + outer_err%)
 		total_errs = []
 		for i, pair in enumerate(pairs):
@@ -170,10 +170,13 @@ class InterModel3_DE:
 			else:
 				total_errs.append(pair[0].size_err + pair[1].size_err)
 				#TODO: UPDATE THIS ALGORITHM DEPENDING ON WHAT WE WANT TO DO
-				if pair[1].rate_err > 15:
-					total_errs[-1] = total_errs[-1] + 1E3
 				if pair[1].rate_err > 30:
+					# TODO: Adjust back if needed
+					#total_errs[-1] = total_errs[-1] + 2E3
+					continue
+				elif pair[1].rate_err > 15:
 					total_errs[-1] = total_errs[-1] + 1E3
+
 
 		idx = np.argpartition(total_errs, k)[:k]  # Indices not sorted
 		idx = idx[np.argsort(np.array(total_errs)[idx])]
@@ -188,12 +191,10 @@ class InterModel3_DE:
 				desired_values:
 				fluid_properties:
 		"""
-		#TODO: need to add flow rates in before normalizing set
 		self.fluid_properties = fluid_properties
 		self.DH = DEHelper(fluid_properties)
 
 
-		#TODO: Make this a loop if have a list for orifice width
 		if type(inner_features["orifice_width"]) is list:
 			inner_results = []
 			outer_results = []
@@ -221,16 +222,23 @@ class InterModel3_DE:
 					# Find optimal pairs for DE design automation
 					results, err = self.optimize(inner_generator_results, outer_generator_results)
 					#TODO: make downloadable csv for all of the different results (top-k)
-					errors.append(err[0])
-					inner_results.append(results[0][0])
-					outer_results.append(results[0][1])
-			top_idx = np.argmin(errors)
-			inner_result = inner_results[top_idx]
-			outer_result = outer_results[top_idx]
+					if len(results) == 0:
+						continue
+					else:
+						errors.append(err[0])
+						inner_results.append(results[0][0])
+						outer_results.append(results[0][1])
+			if len(errors) == 0:
+				inner_result = None
+				outer_result = None
+			else:
+				top_idx = np.argmin(errors)
+				inner_result = inner_results[top_idx]
+				outer_result = outer_results[top_idx]
 
 		else:
 			inner_generator_sweep = self.DH.generate_inner_grid(inner_features)
-			inner_generator_results = pd.DataFrame(self.predict_sweep(inner_generator_sweep, inner = True))
+			inner_generator_results = pd.DataFrame(self.predict_sweep(inner_generator_sweep, inner=True))
 
 			outer_generator_sweep = self.DH.generate_outer_grid(outer_features)
 			outer_generator_results = pd.DataFrame(self.predict_sweep(outer_generator_sweep, inner=False))
@@ -242,8 +250,12 @@ class InterModel3_DE:
 			outer_generator_results.loc[:, "size_err"] = self.DH.pct_difference(desired_values["outer_droplet_size"], outer_generator_results.loc[:,"droplet_size"])
 			# Find optimal pairs for DE design automation
 			results, err = self.optimize(inner_generator_results, outer_generator_results)
-			#TODO: make downloadable csv for all of the different results (top-k)
-			inner_result = results[0][0]
-			outer_result = results[0][1]
+			if len(results[0]) == 0:
+				inner_result = None
+				outer_result = None
+			else:
+				#TODO: make downloadable csv for all of the different results (top-k)
+				inner_result = results[0][0]
+				outer_result = results[0][1]
 		return inner_result, outer_result
 

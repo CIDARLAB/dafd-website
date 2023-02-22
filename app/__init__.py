@@ -97,6 +97,12 @@ def publications():
 	return render_template('publications.html')
 
 
+@app.route("/no_solution.html")
+@app.route("/no_solution")
+def no_solution():
+    return render_template('no_solution.html')
+
+
 @app.route("/fluid_properties.html")
 @app.route("/fluid_properties")
 def fluid_properties():

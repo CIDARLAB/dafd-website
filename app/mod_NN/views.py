@@ -526,6 +526,9 @@ def backward_3_de():
 
 
         inner_results, outer_results = runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties)
+        if inner_results is None and outer_results is None:
+            return render_template('no_solution.html')
+
         fig_names = []
         size_hms = []
         gen_hms = []
@@ -589,6 +592,8 @@ def backward_3_de():
         perform['Inner Generation Rate (Hz)'] = np.round(inner_results["generation_rate"], 3)
         perform['Outer DE Diameter (\u03BCm)'] = np.round(outer_results["droplet_size"], 3)
         perform['Outer Generation Rate (Hz)'] = np.round(outer_results["generation_rate"], 3)
+        perform["Rate Percent Difference"] = np.round(np.abs((outer_results["generation_rate"] - inner_results["generation_rate"]) \
+                                                              / inner_results["generation_rate"] * 100), 3)
 
         flowrate = {}
         flowrate['Inner Aqueous Flow Rate (\u03BCl/hr)'] = np.round(inner_results["dispersed_flow_rate"], 3)
