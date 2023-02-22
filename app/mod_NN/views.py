@@ -405,11 +405,14 @@ def backward_3():
         constraints['viscosity_ratio'] = fluid_properties["oil_viscosity"]/fluid_properties["water_viscosity"]
 
         if "oil_flow_rate" in constraints.keys():
-            ca_num = constraints["oil_viscosity"]*constraints["oil_flow_rate"]/(constraints["orifice_width"]**2*constraints["aspect_ratio"]) * (1/3.6)
-            constraints['capillary_number'] = ca_num/constraints["surface_tension"] #TODO: handle weird capillary numbers without surface tension
+            ca_num = fluid_properties["oil_viscosity"]*constraints["oil_flow_rate"]/(constraints["orifice_width"]**2*constraints["aspect_ratio"]) * (1/3.6)
+            constraints['capillary_number'] = ca_num/fluid_properties["surface_tension"] #TODO: handle weird capillary numbers without surface tension
             if "water_flow_rate" in constraints.keys():
                 #TODO: need to handle case where water flow is a constraint but oil flow is not
                 constraints['flow_rate_ratio'] = constraints["oil_flow_rate"] / constraints["water_flow_rate"]
+                #TODO: temp fix, need to remove
+                del constraints["oil_flow_rate"]
+                del constraints["water_flow_rate"]
 
         desired_vals = {}
         desired_vals['generation_rate'] = request.form.get('genRate')
@@ -443,7 +446,7 @@ def backward_3():
         flowrate['Dispersed Phase Flow Rate (\u03BCl/hr)'] = np.round(reverse_results["water_flow_rate"], 3)
 
         gen_rate = np.round(reverse_results["generation_rate"], 3)
-        flow_rate = np.round(reverse_results["droplet_size"], 3)
+        disp_Flow  = np.round(reverse_results["water_flow_rate"], 3)
 
         features = reverse_results.copy()
         del features["point_source"]
@@ -453,7 +456,7 @@ def backward_3():
         fig_name = TH.plot_all()
 
         return render_template('backward_3.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
-                               gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, figname=fig_name)
+                               figname=fig_name)
     return redirect(url_for('index_3'))
 
 
@@ -592,10 +595,8 @@ def backward_3_de():
         flowrate['Oil Flow Rate (\u03BCl/hr)'] = np.round(inner_results["continuous_flow_rate"], 3)
         flowrate['Outer Aqueous Flow Rate (\u03BCl/hr)'] = np.round(outer_results["continuous_flow_rate"], 3)
 
-        gen_rate = np.round(inner_results["generation_rate"], 3)
-        flow_rate = np.round(inner_results["dispersed_flow_rate"], 3)
         return render_template('backward_3_de.html', geo=geo, flow=flow, perform=perform, flowrate=flowrate,
-                               gen_rate=gen_rate, flow_rate=flow_rate, values=flowrate, fignames=fig_names)
+                               fignames=fig_names)
     return redirect(url_for('index_3'))
 
 

@@ -52,11 +52,12 @@
             <h5>Single cell encapsulation</h5>
             <div class="row">
                 <div class="col-md-6 col-sm-12 col-xs-12">Lambda (ratio of cells to droplets)</div>
-                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="lambda" name="lambda" value="0.1" onchange="updateLambda(this.value, {{ gen_rate }}, {{ flow_rate }});"></div>
+                <!-- TODO: Make new updateLambda version to reflect newer version, currently not updating anything -->
+                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="lambda" name="lambda" value="0.1" onchange="updateLambda(this.value*0.06, {{ perform['Generation Rate (Hz)']}}, {{ flowrate['Dispersed Phase Flow Rate (\u03BCl/hr)'] }});"></div>
             </div>
             <div class="row">
                 <div class="col-md-6 col-sm-12 col-xs-12">Cell concentration (million cells per mL)</div>
-                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="conc" name="conc" value="{{(gen_rate*0.1*60/(flow_rate*1000))|float}}" readonly></div>
+                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="conc" name="conc" value="{{(3.6*perform['Generation Rate (Hz)']*0.1/flowrate['Dispersed Phase Flow Rate (\u03BCl/hr)'])|int}}" readonly></div>
             </div>
         </div>
     </div>
