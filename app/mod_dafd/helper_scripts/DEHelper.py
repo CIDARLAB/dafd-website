@@ -143,7 +143,7 @@ class DEHelper:
 			if out_hm.max().max() > vmax:
 				vmax = out_hm.max().max()
 
-			sns.heatmap(in_hm, vmin=vmin, vmax=vmax, cmap="viridis",
+			sns.heatmap(in_hm, vmin=vmin, vmax=vmax, cmap="plasma",
 						mask=stab_mask, ax=axs[0], cbar_kws={'label': 'Inner ' + cbar_kw})
 			sns.heatmap(out_hm, vmin=vmin, vmax=vmax, cmap="plasma",
 						mask=stab_mask, ax=axs[1], cbar_kws={'label': 'Outer ' + cbar_kw})
@@ -152,7 +152,7 @@ class DEHelper:
 			cbar_kw = "Droplet Size (\u03BCm)"
 			sns.heatmap(in_hm, vmin=in_hm.min().min(), vmax=in_hm.max().max(), cmap="viridis",
 						mask=stab_mask, ax=axs[0], cbar_kws={'label': 'Inner ' + cbar_kw})
-			sns.heatmap(out_hm, vmin=out_hm.min().min(), vmax=out_hm.max().max(), cmap="plasma",
+			sns.heatmap(out_hm, vmin=out_hm.min().min(), vmax=out_hm.max().max(), cmap="viridis",
 						mask=stab_mask, ax=axs[1], cbar_kws={'label': 'Outer ' + cbar_kw})
 
 		axs[0].set_xlabel('Dispersed Phase Flow Rate (\u03BCL/hr)')
