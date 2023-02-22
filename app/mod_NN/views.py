@@ -400,19 +400,19 @@ def backward_3():
         fluid_properties['surface_tension'] = request.form.get('surfTension')
         fluid_properties = {key: float(fluid_properties[key]) for key in fluid_properties.keys()}
         # normalize to correct values
-        #TODO: issue here if there aren't any constraints on the flow rates,
         constraints = {key:float(constraints[key]) for key in constraints.keys() if constraints[key] is not None}
         constraints['viscosity_ratio'] = fluid_properties["oil_viscosity"]/fluid_properties["water_viscosity"]
 
         if "oil_flow_rate" in constraints.keys():
-            ca_num = fluid_properties["oil_viscosity"]*constraints["oil_flow_rate"]/(constraints["orifice_width"]**2*constraints["aspect_ratio"]) * (1/3.6)
-            constraints['capillary_number'] = ca_num/fluid_properties["surface_tension"] #TODO: handle weird capillary numbers without surface tension
+            # TODO: This doesn't work if the other constraints aren't there
+            if "aspect_ratio" in constraints.keys() and "orifice_width" in constraints.keys():
+                ca_num = fluid_properties["oil_viscosity"]*constraints["oil_flow_rate"]/(constraints["orifice_width"]**2*constraints["aspect_ratio"]) * (1/3.6)
+                constraints['capillary_number'] = ca_num/fluid_properties["surface_tension"]
             if "water_flow_rate" in constraints.keys():
                 #TODO: need to handle case where water flow is a constraint but oil flow is not
                 constraints['flow_rate_ratio'] = constraints["oil_flow_rate"] / constraints["water_flow_rate"]
-                #TODO: temp fix, need to remove
-                del constraints["oil_flow_rate"]
-                del constraints["water_flow_rate"]
+
+
 
         desired_vals = {}
         desired_vals['generation_rate'] = request.form.get('genRate')

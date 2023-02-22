@@ -3,13 +3,7 @@ oil_viscosity=1.61
 water_viscosity=0.931
 surface_tension=0.543
 CONSTRAINTS
-orifice_width=15.0:15.0
-aspect_ratio=1.0:1.0
-expansion_ratio=1.0:1.0
-normalized_water_inlet=1.0:1.0
-normalized_oil_inlet=1.0:1.0
+water_flow_rate=150.0:150.0
 viscosity_ratio=1.7293233082706767:1.7293233082706767
-capillary_number=0.1830252597594525:0.1830252597594525
-flow_rate_ratio=1.0:1.0
 DESIRED_VALS
-droplet_size=15
+droplet_size=40

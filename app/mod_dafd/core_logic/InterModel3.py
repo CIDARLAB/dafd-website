@@ -77,6 +77,7 @@ class InterModel3:
 				if exp_error > max_drop_exp_error:
 					continue
 			feat_point = self.MH.features[i]
+			feat_dict = {x:feat_point[i] for i,x in enumerate(self.MH.input_headers)}
 			output_point = self.MH.outputs[i]
 
 			nval = sum([abs(self.MH.normalize( self.MH.all_dat[i][x], x) - desired_vals[x]) for x in desired_vals])
@@ -93,6 +94,18 @@ class InterModel3:
 
 			if "generation_rate" in desired_vals:
 				nval += abs(self.MH.normalize(output_point["generation_rate"],"generation_rate") - desired_vals["generation_rate"])
+
+			if "oil_flow_rate" in self.flow_constraints.keys():
+				ca_num = self.fluid_properties["oil_viscosity"] * self.flow_constraints["oil_flow_rate"] / (
+							feat_dict["orifice_width"] ** 2 * feat_dict["aspect_ratio"]) * (1 / 3.6)
+				ca_num = ca_num/self.fluid_properties["surface_tension"]
+				constraints['capillary_number'] = [ca_num, ca_num]
+
+			if "water_flow_rate" in self.flow_constraints.keys():
+				oil_flow = (feat_dict["capillary_number"] * feat_dict["orifice_width"]**2 * feat_dict["aspect_ratio"]*3.6  \
+							* self.fluid_properties["surface_tension"]) /  (self.fluid_properties["oil_viscosity"])
+				q_ratio = oil_flow / self.flow_constraints["water_flow_rate"]
+				constraints["flow_rate_ratio"] = [q_ratio, q_ratio]
 
 			for j in range(len(self.MH.input_headers)):
 				if self.MH.input_headers[j] in 	constraints:
@@ -141,13 +154,30 @@ class InterModel3:
 
 	def correct_by_constraints(self,values,constraints):
 		"""Sets values to be within constraints (can be normalized or not, as long as values match constraints)"""
+		val_dict = {}
 		for i,head in enumerate(self.MH.input_headers):
+			val_dict[head] = values[i]
 			if head in constraints:
 				if values[i] < constraints[head][0]:
 					values[i] = constraints[head][0]
 				elif values[i] > constraints[head][1]:
 					values[i] = constraints[head][1]
+		if "oil_flow_rate" in self.flow_constraints.keys():
+			ca_num = self.fluid_properties["oil_viscosity"] * self.flow_constraints["oil_flow_rate"] / (
+						val_dict["orifice_width"] ** 2 * val_dict["aspect_ratio"]) * (1 / 3.6)
+			ca_num = ca_num/self.fluid_properties["surface_tension"]
+			val_dict["capillary_number"] = ca_num
+			values[3] = ca_num
 
+		if "water_flow_rate" in self.flow_constraints.keys():
+			if "oil_flow_rate" in self.flow_constraints.keys():
+				oil_flow = self.flow_constraints["oil_flow_rate"]
+			else:
+				oil_flow = (val_dict["capillary_number"] * val_dict["orifice_width"]**2 * val_dict["aspect_ratio"]*3.6  \
+							* self.fluid_properties["surface_tension"]) /  (self.fluid_properties["oil_viscosity"])
+			q_ratio = oil_flow / self.flow_constraints["water_flow_rate"]
+			val_dict["flow_rate_ratio"] = q_ratio
+			values[2] = q_ratio
 
 	def interpolate(self,desired_val_dict,constraints, fluid_properties):
 		"""Return an input set within the given constraints that produces the output set
@@ -162,12 +192,18 @@ class InterModel3:
 		"""
 		norm_constraints = {}
 		denorm_constraints = {}
+		self.flow_constraints = {}
 
 		for cname in constraints:
-			cons_low = self.MH.normalize(constraints[cname][0], cname)
-			cons_high = self.MH.normalize(constraints[cname][1],cname)
-			norm_constraints[cname] = (cons_low, cons_high)
-			denorm_constraints[cname] = (constraints[cname][0], constraints[cname][1])
+			if cname in ["oil_flow_rate", "water_flow_rate"]:
+				self.flow_constraints[cname] = constraints[cname][0]
+			else:
+				cons_low = self.MH.normalize(constraints[cname][0], cname)
+				cons_high = self.MH.normalize(constraints[cname][1],cname)
+				norm_constraints[cname] = (cons_low, cons_high)
+				denorm_constraints[cname] = (constraints[cname][0], constraints[cname][1])
+		constraints = {k:constraints[k] for k in constraints.keys() if k not in ["oil_flow_rate", "water_flow_rate"]}
+
 
 		norm_desired_vals = {}
 		for lname in desired_val_dict:
@@ -182,9 +218,9 @@ class InterModel3:
 		j = 0
 		while(True):
 			j+=1
-			start_pos, closest_index = self.get_closest_point(norm_desired_vals, constraints=norm_constraints, max_drop_exp_error=5, skip_list=skip_list)
+			start_pos, closest_index = self.get_closest_point(norm_desired_vals, constraints=denorm_constraints, max_drop_exp_error=5, skip_list=skip_list)
 			if closest_index == -1:
-				start_pos, closest_index = self.get_closest_point(norm_desired_vals, constraints=norm_constraints)
+				start_pos, closest_index = self.get_closest_point(norm_desired_vals, constraints=denorm_constraints)
 				break
 			skip_list.append(closest_index)
 

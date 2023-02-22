@@ -272,6 +272,7 @@ def runDAFD_3():
 	di = DAFD3_Interface()
 
 	constraints = {}
+	flow_constraints = {}
 	desired_vals = {}
 	features = {}
 	fluid_properties = {}
