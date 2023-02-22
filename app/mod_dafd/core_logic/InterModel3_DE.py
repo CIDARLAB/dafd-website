@@ -142,7 +142,7 @@ class InterModel3_DE:
 			results.append(feature_set)
 		return results
 
-	def optimize(self, inner, outer, k=5):
+	def optimize(self, inner, outer, weights, k=5):
 		pairs = []
 		for i, pt in inner.iterrows():
 			# ID all outer points within 15% difference in generation rate
@@ -166,7 +166,7 @@ class InterModel3_DE:
 			if pair is None:
 				total_errs.append(np.inf)
 			else:
-				total_errs.append(pair[0].size_err + pair[1].size_err)
+				total_errs.append(weights["inner"]*pair[0].size_err + weights["outer"]*pair[1].size_err)
 				#TODO: UPDATE THIS ALGORITHM DEPENDING ON WHAT WE WANT TO DO
 				if pair[1].rate_err > 30:
 					# TODO: Adjust back if needed
@@ -180,7 +180,7 @@ class InterModel3_DE:
 		idx = idx[np.argsort(np.array(total_errs)[idx])]
 		return np.array(pairs)[idx], np.array(total_errs)[idx]
 
-	def interpolate(self,inner_features, outer_features, desired_values, fluid_properties):
+	def interpolate(self,inner_features, outer_features, desired_values, fluid_properties, weights):
 		"""Return an input set within the given constraints that produces the output set
 		The core part of DAFD
 		Args:
@@ -218,7 +218,7 @@ class InterModel3_DE:
 					# OUTER: find and rank by distance between sweep sizes and desired sizes
 					outer_generator_results.loc[:, "size_err"] = self.DH.pct_difference(desired_values["outer_droplet_size"], outer_generator_results.loc[:,"droplet_size"])
 					# Find optimal pairs for DE design automation
-					results, err = self.optimize(inner_generator_results, outer_generator_results)
+					results, err = self.optimize(inner_generator_results, outer_generator_results, weights)
 					#TODO: make downloadable csv for all of the different results (top-k)
 					if len(results) == 0:
 						continue
@@ -247,7 +247,7 @@ class InterModel3_DE:
 			# OUTER: find and rank by distance between sweep sizes and desired sizes
 			outer_generator_results.loc[:, "size_err"] = self.DH.pct_difference(desired_values["outer_droplet_size"], outer_generator_results.loc[:,"droplet_size"])
 			# Find optimal pairs for DE design automation
-			results, err = self.optimize(inner_generator_results, outer_generator_results)
+			results, err = self.optimize(inner_generator_results, outer_generator_results, weights)
 			if len(results[0]) == 0:
 				inner_result = None
 				outer_result = None

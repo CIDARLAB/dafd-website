@@ -23,8 +23,8 @@ class DAFD3_Interface:
 		results = self.it_se.interpolate(desired_vals,constraints, fluid_properties)
 		return results
 
-	def runInterpDE(self, inner_features, outer_features, desired_vals, fluid_properties):
-		inner_results, outer_results = self.it_de.interpolate(inner_features, outer_features, desired_vals, fluid_properties)
+	def runInterpDE(self, inner_features, outer_features, desired_vals, fluid_properties, weights):
+		inner_results, outer_results = self.it_de.interpolate(inner_features, outer_features, desired_vals, fluid_properties, weights)
 		return inner_results, outer_results
 
 	def runForward(self, features, fluid_properties, model=""):

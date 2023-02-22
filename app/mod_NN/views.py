@@ -463,6 +463,15 @@ def backward_3():
 @nn_blueprint.route('/backward_3_de', methods=['GET', 'POST'])
 def backward_3_de():
     if request.method == 'POST':
+        weights = {}
+        weights["inner"] = request.form.get('innerWeight')
+        weights["outer"] = request.form.get('outer')
+        for k in weights.keys():
+            if weights[k] is None:
+                weights[k] = 0.5
+            else:
+                weights[k] = float(weights[k])
+
 
         fluid_properties = {}
         fluid_properties['inner_aq_viscosity'] = request.form.get('innerAqVisc')
@@ -540,7 +549,7 @@ def backward_3_de():
 
 
 
-        inner_results, outer_results = runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties)
+        inner_results, outer_results = runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties, weights)
         if inner_results is None and outer_results is None:
             return render_template('no_solution.html')
 

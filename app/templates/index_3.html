@@ -375,6 +375,43 @@
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired outer (total) droplet size.</span></div>
 								</div>
 							</div>
+                            <div class="row slider-one-col">
+								<!--second column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="innerWeightCheck" onclick="disableSlider(this.id, 'innerWeightRange', 'innerWeight');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Inner droplet diameter weight<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="0" max="100" value="50" class="slider" id="innerWeightRange" oninput="updateFloatInput(this.value, 'innerWeight', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="innerWeight" name="innerWeight" value="0.5" oninput="updateFloatSlider('innerWeightRange', this.id)" onchange="floatSliderChange('innerWeightRange', this.id, 0, 100)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">(Optional) Choose a weight to bias design automation for/against one the inner or outer droplet diameter.</span></div>
+								</div>
+							</div>
+                            <div class="row slider-one-col">
+								<!--second column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="outerWeightCheck" onclick="disableSlider(this.id, 'outerWeightRange', 'outerWeight');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Outer droplet diameter weight<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="0" max="100" value="50" class="slider" id="outerWeightRange" oninput="updateFloatInput(this.value, 'outerWeight', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="outerWeight" name="outerWeight" value="0.5" oninput="updateFloatSlider('outerWeightRange', this.id)" onchange="floatSliderChange('outerWeightRange', this.id, 0, 100)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">(Optional) Choose a weight to bias design automation for/against one the inner or outer droplet diameter.</span></div>
+								</div>
+							</div>
+
 							<div class="row">
 								<div class="col-md-12">
 									<h6 class="subtitle-spacer">.: Fluid Properties :.</h6>

@@ -498,5 +498,5 @@ def runReverse_3(constraints, desired_vals, fluid_properties):
 	return runDAFD_3()
 
 
-def runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties):
-	return runDAFD_3_DE(inner_features, outer_features, desired_vals, fluid_properties)
+def runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties, weights):
+	return runDAFD_3_DE(inner_features, outer_features, desired_vals, fluid_properties, weights)
