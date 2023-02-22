@@ -494,6 +494,191 @@
 									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Generator design to use for design automation.</span></div>
 								</div>
 							</div>
+                            <div class="row slider-one-col">
+								<!--2nd column-->
+                                <div class="col-md-1 text-center">
+									<input type="checkbox" id="customDeviceCheck" name="customDevice">
+								</div>
+								<div class="col-md-6 text-left">
+									<p class="field-tip">Custom Device (Only fill out information below if this is checked) <!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-1 text-center"></div>
+							</div>
+                            <div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Custom Design Parameters (Please check box above) :.</h6>
+								</div>
+							</div>
+							<!--1st row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF1 orifice width<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="15" max="175" value="15" class="slider-activated" id="FF1OriWidRangeDE_backwards" oninput="updateIntInput(this.value, 'FF1OriWidDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1OriWidDE_backwards" name="FF1OriWidDE_backwards" value="15" oninput="updateIntSlider('FF1OriWidRangeDE_backwards', this.id)" onchange="intSliderChange('FF1OriWidRangeDE_backwards', this.id, 15, 175)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick an orifice width between 15 &mu;m and 175 &mu;m.</span></div>
+								</div>
+							</div>
+							<!--2nd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF1 aspect ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="FF1aspRatioRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF1aspRatioDE_Backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1aspRatioDE_backwards" name="FF1aspRatioDE_backwards" value="1" oninput="updateFloatSlider('FF1aspRatioRangeDE_backwards', this.id)" onchange="floatSliderChange('FF1aspRatioRangeDE_backwards', this.id, 100, 300)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Channel depth normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--3rd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF1 expansion ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="600" value="100" class="slider-activated" id="FF1expRatioRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF1expRatioDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1expRatioDE_backwards" name="FF1expRatioDE_backards" value="1" oninput="updateFloatSlider('FF1expRatioRangeDE_backwards', this.id)" onchange="floatSliderChange('FF1expRatioRangeDE_backwards', this.id, 100, 600)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Outlet channel width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--4th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF1 normalized dispersed phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="FF1normInletRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF1normInletDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1normInletDE_backwards" name="FF1normInletDE_backwards" value="1" oninput="updateFloatSlider('FF1normInletRangeDE_backwards', this.id)" onchange="floatSliderChange('FF1normInletRangeDE_backwards', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Water inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--5th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF1 normalized continuous phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="FF1normContRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF1normContDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1normContDE_backwards" name="FF1normContDE_backwards" value="1" oninput="updateFloatSlider('FF1normContRangeDE_backwards', this.id)" onchange="floatSliderChange('FF1normContRangeDE_backwards', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Continuous Phase inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--1st row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF2 orifice width<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="15" max="175" value="30" class="slider-activated" id="FF2OriWidRangeDE_backwards" oninput="updateIntInput(this.value, 'FF2OriWidDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2OriWidDE_backwards" name="FF2OriWidDE_backwards" value="30" oninput="updateIntSlider('FF2OriWidRangeDE_backwards', this.id)" onchange="intSliderChange('FF2OriWidRangeDE_backwards', this.id, 15, 175)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick an orifice width between 15 &mu;m and 175 &mu;m.</span></div>
+								</div>
+							</div>
+							<!--2nd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF2 aspect ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="FF2aspRatioRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF2aspRatioDE_Backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2aspRatioDE_backwards" name="FF2aspRatioDE_backwards" value="1" oninput="updateFloatSlider('FF2aspRatioRangeDE_backwards', this.id)" onchange="floatSliderChange('FF2aspRatioRangeDE_backwards', this.id, 100, 300)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Channel depth normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--3rd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF2 expansion ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="600" value="100" class="slider-activated" id="FF2expRatioRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF2expRatioDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2expRatioDE_backwards" name="FF2expRatioDE_backards" value="1" oninput="updateFloatSlider('FF2expRatioRangeDE_backwards', this.id)" onchange="floatSliderChange('FF2expRatioRangeDE_backwards', this.id, 100, 600)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Outlet channel width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--4th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF2 normalized dispersed phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="FF2normInletRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF2normInletDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2normInletDE_backwards" name="FF2normInletDE_backwards" value="1" oninput="updateFloatSlider('FF2normInletRangeDE_backwards', this.id)" onchange="floatSliderChange('FF2normInletRangeDE_backwards', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Water inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--5th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF2 normalized continuous phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="FF2normContRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF2normContDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2normContDE_backwards" name="FF2normContDE_backwards" value="1" oninput="updateFloatSlider('FF2normContRangeDE_backwards', this.id)" onchange="floatSliderChange('FF2normContRangeDE_backwards', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Continuous inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
 							<div class="row">
 								<div class="col-md-12">
 									<input type="submit" class="btn-section-2" value="Generate Design" onclick="validityBackward()"/>
@@ -501,7 +686,7 @@
 							</div>
                             <div class="row">
 								<div class="col-md-12">
-									<p> Note: This may take a while!</>
+                                    <p> Note: This may take a while!</p>
 								</div>
 							</div>
 						</div>

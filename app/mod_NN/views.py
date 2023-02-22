@@ -514,11 +514,26 @@ def backward_3_de():
             inner_features['aspect_ratio'] = 1.33
             outer_features['aspect_ratio'] = 1.33
         else:
-            #TODO: Add in combo for all of them
-            inner_features['orifice_width'] = [15, 22.5, 30]
-            outer_features['orifice_width'] = [30, 45, 60]
-            inner_features['aspect_ratio'] = [1, 1.33]
-            outer_features['aspect_ratio'] = [1, 1.33]
+            custom = request.form.get('customDevice')
+            if custom is not None:
+                inner_features['orifice_width'] = request.form.get('FF1OriWidDE_backwards')
+                inner_features['aspect_ratio'] = request.form.get('FF1aspRatioDE_backwards')
+                inner_features['normalized_oil_inlet'] = request.form.get('FF1normContDE_backwards')
+                inner_features['normalized_water_inlet'] = request.form.get('FF1normInletDE_backwards')
+                inner_features['expansion_ratio'] = request.form.get('FF1expRatioDE_backards')
+                inner_features = {k:float(inner_features[k]) for k in inner_features.keys()}
+
+                outer_features['orifice_width'] = request.form.get('FF2OriWidDE_backwards')
+                outer_features['aspect_ratio'] = request.form.get('FF2aspRatioDE_backwards')
+                outer_features['normalized_oil_inlet'] = request.form.get('FF2normContDE_backwards')
+                outer_features['normalized_water_inlet'] = request.form.get('FF2normInletDE_backwards')
+                outer_features['expansion_ratio'] = request.form.get('FF2expRatioDE_backards')
+                outer_features = {k:float(outer_features[k]) for k in outer_features.keys()}
+            else:
+                inner_features['orifice_width'] = [15, 22.5, 30]
+                outer_features['orifice_width'] = [30, 45, 60]
+                inner_features['aspect_ratio'] = [1, 1.33]
+                outer_features['aspect_ratio'] = [1, 1.33]
 
         inner_features['viscosity_ratio'] = fluid_properties["oil_viscosity"]/fluid_properties["inner_aq_viscosity"]
         outer_features['viscosity_ratio'] = fluid_properties["outer_aq_viscosity"]/fluid_properties["oil_viscosity"]
