@@ -150,14 +150,14 @@ class InterModel3_DE:
 			adjacent = outer.loc[outer.dispersed_flow_rate == FF1_flow, :].reset_index(drop=True)
 			adjacent["rate_err"] = self.DH.pct_difference(pt["generation_rate"], adjacent.generation_rate)
 			adjacent = adjacent.sort_values("size_err")
-			adj_15 = adjacent.loc[adjacent.rate_err < 15,:]
+			adj_15 = adjacent.loc[adjacent.rate_err < 5,:] #TODO: change if needed
 			adj_30 = adjacent.loc[adjacent.rate_err < 30,:]
 
 			# Pick outer point with minimum size difference from outer point
 			if len(adj_15 > 0):
 				pairs.append((pt, adj_15.iloc[0,:]))
-			elif len(adj_30 > 0):
-				pairs.append((pt, adj_30.iloc[0,:]))
+			# elif len(adj_30 > 0):
+			# 	pairs.append((pt, adj_30.iloc[0,:]))
 			# else:
 			# 	pairs.append((pt, adjacent.iloc[0,:]))
 		# Finally, choose top-k solutions for TOTAL size err (inner_err% + outer_err%)
@@ -168,7 +168,7 @@ class InterModel3_DE:
 			else:
 				total_errs.append(weights["inner"]*pair[0].size_err + weights["outer"]*pair[1].size_err)
 				#TODO: UPDATE THIS ALGORITHM DEPENDING ON WHAT WE WANT TO DO
-				if pair[1].rate_err > 30:
+				if pair[1].rate_err > 5:
 					# TODO: Adjust back if needed
 					#total_errs[-1] = total_errs[-1] + 2E3
 					continue
