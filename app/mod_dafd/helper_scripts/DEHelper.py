@@ -52,13 +52,13 @@ class DEHelper:
 			DEHelper()
 		return DEHelper.instance
 
-	def generate_grid(self, disp_flow_range, cont_flow_range, grid_size=25):
+	def generate_grid(self, disp_flow_range, cont_flow_range, inner_grid_size=25, outer_grid_size=18):
 		# generate list of flow_dicts
 		if len(disp_flow_range) == 2:
-			disp_flows = make_sweep_range(disp_flow_range, grid_size)
+			disp_flows = make_sweep_range(disp_flow_range, inner_grid_size)
 		else:
 			disp_flows = disp_flow_range
-		cont_flows = make_sweep_range(cont_flow_range, grid_size)
+		cont_flows = make_sweep_range(cont_flow_range, outer_grid_size)
 		flows = itertools.product(disp_flows, cont_flows)
 		flows = [{"dispersed_flow_rate": f[0], "continuous_flow_rate":f[1]} for f in flows]
 		return flows
@@ -84,7 +84,7 @@ class DEHelper:
 
 
 	def generate_inner_grid(self, features):
-		flows = self.generate_grid(self.inner_flow_range, self.oil_flow_range)
+		flows = self.generate_grid(self.inner_flow_range, self.oil_flow_range, inner_grid_size=25, outer_grid_size=41)
 		self.total_inner_flows = np.unique([np.sum(list(item.values())) for item in flows])
 		feature_list = []
 		for f in flows:
@@ -99,7 +99,7 @@ class DEHelper:
 		return np.abs((ref - pt)/ref)*100
 
 	def generate_outer_grid(self, features):
-		flows = self.generate_grid(self.total_inner_flows, self.outer_flow_range, grid_size=18)
+		flows = self.generate_grid(self.total_inner_flows, self.outer_flow_range, inner_grid_size=25, outer_grid_size=18)
 		feature_list = []
 		for f in flows:
 			feature_copy = features.copy()
