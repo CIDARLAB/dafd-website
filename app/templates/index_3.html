@@ -39,7 +39,7 @@
 				<div class="col-md-3"><div class="btn-1" onclick="window.location.href='#designAutomation'">Design Automation of Single Emulsions</div></div>
                 <div class="col-md-3"><div class="btn-2" onclick="window.location.href='#designAutomationDE'">Design Automation of Double Emulsions</div></div>
 				<div class="col-md-3"><div class="btn-3" onclick="window.location.href='#performancePrediction'">Performance Prediction of Single Emulsions</div></div>
-                <div class="col-md-3"><div class="btn-3" onclick="window.location.href='#performancePrediction'">Performance Prediction of Double Emulsions</div></div>
+                <div class="col-md-3"><div class="btn-4" onclick="window.location.href='#performancePredictionDE'">Performance Prediction of Double Emulsions</div></div>
 
 			</div>
 		</div>
@@ -936,7 +936,7 @@
 	<div class="row">
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
-			<form action="{{ url_for('nn.forward_3') }}" method="post" enctype="multipart/form-data">
+			<form action="{{ url_for('nn.forward_3de') }}" method="post" enctype="multipart/form-data">
 				<div class="form-group">
 					<div class="slider-container">
 						<div class="container">
@@ -1268,7 +1268,7 @@
 	//NN optimizer submission
 	
 	var myFullpage = new fullpage('#fullpage', {
-		anchors: ['home', 'designAutomation', 'designAutomationDE', 'performancePrediction'],
+		anchors: ['home', 'designAutomation', 'designAutomationDE', 'performancePrediction', 'performancePredictionDE'],
 		navigation:true,
 		{#scrollOverflow: false#}
         responsiveHeight: 1000
