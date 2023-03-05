@@ -484,6 +484,8 @@ def backward_2():
             else:
                 metrics_results["metric_keys"] = ["all_overall_score", "all_size_score", "all_rate_score"]
                 metrics_results["verse_group"] = "Versatility (in both regimes)"
+            if metrics_results["sort_by"] == "flow_stability":
+                metrics_results["sort_by"] = "stability"
             metrics_results["sort_by"] = str.replace(str.capitalize(metrics_results["sort_by"]),"_"," ")
             metrics_results["top_k"] = metrics["top_k"]
         else:
