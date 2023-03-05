@@ -19,7 +19,7 @@ def resource_path(relative_path):
 class InterModelQM:
 	"""
 	This class handles interpolation over our forward models to make the reverse predictions. Included in this is a joint
-	analysis of multiple options and their possible flow stability results.
+	analysis of multiple options and their possible stability results.
 	"""
 
 	def __init__(self):
