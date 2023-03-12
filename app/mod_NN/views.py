@@ -316,7 +316,7 @@ def forward_3de():
         perform['Inner Generation Rate (Hz)'] = np.round(inner_results["generation_rate"], 3)
         perform['Outer DE Diameter (\u03BCm)'] = np.round(outer_results["droplet_size"], 3)
         perform['Outer Generation Rate (Hz)'] = np.round(outer_results["generation_rate"], 3)
-        perform["Rate Percent Difference"] = np.round(np.abs((outer_results["generation_rate"] - inner_results["generation_rate"]) \
+        perform["Generation Rate Difference (%)"] = np.round(np.abs((outer_results["generation_rate"] - inner_results["generation_rate"]) \
                                                               / inner_results["generation_rate"] * 100), 3)
 
         flowrate = {}
@@ -736,7 +736,7 @@ def backward_3_de():
         perform['Inner Generation Rate (Hz)'] = np.round(inner_results["generation_rate"], 3)
         perform['Outer DE Diameter (\u03BCm)'] = np.round(outer_results["droplet_size"], 3)
         perform['Outer Generation Rate (Hz)'] = np.round(outer_results["generation_rate"], 3)
-        perform["Rate Percent Difference"] = np.round(np.abs((outer_results["generation_rate"] - inner_results["generation_rate"]) \
+        perform["Generation Rate Difference (%)"] = np.round(np.abs((outer_results["generation_rate"] - inner_results["generation_rate"]) \
                                                               / inner_results["generation_rate"] * 100), 3)
 
         flowrate = {}
