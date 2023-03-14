@@ -38,7 +38,7 @@ class InterModel3:
 		self.fwd_model = ForwardModel3()
 		self.fluid_properties = None
 		self.param_bounds = {"orifice_width":(15.0, 175.0), "aspect_ratio": (1.0,3.0), "flow_rate_ratio": (0.69,22.0),
-							 "capillary_number":(0.014, 9.399), "normalized_oil_inlet":(1.0,4.0),
+							 "capillary_number":(0.014, 0.5), "normalized_oil_inlet":(1.0,4.0),
 							 "normalized_water_inlet":(1.0,4.0), "expansion_ratio":(1.0,6.0)}
 		self.param_bounds_list = [self.param_bounds[k] for k in self.param_bounds.keys()]
 
