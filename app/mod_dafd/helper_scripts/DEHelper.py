@@ -196,7 +196,7 @@ class DEHelper:
 				outer_point = outer_generator_results.loc[outer_generator_results.continuous_flow_rate == outer, :]
 				outer_point = outer_point.loc[outer_point.dispersed_flow_rate == total_flow, :]
 				in_results.loc[i, "stability"] = float(
-					self.pct_difference(row["generation_rate"], outer_point.generation_rate) <= 15.0)
+					self.pct_difference(row["generation_rate"], outer_point.generation_rate) <= 5.0)
 				in_results.loc[i, "outer_diameter"] = float(outer_point.droplet_size)
 				in_results.loc[i, "outer_rate"] = float(outer_point.generation_rate) #TODO: take out if needed
 			# depending on the stability value, either have it be (1) colored or (2) greyed out
