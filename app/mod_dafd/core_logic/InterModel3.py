@@ -264,7 +264,7 @@ class InterModel3:
 				pred_point["generation_rate"] = closest_point["generation_rate"]
 				print(self.MH.all_dat[closest_index])
 				#TODO: if needed add model error into skip
-				if pred_size_error > 10 or exp_size_error > 5:
+				if pred_size_error > 3 or exp_size_error > 3:
 					should_skip_optim_size = False
 
 			if should_skip_optim_rate and should_skip_optim_size and should_skip_optim_constraints:
