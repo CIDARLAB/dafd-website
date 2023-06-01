@@ -188,6 +188,12 @@ def dataset11():
     return send_from_directory(directory=directory, filename='example-dataset-07.csv', as_attachment=True)
 
 
+@app.route("/dataset12")
+def dataset12():
+    directory = os.path.join(APP_ROOT, './resources/inputs/')
+    return send_from_directory(directory=directory, filename='dafd3_datasets.zip', as_attachment=True)
+
+
 '''The following part below is for celery test'''
 @celery.task()
 def add_together(a, b):
