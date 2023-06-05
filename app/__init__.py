@@ -96,9 +96,6 @@ def publications():
 	
 	return render_template('publications.html')
 
-<<<<<<< HEAD
-=======
-
 @app.route("/no_solution.html")
 @app.route("/no_solution")
 def no_solution():
@@ -111,7 +108,6 @@ def fluid_properties():
     return render_template('fluid_properties.html')
 
 
->>>>>>> dafd3
 @app.route("/datasets.html")
 @app.route("/datasets")
 def datasets():

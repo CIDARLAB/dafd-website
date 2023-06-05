@@ -904,11 +904,6 @@ def download_weights():
 
         directory = os.path.join(APP_ROOT, '../resources/inputs/')
         return send_from_directory(directory=directory, filename='weights-classification.h5', as_attachment=True)
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> dafd3
     return redirect(url_for('download_weights'))
 
 @nn_blueprint.route('/tolerance', methods=['GET', 'POST'])
