@@ -359,6 +359,6 @@ def runDAFD_3_DE(inner_features, outer_features, desired_vals, fluid_properties,
 		K.clear_session()
 
 	di = DAFD3_Interface()
-	inner_results, outer_results = di.runInterpDE(inner_features, outer_features, desired_vals, fluid_properties, weights)
+	inner_results, outer_results, soln_filename = di.runInterpDE(inner_features, outer_features, desired_vals, fluid_properties, weights)
 
-	return inner_results, outer_results
+	return inner_results, outer_results, soln_filename

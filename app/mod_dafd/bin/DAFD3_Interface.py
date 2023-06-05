@@ -24,8 +24,8 @@ class DAFD3_Interface:
 		return results
 
 	def runInterpDE(self, inner_features, outer_features, desired_vals, fluid_properties, weights):
-		inner_results, outer_results = self.it_de.interpolate(inner_features, outer_features, desired_vals, fluid_properties, weights)
-		return inner_results, outer_results
+		inner_results, outer_results, soln_filename = self.it_de.interpolate(inner_features, outer_features, desired_vals, fluid_properties, weights)
+		return inner_results, outer_results,soln_filename
 
 	def runForward(self, features, fluid_properties, model=""):
 		# features is a dictionary containing the name of each feature as the key and the feature value as the value

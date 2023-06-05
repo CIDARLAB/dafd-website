@@ -669,7 +669,7 @@ def backward_3_de():
 
 
 
-        inner_results, outer_results = runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties, weights)
+        inner_results, outer_results, soln_filename = runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties, weights)
         if inner_results is None and outer_results is None:
             return render_template('no_solution.html')
 
@@ -744,7 +744,7 @@ def backward_3_de():
         flowrate['Oil Flow Rate (\u03BCl/hr)'] = np.round(inner_results["continuous_flow_rate"], 3)
         flowrate['Outer Aqueous Flow Rate (\u03BCl/hr)'] = np.round(outer_results["continuous_flow_rate"], 3)
 
-        return render_template('backward_3_de.html', geo=geo, flow=flow, perform=perform, flowrate=flowrate,
+        return render_template('backward_3_de.html',filename=soln_filename, geo=geo, flow=flow, perform=perform, flowrate=flowrate,
                                fignames=fig_names)
     return redirect(url_for('index_3'))
 

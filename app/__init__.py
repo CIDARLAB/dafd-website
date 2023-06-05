@@ -193,6 +193,10 @@ def dataset12():
     directory = os.path.join(APP_ROOT, './resources/inputs/')
     return send_from_directory(directory=directory, filename='dafd3_datasets.zip', as_attachment=True)
 
+@app.route('/resources/<path:filename>', methods=['GET', 'POST'])
+def de_solution(filename):
+    directory = os.path.join(APP_ROOT, './resources/')
+    return send_from_directory(directory=directory, filename=filename)
 
 '''The following part below is for celery test'''
 @celery.task()

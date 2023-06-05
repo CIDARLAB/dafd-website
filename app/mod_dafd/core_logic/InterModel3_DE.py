@@ -9,6 +9,7 @@ import random
 import numpy
 import itertools
 import csv
+import time
 import sys
 import os
 from app.mod_dafd.core_logic.ForwardModel3 import ForwardModel3
@@ -191,7 +192,7 @@ class InterModel3_DE:
 		"""
 		self.fluid_properties = fluid_properties
 		self.DH = DEHelper(fluid_properties)
-
+		solution_filename = f"de_solutions_{str(time.time())}.csv"
 
 		if type(inner_features["orifice_width"]) is list:
 			inner_results = []
@@ -253,7 +254,20 @@ class InterModel3_DE:
 				outer_result = None
 			else:
 				#TODO: make downloadable csv for all of the different results (top-k)
-				inner_result = results[0][0]
-				outer_result = results[0][1]
-		return inner_result, outer_result
+				inner_result = results[0][0].copy()
+				outer_result = results[0][1].copy()
+				all_results_df = []
+				for r in results:
+					r = r.copy()
+					r[0].index = ["Inner " + i for i in r[0].index]
+					r[1].index = ["Outer " + i for i in r[1].index]
+					all_results_df.append(pd.concat(r))
+				folder_path = os.path.join(os.getcwd(), "app", "resources")
+				for filename in os.listdir(folder_path):
+					if filename.startswith('de_solutions_'):
+						os.remove(os.path.join(folder_path, filename))
+
+				all_results_df = pd.concat(all_results_df, axis=1)
+				all_results_df.to_csv(f"app/resources/{solution_filename}")
+		return inner_result, outer_result, solution_filename
 
