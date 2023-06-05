@@ -1,0 +1,209 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-6 col-sm-6">
+            <h4>Double Emulsion Droplet Generator Predicted Performance</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-6">
+            <h5>Geometric parameters</h5>
+            {% for key, value in geo.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+            <div class="spacer"></div>
+            <br/>
+            <h5>Predicted performance</h5>
+            {% for key, value in perform.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-6 col-sm-6">
+            <h5>Flow condition</h5>
+            {% for key, value in flow.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+            <h5>Flow rates</h5>
+            {% for key, value in flowrate.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+            <h5>Single cell encapsulation</h5>
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">Lambda (ratio of cells to droplets)</div>
+                <!-- TODO: Make new updateLambda version to reflect newer version, currently not updating anything -->
+                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="lambda" name="lambda" value="0.1" onchange="updateLambda(this.value*0.06, {{ perform['Inner Generation Rate (Hz)'] }}, {{ flowrate['Inner Aqueous Flow Rate (\u03BCl/hr)'] }});"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">Cell concentration (million cells per mL)</div>
+                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="conc" name="conc" value="{{(3.6*0.1*perform['Inner Generation Rate (Hz)']/flowrate['Inner Aqueous Flow Rate (\u03BCl/hr)']*100)|int/100}}" readonly></div>
+            </div>
+        </div>
+    </div>
+
+    <br/>
+    <br/>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('home') }}'" value="Back to Home Screen"/>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 twelve columns">
+            <h1>Flow Rate Map:</h1>
+            <p>To troubleshoot your device performance without fabricating a brand new device, below are heatmaps
+                visualizing the performance
+                changes caused by <strong>only</strong> changing flow rates. This provides a visual guide to
+                understanding how changing these rates
+                affect both droplet diameter and generation rate, rather than doing so through trial and error.
+            <h3>Flow Focuser 1 (Inner):</h3>
+            <p><img class="img" src="{{ url_for('static', filename='img/'+fignames[0]) }}" width="100%"></p>
+
+            <h3>Flow Focuser 2 (Outer):</h3>
+            <p><img class="img" src="{{ url_for('static', filename='img/'+fignames[1]) }}" width="100%"></p>
+
+
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 twelve columns">
+            <h1>Stability Plotting:</h1>
+            <p>Stable double emulsion generation requires both flow focusers to produce droplets at similar rates.
+                To better understand the performance of the produced double emulsion design, the stability and emulsion
+                sizes are displayed below as a function of the inner, oil, and outer flow rates. Stability is defined here
+                as double emulsion generation with inner and outer generation rates being within 15% of one another.
+
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[2]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[3]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[4]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[5]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[6]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[7]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[8]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[9]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[10]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[11]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[12]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[13]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[14]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[15]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[16]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[17]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[18]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[19]) }}" width="100%"></p>
+            <!--TODO: REMOVE IF RATE NOT NEEDED -->
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[20]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[21]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[22]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[23]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[24]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[25]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[26]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[27]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[28]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[29]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[30]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[31]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[32]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[33]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[34]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[35]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[36]) }}" width="100%"></p>
+            <p><img class="img", id="stabilityImg", src="{{ url_for('static', filename='img/'+fignames[37]) }}" width="100%"></p>
+{##}
+{#            <br/><br/>#}
+{##}
+{#            <select id="dlist" onChange="swapImage()">#}
+{#            <option value={{fignames[2]}}> 1500 uL / hour</option>#}
+{#            <option value={{fignames[3]}}> 2000 uL / hour</option>#}
+{#            <option value={{fignames[4]}}> 2500 uL / hour</option>#}
+{#            <option value={{fignames[5]}}> 3000 uL / hour</option>#}
+{#            <option value={{fignames[6]}}> 3500 uL / hour</option>#}
+{#            <option value={{fignames[7]}}> 4000 uL / hour</option>#}
+{#            <option value={{fignames[8]}}> 4500 uL / hour</option>#}
+{#            <option value={{fignames[9]}}> 5000 uL / hour</option>#}
+{#            <option value={{fignames[10]}}> 5500 uL / hour</option>#}
+{#            <option value={{fignames[11]}}> 6000 uL / hour</option>#}
+{#            <option value={{fignames[12]}}> 6500 uL / hour</option>#}
+{#            <option value={{fignames[13]}}> 7000 uL / hour</option>#}
+{#            <option value={{fignames[14]}}> 7500 uL / hour</option>#}
+{#            <option value={{fignames[15]}}> 8000 uL / hour</option>#}
+{#            <option value={{fignames[16]}}> 8500 uL / hour</option>#}
+{#            <option value={{fignames[17]}}> 9000 uL / hour</option>#}
+{#            <option value={{fignames[18]}}> 9500 uL / hour</option>#}
+{#            <option value={{fignames[19]}}> 10000 uL / hour</option>#}
+{##}
+{#            </select>#}
+{##}
+
+            <h3>Questions? Contact Us:</h3>
+            <p>Ali Lashkaripour (<a href="alilp@stanford.edu">alilp@stanford.edu</a>), David McIntyre (<a href="dpmc@bu.edu">dpmc@bu.edu</a>) & Prof.
+                Douglas Densmore (<a href="dougd@bu.edu">dougd@bu.edu</a>)</p>
+            <div class="spacer"></div>
+            <br/>
+            <div class="spacer"></div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <a href='http://cidarlab.org' target="_blank"><img class="img-stakeholders"
+                                                                       src="{{ url_for('static', filename='img/logo-Cidar-Color-small.png') }}"/></a>
+                    <a href='https://www.damplab.org' target="_blank"><img class="img-stakeholders"
+                                                                           src="{{ url_for('static', filename='img/damp-lab-logo-2x_1.png') }}"/></a>
+                    <a href='https://www.bu.edu/kilachandcenter/the-centers/biological-design-center/'
+                       target="_blank"><img class="img-stakeholders"
+                                            src="{{ url_for('static', filename='img/BDC.png') }}"/></a>
+                    <a href='https://www.bu.edu' target="_blank"><img class="img-stakeholders"
+                                                                      src="{{ url_for('static', filename='img/BU.png') }}"/></a>
+                    <a href='https://www.stanford.edu' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/stanford_logo.png') }}"/></a>
+
+                </div>
+                <div class="col-md-6 text-right">
+                    <span class='copyright'>Copyright 2023, CIDAR Lab - All Rights Reserved.</span>
+                    <a href='https://www.youtube.com/user/cidarlab' target="_blank"><img class="img-stakeholders"
+                                                                                         src="{{ url_for('static', filename='img/youtube.png') }}"/></a>
+                    <a href='https://twitter.com/cidar_lab?lang=en' target="_blank"><img class="img-stakeholders"
+                                                                                         src="{{ url_for('static', filename='img/twitter.png') }}"/></a>
+                    <a href='https://github.com/CIDARLAB/dafd-website' target="_blank"><img class="img-stakeholders"
+                                                                                    src="{{ url_for('static', filename='img/github.png') }}"/></a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+
+{% block add_script %}
+<script type="text/javascript">
+function swapImage(){
+	var image = document.getElementById("imageToSwap");
+	var dropd = document.getElementById("dlist");
+	image.src = url_for('static', filename='img/'+dropd.value);
+};
+</script>
+
+{% endblock %}

@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 from config import CONFIG, HYPERPARAMS
 #from app.mod_NN.models import TUNABLE_MODELS, NO_TUNABLE_MODELS
 
-from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 
@@ -31,7 +30,7 @@ from app.mod_NN.models import createClassifier, createRegressor
 from keras import backend as K
 from keras.callbacks import EarlyStopping
 
-from app.mod_dafd.DAFD_CMD import runDAFD, runDAFD_2
+from app.mod_dafd.DAFD_CMD import runDAFD, runDAFD_2, runDAFD_3, runDAFD_3_DE
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 RESOURCES = os.path.join(APP_ROOT, '../resources/inputs/')
@@ -419,6 +418,23 @@ def runForward(forward):
 
 	return runDAFD()
 
+def runForward_3(forward, fluid_properties):
+	print(forward)
+	with open("app/mod_dafd/cmd_inputs.txt", "w") as f:
+		if fluid_properties:
+			f.write("FLUID_PROPERTIES\n")
+			for key in fluid_properties:
+				if fluid_properties[key] != None:
+					f.write(key + '=' + str(fluid_properties[key]) + '\n')
+		if forward:
+			f.write("FORWARD\n")
+			for key in forward:
+				if forward[key] != None:
+					f.write(key + '=' + str(forward[key]) + '\n')
+
+	return runDAFD_3()
+
+
 def runReverse(constraints, desired_vals):
 
 	with open("app/mod_dafd/cmd_inputs.txt", "w") as f:
@@ -459,3 +475,28 @@ def runReverse_2(constraints, desired_vals, metrics):
 					f.write(key + '=' + str(desired_vals[key]) + '\n')
 
 	return runDAFD_2()
+
+def runReverse_3(constraints, desired_vals, fluid_properties):
+
+	with open("app/mod_dafd/cmd_inputs.txt", "w") as f:
+		if fluid_properties:
+			f.write("FLUID_PROPERTIES\n")
+			for key in fluid_properties:
+				if fluid_properties[key] != None:
+					f.write(key + '=' + str(fluid_properties[key]) + '\n')
+		if constraints:
+			f.write("CONSTRAINTS\n")
+			for key in constraints:
+				if constraints[key] != None:
+					f.write(key + '=' + str(constraints[key]) + ':' + str(constraints[key]) + '\n')
+		if desired_vals:
+			f.write("DESIRED_VALS\n")
+			for key in desired_vals:
+				if desired_vals[key] != None:
+					f.write(key + '=' + str(desired_vals[key]) + '\n')
+
+	return runDAFD_3()
+
+
+def runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties, weights):
+	return runDAFD_3_DE(inner_features, outer_features, desired_vals, fluid_properties, weights)

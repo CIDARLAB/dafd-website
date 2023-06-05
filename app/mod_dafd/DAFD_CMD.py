@@ -3,6 +3,7 @@
 import sys
 import os
 from app.mod_dafd.bin.DAFD_Interface import DAFD_Interface
+from app.mod_dafd.bin.DAFD3_Interface import DAFD3_Interface
 from app.mod_dafd.helper_scripts.MetricHelper import MetricHelper
 import pandas as pd
 from keras import backend as K
@@ -262,3 +263,102 @@ def runDAFD_2():
 		result_str += str(fwd_results["inferred_droplet_size"]) + "|"
 
 	return result_str, file_name
+
+
+def runDAFD_3():
+	if K.backend() == 'tensorflow':
+		K.clear_session()
+
+	di = DAFD3_Interface()
+
+	constraints = {}
+	flow_constraints = {}
+	desired_vals = {}
+	features = {}
+	fluid_properties = {}
+
+	stage = 0
+	with open(os.path.dirname(os.path.abspath(__file__)) + "/" + "cmd_inputs.txt", "r") as f:
+		for line in f:
+			line = line.strip()
+			if line == "FLUID_PROPERTIES":
+				stage = -1
+				continue
+			elif line == "CONSTRAINTS":
+				stage = 0
+				continue
+			elif line == "DESIRED_VALS":
+				stage = 1
+				continue
+			elif line == "FORWARD":
+				stage = 2
+				continue
+
+			if stage == -1:
+				param_name = line.split("=")[0]
+				param_val = line.split("=")[1]
+				fluid_properties[param_name] = float(param_val)
+			if stage == 0:
+				param_name = line.split("=")[0]
+				param_pair = line.split("=")[1].split(":")
+				if param_name == "regime":
+					wanted_constraint = float(param_pair[0])
+					constraints[param_name] = wanted_constraint
+				else:
+					wanted_constraint = (float(param_pair[0]), float(param_pair[1]))
+					constraints[param_name] = wanted_constraint
+
+			if stage == 1:
+				param_name = line.split("=")[0]
+				param_val = float(line.split("=")[1])
+				desired_vals[param_name] = param_val
+
+			if stage == 2:
+				param_name = line.split("=")[0]
+				param_val = float(line.split("=")[1])
+				features[param_name] = param_val
+
+	if stage == 2:
+		fwd_results = di.runForward(features, fluid_properties)
+
+		result_str = "BEGIN:"
+
+		for x in fwd_results.keys():
+			result_str += str(fwd_results[x]) + "|"
+		print(result_str)
+		all_params = fwd_results.copy()
+	else:
+		rev_results = di.runInterpSE(desired_vals, constraints, fluid_properties)
+		fwd_results = di.runForward(rev_results, fluid_properties)
+
+		print(rev_results)
+		print(fwd_results)
+
+		result_str = "BEGIN:"
+		for x in di.MH.get_instance().input_headers:
+			result_str += str(rev_results[x]) + "|"
+
+		result_str += str(rev_results["point_source"]) + "|"
+
+		for x in di.MH.get_instance().output_headers:
+			result_str += str(fwd_results[x]) + "|"
+		all_params = rev_results.copy()
+		all_params.update(fwd_results)
+		all_params.update(fluid_properties)
+		oil_flow_rate, water_flow_rate = di.MH.calculate_formulaic_relations(all_params, flow_only=True)
+		all_params["oil_flow_rate"] = oil_flow_rate
+		all_params["water_flow_rate"] = water_flow_rate
+		result_str += str(oil_flow_rate) + "|"
+		result_str += str(water_flow_rate)
+		print(result_str)
+
+	return result_str, all_params
+
+def runDAFD_3_DE(inner_features, outer_features, desired_vals, fluid_properties, weights):
+	if K.backend() == 'tensorflow':
+		K.clear_session()
+
+	di = DAFD3_Interface()
+	inner_results, outer_results, soln_filename = di.runInterpDE(inner_features, outer_features, desired_vals, fluid_properties, weights)
+
+	return inner_results, outer_results, soln_filename

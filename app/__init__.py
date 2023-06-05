@@ -40,6 +40,12 @@ def index_1():
 def index_2():
     return render_template('/index_2.html', nn_server=domain, tl_server=tl_domain)
 
+@app.route("/index_3.html")
+@app.route("/index_3")
+def index_3():
+    return render_template('/index_3.html', nn_server=domain, tl_server=tl_domain)
+
+
 
 @app.route("/information.html")
 @app.route("/information")
@@ -90,6 +96,22 @@ def publications():
 	
 	return render_template('publications.html')
 
+<<<<<<< HEAD
+=======
+
+@app.route("/no_solution.html")
+@app.route("/no_solution")
+def no_solution():
+    return render_template('no_solution.html')
+
+
+@app.route("/fluid_properties.html")
+@app.route("/fluid_properties")
+def fluid_properties():
+    return render_template('fluid_properties.html')
+
+
+>>>>>>> dafd3
 @app.route("/datasets.html")
 @app.route("/datasets")
 def datasets():
@@ -105,7 +127,6 @@ def tolerance():
 
 @app.route("/dataset1")
 def dataset1():
-	
 	directory = os.path.join(APP_ROOT, './resources/inputs/')
 	return send_from_directory(directory=directory, filename='example-dataset-01.csv', as_attachment=True)
 
@@ -169,6 +190,16 @@ def dataset11():
     directory = os.path.join(APP_ROOT, './resources/inputs/')
     return send_from_directory(directory=directory, filename='example-dataset-07.csv', as_attachment=True)
 
+
+@app.route("/dataset12")
+def dataset12():
+    directory = os.path.join(APP_ROOT, './resources/inputs/')
+    return send_from_directory(directory=directory, filename='dafd3_datasets.zip', as_attachment=True)
+
+@app.route('/resources/<path:filename>', methods=['GET', 'POST'])
+def de_solution(filename):
+    directory = os.path.join(APP_ROOT, './resources/')
+    return send_from_directory(directory=directory, filename=filename)
 
 '''The following part below is for celery test'''
 @celery.task()

@@ -89,7 +89,7 @@ function floatSliderChange(slider, text, min, max) {
 }
 
 function updateLambda(lambda, gen_rate, flow_rate) { 
-    document.getElementById('conc').value =  Math.round(gen_rate * lambda * 60 / flow_rate)
+    document.getElementById('conc').value =  (gen_rate * lambda * 60 / flow_rate * 100).toFixed(2)
 }
 
 function disableSlider(id, targetSlider, targetText) {

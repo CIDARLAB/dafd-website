@@ -1,0 +1,1282 @@
+{% extends "layout.html" %}
+
+{%  block content %}
+<div id="fullpage">
+<div class="section" id="section-1">
+    <!--TODO: Add in better GIF if possible
+    <div class="row logo-header">
+    <div class="row md-spacer">
+				<div class="col-md-12">
+					<img src="{{ url_for('static', filename='img/dgen.gif') }}" width="1500px"/>
+				</div>
+			</div>
+    </div>-->
+
+    <div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-8 text-center">
+            <div class="row md-spacer">
+				<div class="col-md-12">
+					<img src="{{ url_for('static', filename='img/dafd-logo.png') }}" width="350px"/>
+				</div>
+			</div>
+			<div class="row md-spacer">
+				<div class="col-md-12">
+					<div class="banner">
+						<p>The first microfluidic design automation software to deliver a user-specified performance using machine learning.</p>
+					</div>
+				</div>
+			</div>
+			<!--<div class="row md-spacer">
+				<div class="col-md-12">
+					<img class="img-stakeholders" src="{{ url_for('static', filename='img/logo-Cidar-Color-small.png') }}"/>
+					<img class="img-stakeholders" src="{{ url_for('static', filename='img/damp-lab-logo-2x_1.png') }}"/>
+					<img class="img-stakeholders" src="{{ url_for('static', filename='img/BDC.png') }}"/>
+					<img class="img-stakeholders" src="{{ url_for('static', filename='img/BU.png') }}"/>
+				</div>
+			</div>-->
+			<div class="row md-spacer">
+				<div class="col-md-3"><div class="btn-1" onclick="window.location.href='#designAutomation'">Design Automation of Single Emulsions</div></div>
+                <div class="col-md-3"><div class="btn-2" onclick="window.location.href='#designAutomationDE'">Design Automation of Double Emulsions</div></div>
+				<div class="col-md-3"><div class="btn-3" onclick="window.location.href='#performancePrediction'">Performance Prediction of Single Emulsions</div></div>
+                <div class="col-md-3"><div class="btn-4" onclick="window.location.href='#performancePredictionDE'">Performance Prediction of Double Emulsions</div></div>
+
+			</div>
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+	<div class="row footer">
+		<div class="col-md-6">
+			<a href='http://cidarlab.org' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/logo-Cidar-Color-small.png') }}"/></a>
+			<a href='https://www.damplab.org' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/damp-lab-logo-2x_1.png') }}"/></a>
+			<a href='https://www.bu.edu/kilachandcenter/the-centers/biological-design-center/' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/BDC.png') }}"/></a>
+			<a href='https://www.bu.edu' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/BU.png') }}"/></a>
+			<a href='https://www.stanford.edu' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/stanford_logo.png') }}"/></a>
+        </div>
+		<div class="col-md-6 text-right">
+			<span class='copyright'>Copyright 2023, CIDAR Lab - All Rights Reserved.</span>
+			<a href='https://www.youtube.com/user/cidarlab' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/youtube.png') }}"/></a>
+			<a href='https://twitter.com/cidar_lab?lang=en' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/twitter.png') }}"/></a>
+			<a href='https://github.com/CIDARLAB/dafd-website' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/github.png') }}"/></a>
+		</div>
+	</div>
+</div>
+<div class="section fp-auto-height-responsive" id="section-2">
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<form action="{{ url_for('nn.backward_3') }}" method="post" enctype="multipart/form-data">
+				<div class="form-group">
+					<div class="slider-container">
+						<div class="container">
+							<h5 class="title-spacer">Design Automation of Droplet Generators</h5>
+							<div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Desired Performance :.</h6>
+								</div>
+							</div>
+							<!--1st row-->
+							<div class="row content-spacer">
+								<!--1st column-->
+								<div class="col-md-1 text-left">
+									<b>Enabled?</b>
+								</div>
+							</div>
+							<div class="row slider-one-col">
+								<!--second column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="dropSizeCheck" onclick="disableSlider(this.id, 'dropSizeRange', 'dropSize');" checked>
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Droplet diameter (&mu;m)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="15" max="250" value="15" class="slider-activated" id="dropSizeRange" oninput="updateIntInput(this.value, 'dropSize', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="dropSize" name="dropSize" value="15" oninput="updateIntSlider('dropSizeRange', this.id)" onchange="intSliderChange('dropSizeRange', this.id, 15, 250)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired droplet diameter between 15 &mu;m and 250 &mu;m.</span></div>
+								</div>
+							</div>
+							<div class="row slider-one-col">
+								<!--first column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="genRateCheck" onclick="disableSlider(this.id, 'genRateRange', 'genRate');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Generation rate (Hz)<!--<span class="tip-content">unit in Hz</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="5" max="12000" value="5" class="slider-activated" id="genRateRange" oninput="updateIntInput(this.value, 'genRate', this.id);" disabled>
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="genRate" name="genRate" value="5" oninput="updateIntSlider('genRateRange', this.id)" onchange="intSliderChange('genRateRange', this.id, 5, 12000)" disabled>
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired generation rate between 5 Hz and 12000 Hz.</span></div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Fluid Properties :.</h6>
+								</div>
+							</div>
+							<!--7th row TODO: UPDATE ranges to be correct with dataset -->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Dispersed phase dynamic viscosity (mPa s)<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="86.1" max="343.1" value="93.1" class="slider-activated" id="dispViscRange" oninput="updateFloatInput(this.value, 'dispVisc', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="dispVisc" name="dispVisc" value="0.931" oninput="updateFloatSlider('dispViscRange', this.id)" onchange="floatSliderChange('dispViscRange', this.id, 86.1, 343.1)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the disperse phase (droplet content) in Pa s.</span></div>
+								</div>
+							</div>
+                            <!--9th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Continuous phase dynamic viscosity (mPa s)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="130.3" max="5720" value="161" class="slider-activated" id="contViscRange" oninput="updateFloatInput(this.value, 'contVisc', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="contVisc" name="contVisc" value="1.61" oninput="updateFloatSlider('contViscRange', this.id)" onchange="floatSliderChange('contViscRange', this.id, 130.3, 5720)"> <!--TODO: add in range-->
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the disperse phase (sheath fluid) in Pa s.</span></div>
+								</div>
+							</div>
+                            <!--10th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Interfacial surface tension (mN/m) <!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="31.8" max="1284" value="54.3" class="slider-activated" id="surfTensionRange" oninput="updateFloatInput(this.value, 'surfTension', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="surfTension" name="surfTension" value="0.543" oninput="updateFloatSlider('surfTensionRange', this.id)" onchange="floatSliderChange('surfTensionRange', this.id, 31.8, 1284)"> <!--TODO: add in range-->
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Interfacial surface tension betweeen the continuous and dispersed phases in mN/m.</span></div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-12">
+									<h6 class="vspace-subtitle">.: Design Constraints :.</h6>
+								</div>
+							</div>
+							<div class="row content-spacer">
+								<!--1st column-->
+								<div class="col-md-1 text-left">
+									<b>Enabled?</b>
+								</div>
+							</div>
+							<!--1st row-->
+							<div class="row slider-one-col">
+								<!--1st column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="oriWidCheck" onclick="disableSlider(this.id, 'oriWidRange', 'oriWid');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Orifice width<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="15" max="175" value="15" class="slider" id="oriWidRange" oninput="updateIntInput(this.value, 'oriWid', this.id);" disabled>
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="oriWid" name="oriWid" value="15" disabled oninput="updateIntSlider('oriWidRange', this.id)" onchange="intSliderChange('oriWidRange', this.id, 15, 175)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">If you have a design constraint you can pick an orifice width between 15 &mu;m and 175 &mu;m.</span></div>
+								</div>
+							</div>
+							<!--2nd row-->
+							<div class="row slider-one-col">
+								<!--1st column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="aspRatioCheck" onclick="disableSlider(this.id, 'aspRatioRange', 'aspRatio');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Aspect ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider" id="aspRatioRange" oninput="updateFloatInput(this.value, 'aspRatio', this.id);" disabled>
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="aspRatio" name="aspRatio" value="1" disabled oninput="updateFloatSlider('aspRatioRange', this.id)" onchange="floatSliderChange('aspRatioRange', this.id, 100, 300)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Channel depth normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--3rd row-->
+							<div class="row slider-one-col">
+								<!--1st column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="expRatioCheck" onclick="disableSlider(this.id, 'expRatioRange', 'expRatio');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Expansion ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="600" value="100" class="slider" id="expRatioRange" oninput="updateFloatInput(this.value, 'expRatio', this.id);" disabled>
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="expRatio" name="expRatio" value="1" disabled oninput="updateFloatSlider('expRatioRange', this.id)" onchange="floatSliderChange('expRatioRange', this.id, 100, 600)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Outlet channel width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--4th row-->
+							<div class="row slider-one-col">
+								<!--2nd column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="normInletCheck" onclick="disableSlider(this.id, 'normInletRange', 'normInlet');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Normalized water inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider" id="normInletRange" oninput="updateFloatInput(this.value, 'normInlet', this.id);" disabled>
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="normInlet" name="normInlet" value="1" disabled oninput="updateFloatSlider('normInletRange', this.id)" onchange="floatSliderChange('normInletRange', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Water inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--5th row-->
+							<div class="row slider-one-col">
+								<!--2nd column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="normOilCheck" onclick="disableSlider(this.id, 'normOilRange', 'normOil');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Normalized oil inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider" id="normOilRange" oninput="updateFloatInput(this.value, 'normOil', this.id);" disabled>
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="normOil" name="normOil" value="1" disabled oninput="updateFloatSlider('normOilRange', this.id)" onchange="floatSliderChange('normOilRange', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Oil inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--6th row-->
+							<div class="row slider-one-col">
+								<!--2nd column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="dispFlowCheck" onclick="disableSlider(this.id, 'dispFlowRange', 'dispFlow');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Dispersed Flow Rate<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="5000" max="1000000" value="5000" class="slider" id="dispFlowRange" oninput="updateFloatInput(this.value, 'dispFlow', this.id);" disabled>
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="dispFlow" name="dispFlow" value="50" disabled oninput="updateFloatSlider('dispFlowRange', this.id)" onchange="floatSliderChange('dispFlowRange', this.id, 5000, 1000000)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dispersed flow rate.</span></div>
+								</div>
+							</div>
+							<!--8th row-->
+							<div class="row slider-one-col">
+								<!--2nd column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="contFlowCheck" onclick="disableSlider(this.id, 'contFlowRange', 'contFlow');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Continuous Flow Rate<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="5000" max="1000000" value="5000" class="slider" id="contFlowRange" oninput="updateFloatInput(this.value, 'contFlow', this.id);" disabled>
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="contFlow" name="contFlow" value="50" disabled oninput="updateFloatSlider('contFlowRange', this.id)" onchange="floatSliderChange('contFlowRange', this.id, 5000, 1000000)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Continuous flow rate.</span></div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<input type="submit" class="btn-section-2" value="Generate Design" onclick="validityBackward()"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+</div>
+<div class="section fp-auto-height-responsive" id="section-2-DE">
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<form action="{{ url_for('nn.backward_3_de') }}" method="post" enctype="multipart/form-data">
+				<div class="form-group">
+					<div class="slider-container">
+						<div class="container">
+							<h5 class="title-spacer">Design Automation of Double Emulsion Droplet Generators</h5>
+							<div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Desired Performance :.</h6>
+								</div>
+							</div>
+							<!--1st row-->
+							<div class="row slider-one-col">
+								<!--second column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Inner droplet diameter (&mu;m)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="15" max="45" value="15" class="slider-activated" id="innerDropSizeRange" oninput="updateIntInput(this.value, 'innerDropSize', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="innerDropSize" name="innerDropSize" value="15" oninput="updateIntSlider('innerDropSizeRange', this.id)" onchange="intSliderChange('innerDropSizeRange', this.id, 15, 45)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired inner droplet size.</span></div>
+								</div>
+							</div>
+							<div class="row slider-one-col">
+								<!--first column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Outer (total) double emulsion size (&mu;m)<!--<span class="tip-content">unit in Hz</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="25" max="55" value="25" class="slider-activated" id="outerDropSizeRange" oninput="updateIntInput(this.value, 'outerDropSize', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="outerDropSize" name="outerDropSize" value="25" oninput="updateIntSlider('outerDropSizeRange', this.id)" onchange="intSliderChange('outerDropSizeRange', this.id, 25, 55)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick a desired outer (total) droplet size.</span></div>
+								</div>
+							</div>
+                            <div class="row slider-one-col">
+								<!--second column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="innerWeightCheck" onclick="disableSlider(this.id, 'innerWeightRange', 'innerWeight');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Inner diameter importance<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="0" max="100" value="50" class="slider" id="innerWeightRange" oninput="updateFloatInput(this.value, 'innerWeight', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="innerWeight" name="innerWeight" value="0.5" oninput="updateFloatSlider('innerWeightRange', this.id)" onchange="floatSliderChange('innerWeightRange', this.id, 0, 100)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">(Optional) Choose a weight to bias design automation for/against one the inner or outer droplet diameter.</span></div>
+								</div>
+							</div>
+                            <div class="row slider-one-col">
+								<!--second column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="outerWeightCheck" onclick="disableSlider(this.id, 'outerWeightRange', 'outerWeight');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Outer diameter importance<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="0" max="100" value="50" class="slider" id="outerWeightRange" oninput="updateFloatInput(this.value, 'outerWeight', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="outerWeight" name="outerWeight" value="0.5" oninput="updateFloatSlider('outerWeightRange', this.id)" onchange="floatSliderChange('outerWeightRange', this.id, 0, 100)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">(Optional) Choose a weight to bias design automation for/against one the inner or outer droplet diameter.</span></div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Fluid Properties :.</h6>
+								</div>
+							</div>
+							<!--7th row TODO: UPDATE ranges to be correct with dataset -->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Inner aqueous phase dynamic viscosity (mPa s)<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="86" max="343" value="93.1" class="slider-activated" id="innerAqViscRange" oninput="updateFloatInput(this.value, 'innerAqVisc', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="innerAqVisc" name="innerAqVisc" value="0.931" oninput="updateFloatSlider('innerAqViscRange', this.id)" onchange="floatSliderChange('innerAqViscRange', this.id, 86.1, 343.1)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the inner dispersed phase (droplet content) in Pa s.</span></div>
+								</div>
+							</div>
+                            <!--9th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Oil phase dynamic viscosity (mPa s)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="130.3" max="5720" value="161" class="slider-activated" id="oilViscRange" oninput="updateFloatInput(this.value, 'oilVisc', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="oilVisc" name="oilVisc" value="1.61" oninput="updateFloatSlider('oilViscRange', this.id)" onchange="floatSliderChange('oilViscRange', this.id, 130.3, 5720)"> <!--TODO: add in range-->
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the oil phase (shell fluid) in Pa s.</span></div>
+								</div>
+							</div>
+                            <!--10th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Inner aqueous / oil interfacial surface tension (mN/m) <!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="31.8" max="1284" value="54.3" class="slider-activated" id="innerSurfTensionRange" oninput="updateFloatInput(this.value, 'innerSurfTension', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="innerSurfTension" name="innerSurfTension" value="0.543" oninput="updateFloatSlider('innerSurfTensionRange', this.id)" onchange="floatSliderChange('innerSurfTensionRange', this.id, 31.8, 1284)"> <!--TODO: add in range-->
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Interfacial surface tension betweeen the inner aqueous and oil phases in mN/m.</span></div>
+								</div>
+							</div>
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Outer aqueous phase dynamic viscosity (mPa s)<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="86.1" max="343.1" value="130.3" class="slider-activated" id="outerAqViscRange" oninput="updateFloatInput(this.value, 'outerAqVisc', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="outerAqVisc" name="outerAqVisc" value="1.303" oninput="updateFloatSlider('outerAqViscRange', this.id)" onchange="floatSliderChange('outerAqViscRange', this.id, 86.1, 343.1)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the outer dispersed phase (sheath fluid) in Pa s.</span></div>
+								</div>
+							</div>
+                            <!--10th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">oil / outer aqueous interfacial surface tension (mN/m) <!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="31.8" max="1284" value="31.8" class="slider-activated" id="outerSurfTensionRange" oninput="updateFloatInput(this.value, 'outerSurfTension', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="outerSurfTension" name="outerSurfTension" value="0.318" oninput="updateFloatSlider('outerSurfTensionRange', this.id)" onchange="floatSliderChange('outerSurfTensionRange', this.id, 31.8, 1284)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Interfacial surface tension betweeen the oil and outer aqueous phases in mN/m.</span></div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<h6 class="vspace-subtitle">.: Device Selection :.</h6>
+								</div>
+							</div>
+							<div class="row content-spacer">
+								<!--1st column-->
+								<div class="col-md-1 text-left">
+									<b>Enabled?</b>
+								</div>
+							</div>
+							<!--nth row-->
+							<div class="row slider-one-col">
+								<!--2nd column-->
+                                <div class="col-md-1 text-center">
+									<input type="checkbox" id="deviceCheck" onclick="disableCombo(this.id, 'deviceCombo');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Double emulsion generator device<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+  								<div class="col-md-5 text-left">
+									<select class="cmbox" name="device" id="deviceCombo" disabled>
+										<option value="1">15 &mu;m inner orifice width, aspect ratio of 1 </option>
+                                        <option value="2">22.5 &mu;m inner orifice width, aspect ratio of 1 </option>
+                                        <option value="3">30 &mu;m inner orifice width, aspect ratio of 1 </option>
+                                        <option value="4">15 &mu;m inner orifice width, aspect ratio of 1.33 </option>
+                                        <option value="5">22.5 &mu;m inner orifice width, aspect ratio of 1.33 </option>
+                                        <option value="6">30 &mu;m inner orifice width, aspect ratio of 1.33 </option>
+									</select>
+								</div>
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Generator design to use for design automation.</span></div>
+								</div>
+							</div>
+                            <div class="row slider-one-col">
+								<!--2nd column-->
+                                <div class="col-md-1 text-center">
+									<input type="checkbox" id="customDeviceCheck" name="customDevice">
+								</div>
+								<div class="col-md-6 text-left">
+									<p class="field-tip">Custom Device (Only fill out information below if this is checked) <!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-1 text-center"></div>
+							</div>
+                            <div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Custom Design Parameters (Please check box above) :.</h6>
+								</div>
+							</div>
+							<!--1st row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF1 orifice width<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="15" max="175" value="15" class="slider-activated" id="FF1OriWidRangeDE_backwards" oninput="updateIntInput(this.value, 'FF1OriWidDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1OriWidDE_backwards" name="FF1OriWidDE_backwards" value="15" oninput="updateIntSlider('FF1OriWidRangeDE_backwards', this.id)" onchange="intSliderChange('FF1OriWidRangeDE_backwards', this.id, 15, 175)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick an orifice width between 15 &mu;m and 175 &mu;m.</span></div>
+								</div>
+							</div>
+							<!--2nd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF1 aspect ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="FF1aspRatioRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF1aspRatioDE_Backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1aspRatioDE_backwards" name="FF1aspRatioDE_backwards" value="1" oninput="updateFloatSlider('FF1aspRatioRangeDE_backwards', this.id)" onchange="floatSliderChange('FF1aspRatioRangeDE_backwards', this.id, 100, 300)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Channel depth normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--3rd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF1 expansion ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="600" value="100" class="slider-activated" id="FF1expRatioRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF1expRatioDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1expRatioDE_backwards" name="FF1expRatioDE_backards" value="1" oninput="updateFloatSlider('FF1expRatioRangeDE_backwards', this.id)" onchange="floatSliderChange('FF1expRatioRangeDE_backwards', this.id, 100, 600)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Outlet channel width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--4th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF1 normalized dispersed phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="FF1normInletRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF1normInletDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1normInletDE_backwards" name="FF1normInletDE_backwards" value="1" oninput="updateFloatSlider('FF1normInletRangeDE_backwards', this.id)" onchange="floatSliderChange('FF1normInletRangeDE_backwards', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Water inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--5th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF1 normalized continuous phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="FF1normContRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF1normContDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1normContDE_backwards" name="FF1normContDE_backwards" value="1" oninput="updateFloatSlider('FF1normContRangeDE_backwards', this.id)" onchange="floatSliderChange('FF1normContRangeDE_backwards', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Continuous Phase inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--1st row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF2 orifice width<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="15" max="175" value="30" class="slider-activated" id="FF2OriWidRangeDE_backwards" oninput="updateIntInput(this.value, 'FF2OriWidDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2OriWidDE_backwards" name="FF2OriWidDE_backwards" value="30" oninput="updateIntSlider('FF2OriWidRangeDE_backwards', this.id)" onchange="intSliderChange('FF2OriWidRangeDE_backwards', this.id, 15, 175)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick an orifice width between 15 &mu;m and 175 &mu;m.</span></div>
+								</div>
+							</div>
+							<!--2nd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF2 aspect ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="FF2aspRatioRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF2aspRatioDE_Backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2aspRatioDE_backwards" name="FF2aspRatioDE_backwards" value="1" oninput="updateFloatSlider('FF2aspRatioRangeDE_backwards', this.id)" onchange="floatSliderChange('FF2aspRatioRangeDE_backwards', this.id, 100, 300)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Channel depth normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--3rd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF2 expansion ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="600" value="100" class="slider-activated" id="FF2expRatioRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF2expRatioDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2expRatioDE_backwards" name="FF2expRatioDE_backards" value="1" oninput="updateFloatSlider('FF2expRatioRangeDE_backwards', this.id)" onchange="floatSliderChange('FF2expRatioRangeDE_backwards', this.id, 100, 600)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Outlet channel width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--4th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF2 normalized dispersed phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="FF2normInletRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF2normInletDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2normInletDE_backwards" name="FF2normInletDE_backwards" value="1" oninput="updateFloatSlider('FF2normInletRangeDE_backwards', this.id)" onchange="floatSliderChange('FF2normInletRangeDE_backwards', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Water inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--5th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">FF2 normalized continuous phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="FF2normContRangeDE_backwards" oninput="updateFloatInput(this.value, 'FF2normContDE_backwards', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2normContDE_backwards" name="FF2normContDE_backwards" value="1" oninput="updateFloatSlider('FF2normContRangeDE_backwards', this.id)" onchange="floatSliderChange('FF2normContRangeDE_backwards', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Continuous inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<input type="submit" class="btn-section-2" value="Generate Design" onclick="validityBackward()"/>
+								</div>
+							</div>
+                            <div class="row">
+								<div class="col-md-12">
+                                    <p> Note: This may take a while!</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+</div>
+<div class="section" id="section-3">
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<form action="{{ url_for('nn.forward_3') }}" method="post" enctype="multipart/form-data">
+				<div class="form-group">
+					<div class="slider-container">
+						<div class="container">	
+							<h5 class="title-spacer">Performance Prediction of Droplet Generators</h5>
+							<div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Design Parameters :.</h6>
+								</div>
+							</div>
+							<!--1st row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Orifice width<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="15" max="175" value="15" class="slider-activated" id="oriWidRange2" oninput="updateIntInput(this.value, 'oriWid2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="oriWid2" name="oriWid2" value="15" oninput="updateIntSlider('oriWidRange2', this.id)" onchange="intSliderChange('oriWidRange2', this.id, 15, 175)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick an orifice width between 15 &mu;m and 175 &mu;m.</span></div>
+								</div>
+							</div>
+							<!--2nd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Aspect ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="aspRatioRange2" oninput="updateFloatInput(this.value, 'aspRatio2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="aspRatio2" name="aspRatio2" value="1" oninput="updateFloatSlider('aspRatioRange2', this.id)" onchange="floatSliderChange('aspRatioRange2', this.id, 100, 300)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Channel depth normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--3rd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Expansion ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="600" value="100" class="slider-activated" id="expRatioRange2" oninput="updateFloatInput(this.value, 'expRatio2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="expRatio2" name="expRatio2" value="1" oninput="updateFloatSlider('expRatioRange2', this.id)" onchange="floatSliderChange('expRatioRange2', this.id, 100, 600)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Outlet channel width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--4th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Normalized dispersed phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="normInletRange2" oninput="updateFloatInput(this.value, 'normInlet2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="normInlet2" name="normInlet2" value="1" oninput="updateFloatSlider('normInletRange2', this.id)" onchange="floatSliderChange('normInletRange2', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Water inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--5th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Normalized continuous phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="normOilRange2" oninput="updateFloatInput(this.value, 'normOil2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="normOil2" name="normOil2" value="1" oninput="updateFloatSlider('normOilRange2', this.id)" onchange="floatSliderChange('normOilRange2', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Oil inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--6th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Dispersed phase flow rate (uL / hour)<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="5000" max="1000000" value="5000" class="slider-activated" id="dispFlowRange2" oninput="updateFloatInput(this.value, 'dispFlow2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="dispFlow2" name="dispFlow2" value="50" oninput="updateFloatSlider('dispFlowRange2', this.id)" onchange="floatSliderChange('dispFlowRange2', this.id, 5000, 1000000)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Flow rate of the dispersed phase (droplet content) in uL / hour.</span></div>
+								</div>
+							</div>
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Dispersed phase dynamic viscosity (mPa s)<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="86.1" max="343.1" value="93.1" class="slider-activated" id="dispViscRange2" oninput="updateFloatInput(this.value, 'dispVisc2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="dispVisc2" name="dispVisc2" value="0.931" oninput="updateFloatSlider('dispViscRange2', this.id)" onchange="floatSliderChange('dispViscRange2', this.id, 86.1, 343.1)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the disperse phase (droplet content) in Pa s.</span></div>
+								</div>
+							</div>
+							<!--8th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Continuous phase flow rate (uL / hour)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="5000" max="1000000" value="5000" class="slider-activated" id="contFlowRange2" oninput="updateFloatInput(this.value, 'contFlow2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="contFlow2" name="contFlow2" value="50" oninput="updateFloatSlider('contFlowRange2', this.id)" onchange="floatSliderChange('contFlowRange2', this.id, 5000, 1000000)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Flow rate of the continuous phase (sheath fluid) in uL / hour.</span></div>
+								</div>
+							</div>
+                            <!--9th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Continuous phase dynamic viscosity (mPa s)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="130.3" max="5720" value="161" class="slider-activated" id="contViscRange2" oninput="updateFloatInput(this.value, 'contVisc2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="contVisc2" name="contVisc2" value="1.61" oninput="updateFloatSlider('contViscRange2', this.id)" onchange="floatSliderChange('contViscRange2', this.id, 130.3, 5720)"> <!--TODO: add in range-->
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the disperse phase (sheath fluid) in Pa s.</span></div>
+								</div>
+							</div>
+                            <!--10th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-1 text-center"></div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Interfacial surface tension (mN/m) <!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="31.8" max="1284" value="54.3" class="slider-activated" id="surfTensionRange2" oninput="updateFloatInput(this.value, 'surfTension2', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="surfTension2" name="surfTension2" value="0.543" oninput="updateFloatSlider('surfTensionRange2', this.id)" onchange="floatSliderChange('surfTensionRange2', this.id, 31.8, 1284)"> <!--TODO: add in range-->
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Interfacial surface tension betweeen the continuous and dispersed phases in mN/m.</span></div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<input type="submit" class="btn-section-2" value="Predict Performance"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+</div>
+<div class="section" id="section-4">
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<form action="{{ url_for('nn.forward_3de') }}" method="post" enctype="multipart/form-data">
+				<div class="form-group">
+					<div class="slider-container">
+						<div class="container">
+							<h5 class="title-spacer">Performance Prediction of Double Emulsion Droplet Generators</h5>
+							<div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Inner Droplet Generator (FF1) Design Parameters :.</h6>
+								</div>
+							</div>
+							<!--1st row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">FF1 Orifice width<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="15" max="175" value="15" class="slider-activated" id="FF1oriWidRange" oninput="updateIntInput(this.value, 'FF1oriWid', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1oriWid" name="FF1oriWid" value="15" oninput="updateIntSlider('FF1oriWidRange', this.id)" onchange="intSliderChange('FF1oriWidRange', this.id, 15, 175)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick an orifice width between 15 &mu;m and 175 &mu;m.</span></div>
+								</div>
+							</div>
+							<!--2nd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">FF1 Aspect ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="FF1aspRatioRange" oninput="updateFloatInput(this.value, 'FF1aspRatio', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1aspRatio" name="FF1aspRatio" value="1" oninput="updateFloatSlider('FF1aspRatioRange', this.id)" onchange="floatSliderChange('FF1aspRatioRange', this.id, 100, 300)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Channel depth normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--3rd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">FF1 Expansion ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="600" value="100" class="slider-activated" id="FF1expRatioRange" oninput="updateFloatInput(this.value, 'FF1expRatio', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1expRatio" name="FF1expRatio" value="1" oninput="updateFloatSlider('FF1expRatioRange', this.id)" onchange="floatSliderChange('FF1expRatioRange', this.id, 100, 600)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Outlet channel width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--4th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">FF1 Normalized dispersed phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="FF1normInletRange" oninput="updateFloatInput(this.value, 'FF1normInlet', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1normInlet" name="FF1normInlet" value="1" oninput="updateFloatSlider('FF1normInletRange', this.id)" onchange="floatSliderChange('FF1normInletRange', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Water inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--5th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">FF1 Normalized continuous phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="FF1normContRange" oninput="updateFloatInput(this.value, 'FF1normCont', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF1normCont" name="FF1normCont" value="1" oninput="updateFloatSlider('FF1normContRange', this.id)" onchange="floatSliderChange('FF1normContRange', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Oil inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Outer Droplet Generator (FF2) Design Parameters :.</h6>
+								</div>
+							</div>
+                            <!--1st row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">FF2 Orifice width<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="15" max="175" value="30" class="slider-activated" id="FF2oriWidRange" oninput="updateIntInput(this.value, 'FF2oriWid', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2oriWid" name="FF2oriWid" value="30" oninput="updateIntSlider('FF2oriWidRange', this.id)" onchange="intSliderChange('FF2oriWidRange', this.id, 15, 175)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Pick an orifice width between 15 &mu;m and 175 &mu;m.</span></div>
+								</div>
+							</div>
+							<!--2nd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">FF2 Aspect ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="FF2aspRatioRange" oninput="updateFloatInput(this.value, 'FF2aspRatio', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2aspRatio" name="FF2aspRatio" value="1" oninput="updateFloatSlider('FF2aspRatioRange', this.id)" onchange="floatSliderChange('FF2aspRatioRange', this.id, 100, 300)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Channel depth normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--3rd row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">FF2 Expansion ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="600" value="100" class="slider-activated" id="FF2expRatioRange" oninput="updateFloatInput(this.value, 'FF2expRatio', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2expRatio" name="FF2expRatio" value="1" oninput="updateFloatSlider('FF2expRatioRange', this.id)" onchange="floatSliderChange('FF2expRatioRange', this.id, 100, 600)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Outlet channel width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--4th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">FF2 Normalized dispersed phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="FF2normInletRange" oninput="updateFloatInput(this.value, 'FF2normInlet', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2normInlet" name="FF2normInlet" value="1" oninput="updateFloatSlider('FF2normInletRange', this.id)" onchange="floatSliderChange('FF2normInletRange', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Water inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<!--5th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">FF2 Normalized continuous phase inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="100" max="400" value="100" class="slider-activated" id="FF2normContRange" oninput="updateFloatInput(this.value, 'FF2normCont', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="FF2normCont" name="FF2normCont" value="1" oninput="updateFloatSlider('FF2normContRange', this.id)" onchange="floatSliderChange('FF2normContRange', this.id, 100, 400)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Oil inlet width normalized to the orifice width.</span></div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<h6 class="subtitle-spacer">.: Fluid Properties :.</h6>
+								</div>
+							</div>
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Inner aqueous phase dynamic viscosity (mPa s)<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="86" max="343" value="93.1" class="slider-activated" id="innerAqViscRange_fwd" oninput="updateFloatInput(this.value, 'innerAqVisc_fwd', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="innerAqVisc_fwd" name="innerAqVisc_fwd" value="0.931" oninput="updateFloatSlider('innerAqViscRange_fwd', this.id)" onchange="floatSliderChange('innerAqViscRange_fwd', this.id, 86.1, 343.1)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the inner dispersed phase (droplet content) in Pa s.</span></div>
+								</div>
+							</div>
+
+							<!--6th row-->
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Inner Aqueous phase flow rate (uL / hour)<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="5000" max="1000000" value="5000" class="slider-activated" id="innerAqFlowRange_fwd" oninput="updateFloatInput(this.value, 'innerAqFlow_fwd', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="innerAqFlow_fwd" name="innerAqFlow_fwd" value="50" oninput="updateFloatSlider('innerAqFlowRange_fwd', this.id)" onchange="floatSliderChange('innerAqFlowRange_fwd', this.id, 5000, 1000000)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Flow rate of the dispersed phase (droplet content) in uL / hour.</span></div>
+								</div>
+							</div>
+                            <!--9th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Oil phase dynamic viscosity (mPa s)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="130.3" max="5720" value="161" class="slider-activated" id="oilViscRange_fwd" oninput="updateFloatInput(this.value, 'oilVisc_fwd', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="oilVisc_fwd" name="oilVisc_fwd" value="1.61" oninput="updateFloatSlider('oilViscRange_fwd', this.id)" onchange="floatSliderChange('oilViscRange_fwd', this.id, 130.3, 5720)"> <!--TODO: add in range-->
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the oil phase (shell fluid) in Pa s.</span></div>
+								</div>
+							</div>
+                            							<!--8th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Oil phase flow rate (uL / hour)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="5000" max="1000000" value="5000" class="slider-activated" id="oilFlowRange_fwd" oninput="updateFloatInput(this.value, 'oilFlow_fwd', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="oilFlow_fwd" name="oilFlow_fwd" value="50" oninput="updateFloatSlider('oilFlowRange_fwd', this.id)" onchange="floatSliderChange('oilFlowRange_fwd', this.id, 5000, 1000000)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Flow rate of the continuous phase (sheath fluid) in uL / hour.</span></div>
+								</div>
+							</div>
+
+                            <!--10th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Inner aqueous / oil interfacial surface tension (mN/m) <!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="31.8" max="1284" value="54.3" class="slider-activated" id="innerSurfTensionRange_fwd" oninput="updateFloatInput(this.value, 'innerSurfTension_fwd', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="innerSurfTension_fwd" name="innerSurfTension_fwd" value="0.543" oninput="updateFloatSlider('innerSurfTensionRange_fwd', this.id)" onchange="floatSliderChange('innerSurfTensionRange_fwd', this.id, 31.8, 1284)"> <!--TODO: add in range-->
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Interfacial surface tension betweeen the inner aqueous and oil phases in mN/m.</span></div>
+								</div>
+							</div>
+							<div class="row slider-row">
+								<!--2nd column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Outer aqueous phase dynamic viscosity (mPa s)<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="86.1" max="343.1" value="130.3" class="slider-activated" id="outerAqViscRange_fwd" oninput="updateFloatInput(this.value, 'outerAqVisc_fwd', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="outerAqVisc_fwd" name="outerAqVisc_fwd" value="1.303" oninput="updateFloatSlider('outerAqViscRange_fwd', this.id)" onchange="floatSliderChange('outerAqViscRange_fwd', this.id, 86.1, 343.1)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Dynamic viscosity of the outer dispersed phase (sheath fluid) in Pa s.</span></div>
+								</div>
+							</div>
+                            							<!--8th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">Outer Aqueous phase flow rate (uL / hour)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="5000" max="1000000" value="5000" class="slider-activated" id="outerAqFlowRange_fwd" oninput="updateFloatInput(this.value, 'outerAqFlow_fwd', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="outerAqFlow_fwd" name="outerAqFlow_fwd" value="50" oninput="updateFloatSlider('outerAqFlowRange_fwd', this.id)" onchange="floatSliderChange('outerAqFlowRange_fwd', this.id, 5000, 1000000)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Flow rate of the continuous phase (sheath fluid) in uL / hour.</span></div>
+								</div>
+							</div>
+
+                            <!--10th row-->
+							<div class="row slider-row">
+								<!--1st column-->
+								<div class="col-md-5 text-left">
+									<p class="field-tip">oil / outer aqueous interfacial surface tension (mN/m) <!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-5 text-left">
+									<input type="range" min="31.8" max="1284" value="31.8" class="slider-activated" id="outerSurfTensionRange_fwd" oninput="updateFloatInput(this.value, 'outerSurfTension_fwd', this.id);">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="outerSurfTension_fwd" name="outerSurfTension_fwd" value="0.318" oninput="updateFloatSlider('outerSurfTensionRange_fwd', this.id)" onchange="floatSliderChange('outerSurfTensionRange_fwd', this.id, 31.8, 1284)">
+								</div>
+								<div class="col-md-1 text-center">
+									<div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Interfacial surface tension betweeen the oil and outer aqueous phases in mN/m.</span></div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<input type="submit" class="btn-section-2" value="Predict Performance"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+</div>
+
+</div>
+{% endblock %}
+
+{% block add_script %}
+
+<script type="text/javascript">
+	//NN optimizer submission
+	
+	var myFullpage = new fullpage('#fullpage', {
+		anchors: ['home', 'designAutomation', 'designAutomationDE', 'performancePrediction', 'performancePredictionDE'],
+		navigation:true,
+		{#scrollOverflow: false#}
+        responsiveHeight: 1000
+        {#scrollOverflowOptions: {#}
+        {#     preventDefaultException: {#}
+        {#         tagName: /.*/#}
+        {#     }#}
+        {#scrollBar:true#}
+	});
+</script>
+{% endblock %}

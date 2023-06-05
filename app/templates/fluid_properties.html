@@ -1,0 +1,161 @@
+{% extends "layout.html" %}
+  
+{%  block content %}
+<!-- page content -->
+<div class="container content-container">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h3>Fluid Properties</h3>
+            <div class="static-content">
+                <p>The table below provides the rheological properties for the common fluids used in this dataset.
+                    These can be entered into the performance prediction and design automation modules of DAFD 3.0.</p>
+            </div>
+        </div>
+    </div>
+    <div class="spacer"></div>
+
+    <div style="padding-bottom:30px"></div>
+    <html>
+            <head>
+                <style>
+                    table, th, td {
+                        border: 2px solid black;
+                        border-collapse: collapse;
+                        text-align: center;
+                        font-size: 14px;
+                        padding: 4px;
+                    }
+
+                    th {
+                        background-color: #c0c0c0;
+                    }
+
+                </style>
+            </head>
+            <body>
+            <table style="width:100%;margin-left:auto;margin-right:auto;">
+                <tr>
+                    <th>Dispersed Phase</th>
+                    <th>Viscosity (mPa.s)</th>
+                    <th>Continuous Phase</th>
+                    <th>Viscosity (mPa.s)</th>
+                    <th>Interfacial Tension (mN/m)</th>
+                </tr>
+                <tr>
+                    <td>M9 bacterial media</td>
+                    <td>0.861</td>
+                    <td>HFE 7500 oil + 2.2% ionic Krytox</td>
+                    <td>1.61</td>
+                    <td>12.84</td>
+                </tr>
+                <tr>
+                    <td>M9 bacterial media + 25 mM glucose</td>
+                    <td>0.967</td>
+                    <td>HFE 7500 oil + 2.2% ionic Krytox</td>
+                    <td>1.61</td>
+                    <td>11.60</td>
+                </tr>
+                <tr>
+                    <td>PBS</td>
+                    <td>0.931</td>
+                    <td>HFE 7500 oil + 2.2% ionic Krytox</td>
+                    <td>1.61</td>
+                    <td>0.543</td>
+                </tr>
+                <tr>
+                    <td>PBS + 1% Tween-20</td>
+                    <td>0.988</td>
+                    <td>HFE 7500 oil + 2.2% ionic Krytox</td>
+                    <td>1.61</td>
+                    <td>0.349</td>
+                </tr>
+                <tr>
+                    <td>PBS + 0.9% NP40</td>
+                    <td>1.003</td>
+                    <td>HFE 7500 oil + 2.2% ionic Krytox</td>
+                    <td>1.61</td>
+                    <td>1.41</td>
+                </tr>
+                <tr>
+                    <td>PBS + 10% PEG 6000 MW</td>
+                    <td>3.431</td>
+                    <td>HFE 7500 oil + 2.2% ionic Krytox</td>
+                    <td>1.61</td>
+                    <td>0.461</td>
+                </tr>
+                <tr>
+                    <td>DI water</td>
+                    <td>1.001</td>
+                    <td>NF350 mineral oil + 5% Span-80</td>
+                    <td>57.2</td>
+                    <td>5.0</td>
+                </tr>
+                <tr>
+                    <td>HFE 7500 oil + 2.2% ionic Krytox</td>
+                    <td>1.61</td>
+                    <td>PBS + 1% Tween-20 + 2% Pluronic F68</td>
+                    <td>1.303</td>
+                    <td>0.318</td>
+                </tr>
+                <tr>
+                    <td>HFE 7500 oil + 2.2% ionic Krytox</td>
+                    <td>1.61</td>
+                    <td>M9 salts + 2% Pluronic F68</td>
+                    <td>1.412</td>
+                    <td>0.522</td>
+                </tr>
+                <tr>
+                    <td>HFE 7500 oil + 2.2% ionic Krytox</td>
+                    <td>1.61</td>
+                    <td>M9 salts + 25 mM glucose + 2% Pluronic F68</td>
+                    <td>1.563</td>
+                    <td>0.458</td>
+                </tr>
+                <tr>
+                    <td>HFE 7500 oil + 2.2% ionic Krytox</td>
+                    <td>1.61</td>
+                    <td>PBS + 10% PEG 6000 MW + 2% Pluronic F68</td>
+                    <td>6.395</td>
+                    <td>0.455</td>
+                </tr>
+                <tr>
+                    <td>DMEM cell media + 16% Optiprep</td>
+                    <td>1.25</td>
+                    <td>2% dSurf HFE 7500 oil</td>
+                    <td>1.61</td>
+                    <td>9.74</td>
+                </tr>
+                <tr>
+                    <td>RPMI 1640 complete cell media + 20% Optiprep + 0.1% Pluronic F127</td>
+                    <td>1.36</td>
+                    <td>2% dSurf HFE 7500 oil</td>
+                    <td>1.61</td>
+                    <td>6.16</td>
+                </tr>
+                <tr>
+                    <td>2% dSurf HFE 7500 oil</td>
+                    <td>1.61</td>
+                    <td>RPMI 1640 complete cell media + 5% Pluronic F127</td>
+                    <td>2.82</td>
+                    <td>4.61</td>
+                </tr>
+            </table>
+            </body>
+            </html>
+
+    <div class="spacer"></div>
+
+
+    <div style="padding-bottom:30px"></div>
+
+    <div class="spacer"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('home') }}'" value="Back to Home Screen"/>
+        </div>
+    </div>
+    <div class="spacer"></div>
+</div>
+<!-- /page content -->
+{% endblock %}

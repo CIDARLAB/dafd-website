@@ -1,9 +1,8 @@
-VERSATILITY
-FLOW_STABILITY
-sort_by=flow_stability
-top_k=3
+FLUID_PROPERTIES
+oil_viscosity=1.61
+water_viscosity=0.931
+surface_tension=0.543
 CONSTRAINTS
-regime=1:1
+viscosity_ratio=1.7293233082706767:1.7293233082706767
 DESIRED_VALS
-generation_rate=150
-droplet_size=100
+droplet_size=15

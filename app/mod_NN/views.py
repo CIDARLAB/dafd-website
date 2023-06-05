@@ -4,11 +4,13 @@ import numpy as np
 import os
 from werkzeug.utils import secure_filename
 import time
+from app.mod_dafd.helper_scripts.TolHelper3 import TolHelper3
+from app.mod_dafd.helper_scripts.DEHelper import DEHelper
 
 nn_blueprint = Blueprint('nn', __name__)
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-from app.mod_NN.controllers import validFile, getDataType, runNN, runForward, runReverse, runReverse_2
+from app.mod_NN.controllers import validFile, getDataType, runNN, runForward, runForward_3, runReverse, runReverse_2, runReverse_3, runReverse_3DE
 #
 # @nn_blueprint.route('/')
 # @nn_blueprint.route('/index')
@@ -27,6 +29,10 @@ def index_1():
 def index_2():
     return render_template('index_2.html')
 
+@nn_blueprint.route("/index_3.html")
+@nn_blueprint.route("/index_3")
+def index_3():
+    return render_template('index_3.html')
 
 @nn_blueprint.route('/forward_1', methods=['GET', 'POST'])
 def forward_1():
@@ -149,6 +155,178 @@ def forward_2():
                                metrics_fig_name = metrics_fig_name, metricTest = (metrics_results is not None))
 
     return redirect(url_for('index_2'))
+
+@nn_blueprint.route('/forward_3', methods=['GET', 'POST'])
+def forward_3():
+
+    if request.method == 'POST':
+        # Get data
+        forward = {}
+        forward['orifice_width'] = request.form.get('oriWid2')
+        forward['aspect_ratio'] = request.form.get('aspRatio2')
+        forward['expansion_ratio'] = request.form.get('expRatio2')
+        forward['normalized_water_inlet'] = request.form.get('normInlet2')
+        forward['normalized_oil_inlet'] = request.form.get('normOil2')
+
+        fluid_properties = {}
+        fluid_properties['oil_flow_rate'] = request.form.get('contFlow2')
+        fluid_properties['water_flow_rate'] = request.form.get('dispFlow2')
+        fluid_properties['oil_viscosity'] = request.form.get('contVisc2')
+        fluid_properties['water_viscosity'] = request.form.get('dispVisc2')
+        fluid_properties['surface_tension'] = request.form.get('surfTension2')
+
+        #normalize to correct values
+        forward = {key:float(forward[key]) for key in forward.keys()}
+        fluid_properties = {key: float(fluid_properties[key]) for key in fluid_properties.keys()}
+
+        forward['flow_rate_ratio'] = fluid_properties["oil_flow_rate"]/fluid_properties["water_flow_rate"]
+        forward['viscosity_ratio'] = fluid_properties["oil_viscosity"]/fluid_properties["water_viscosity"]
+        ca_num = fluid_properties["oil_viscosity"]*fluid_properties["oil_flow_rate"]/(forward["orifice_width"]**2*forward["aspect_ratio"]) * (1/3.6)
+        forward['capillary_number'] = ca_num/fluid_properties["surface_tension"] #(Ca = mu * (Qc/(OriW*depth)))/surf
+
+        strOutput, fwd_results = runForward_3(forward, fluid_properties)
+
+        perform = {}
+        perform['Droplet Diameter (\u03BCm)'] = fwd_results["droplet_size"]
+        perform['Generation Rate (Hz)'] = fwd_results["generation_rate"]
+
+        values = {}
+        values['Dispersed Phase Flow Rate (\u03BCL/hr)'] = fluid_properties["water_flow_rate"]
+        values['Continuous Phase Flow Rate (\u03BCL/hr)'] = fluid_properties["oil_flow_rate"]
+
+        forward3 = {}
+        forward3['Orifice Width'] = forward['orifice_width']
+        forward3['Aspect Ratio'] = forward['aspect_ratio']
+        forward3['Expansion Ratio'] = forward['expansion_ratio']
+        forward3['Normalized Water Inlet'] = forward['normalized_water_inlet']
+        forward3['Normalized Oil Inlet'] = forward['normalized_oil_inlet']
+        forward3['Flow Rate Ratio'] = forward['flow_rate_ratio']
+        forward3['Capillary Number'] = forward['capillary_number']
+        forward3['Viscosity Ratio'] = forward['viscosity_ratio']
+
+        return render_template('forward_3.html', perform=perform, values=values, forward3=forward3)
+
+    return redirect(url_for('index_3'))
+
+
+@nn_blueprint.route('/forward_3de', methods=['GET', 'POST'])
+def forward_3de():
+
+    if request.method == 'POST':
+        # Get data
+        inner_features = {}
+        inner_features['orifice_width'] = request.form.get('FF1oriWid')
+        inner_features['aspect_ratio'] = request.form.get('FF1aspRatio')
+        inner_features['expansion_ratio'] = request.form.get('FF1expRatio')
+        inner_features['normalized_water_inlet'] = request.form.get('FF1normInlet')
+        inner_features['normalized_oil_inlet'] = request.form.get('FF1normCont')
+        inner_features = {key: float(inner_features[key]) for key in inner_features.keys()}
+
+        outer_features = {}
+        outer_features['orifice_width'] = request.form.get('FF2oriWid')
+        outer_features['aspect_ratio'] = request.form.get('FF2aspRatio')
+        outer_features['expansion_ratio'] = request.form.get('FF2expRatio')
+        outer_features['normalized_water_inlet'] = request.form.get('FF2normInlet')
+        outer_features['normalized_oil_inlet'] = request.form.get('FF2normCont')
+        outer_features = {key: float(outer_features[key]) for key in outer_features.keys()}
+
+        inner_fluid_properties = {}
+        inner_fluid_properties['oil_flow_rate'] = request.form.get('oilFlow_fwd')
+        inner_fluid_properties['water_flow_rate'] = request.form.get('innerAqFlow_fwd')
+        inner_fluid_properties['oil_viscosity'] = request.form.get('oilVisc_fwd')
+        inner_fluid_properties['water_viscosity'] = request.form.get('innerAqVisc_fwd')
+        inner_fluid_properties['surface_tension'] = request.form.get('innerSurfTension_fwd')
+        inner_fluid_properties = {key: float(inner_fluid_properties[key]) for key in inner_fluid_properties.keys()}
+
+        outer_fluid_properties = {}
+        outer_fluid_properties['oil_flow_rate'] = request.form.get('outerAqFlow_fwd')
+        outer_fluid_properties['water_flow_rate'] = request.form.get('oilFlow_fwd')
+        outer_fluid_properties['oil_viscosity'] = request.form.get('outerAqVisc_fwd')
+        outer_fluid_properties['water_viscosity'] = request.form.get('oilVisc_fwd')
+        outer_fluid_properties['surface_tension'] = request.form.get('outerSurfTension_fwd')
+        outer_fluid_properties = {key: float(outer_fluid_properties[key]) for key in outer_fluid_properties.keys()}
+
+
+        all_results = []
+        for features, fluid_properties in [(inner_features, inner_fluid_properties), (outer_features, outer_fluid_properties)]:
+            #normalize to correct values
+            features['flow_rate_ratio'] = fluid_properties["oil_flow_rate"]/fluid_properties["water_flow_rate"]
+            features['viscosity_ratio'] = fluid_properties["oil_viscosity"]/fluid_properties["water_viscosity"]
+            fluid_properties['viscosity_ratio'] = features['viscosity_ratio']
+            ca_num = fluid_properties["oil_viscosity"]*fluid_properties["oil_flow_rate"]/(features["orifice_width"]**2*features["aspect_ratio"]) * (1/3.6)
+            features['capillary_number'] = ca_num/fluid_properties["surface_tension"] #(Ca = mu * (Qc/(OriW*depth)))/surf
+
+            strOutput, fwd_results = runForward_3(features, fluid_properties)
+            features.update(fwd_results)
+            all_results.append(features)
+
+        inner_results = all_results[0]
+        outer_results = all_results[1]
+
+
+        fig_names = []
+        size_hms = []
+        gen_hms = []
+
+        for features, fprop, base in [(inner_results, inner_fluid_properties, "inner"), (outer_results, outer_fluid_properties, "outer")]:
+            features = {key: float(features[key]) for key in features.keys()}
+            TH = TolHelper3(features, fprop)
+            TH.run_all()
+            size_hms.append(TH.flow_heatmap_size)
+            gen_hms.append(TH.flow_heatmap_gen)
+            fig_names.append(TH.plot_all(base=base))
+
+        fluid_properties = {
+            "inner_aq_viscosity": inner_fluid_properties["water_viscosity"],
+            "oil_viscosity": inner_fluid_properties["oil_viscosity"],
+            "outer_aq_viscosity" : outer_fluid_properties["oil_viscosity"],
+            "inner_surface_tension" : inner_fluid_properties["surface_tension"],
+            "outer_surface_tension" : outer_fluid_properties["surface_tension"]
+        }
+
+        DH = DEHelper(fluid_properties)
+        stab_names = DH.run_stability(inner_results, outer_results)
+        fig_names.extend(stab_names)
+
+        geo = {}
+        geo['Inner Orifice Width (\u03BCm)'] = np.round(inner_results["orifice_width"], 3)
+        geo['Inner Channel Depth (\u03BCm)'] = np.round(inner_results["aspect_ratio"]*inner_results["orifice_width"], 3)
+        geo['Inner Outlet Channel Width (\u03BCm)'] = np.round(inner_results["expansion_ratio"]*inner_results["orifice_width"], 3)
+        geo['Inner Dispersed Inlet Width (\u03BCm)'] = np.round(inner_results["normalized_water_inlet"]*inner_results["orifice_width"], 3)
+        geo['Inner Continuous Inlet Width (\u03BCm)'] = np.round(inner_results["normalized_oil_inlet"]*inner_results["orifice_width"], 3)
+
+        geo['Outer Orifice Width (\u03BCm)'] = np.round(outer_results["orifice_width"], 3)
+        geo['Outer Channel Depth (\u03BCm)'] = np.round(outer_results["aspect_ratio"]*outer_results["orifice_width"], 3)
+        geo['Outer Outlet Channel Width (\u03BCm)'] = np.round(outer_results["expansion_ratio"]*outer_results["orifice_width"], 3)
+        geo['Outer Dispersed Inlet Width (\u03BCm)'] = np.round(outer_results["normalized_water_inlet"]*outer_results["orifice_width"], 3)
+        geo['Outer Continuous Inlet Width (\u03BCm)'] = np.round(outer_results["normalized_oil_inlet"]*outer_results["orifice_width"], 3)
+
+
+        flow = {}
+
+        flow['Inner Aqueous Dynamic Viscosity (mPa s)'] = np.round(fluid_properties['inner_aq_viscosity'], 3)
+        flow['Oil Dynamic Viscosity (mPa s)'] = np.round(fluid_properties['oil_viscosity'], 3)
+        flow['Outer Aqueous Dynamic Viscosity (mPa s)'] = np.round(fluid_properties['outer_aq_viscosity'], 3)
+
+        flow['Inner Aqueous / Oil Interfacial Surface Tension'] = np.round(fluid_properties['inner_surface_tension'], 3)
+        flow['Oil / Outer Aqueous Interfacial Surface Tension'] = np.round(fluid_properties['outer_surface_tension'], 3)
+
+        perform = {}
+        perform['Inner DE Diameter (\u03BCm)'] = np.round(inner_results["droplet_size"], 3)
+        perform['Inner Generation Rate (Hz)'] = np.round(inner_results["generation_rate"], 3)
+        perform['Outer DE Diameter (\u03BCm)'] = np.round(outer_results["droplet_size"], 3)
+        perform['Outer Generation Rate (Hz)'] = np.round(outer_results["generation_rate"], 3)
+        perform["Generation Rate Difference (%)"] = np.round(np.abs((outer_results["generation_rate"] - inner_results["generation_rate"]) \
+                                                              / inner_results["generation_rate"] * 100), 3)
+
+        flowrate = {}
+        flowrate['Inner Aqueous Flow Rate (\u03BCl/hr)'] = np.round(inner_fluid_properties['water_flow_rate'], 3)
+        flowrate['Oil Flow Rate (\u03BCl/hr)'] = np.round(inner_fluid_properties['oil_flow_rate'], 3)
+        flowrate['Outer Aqueous Flow Rate (\u03BCl/hr)'] = np.round(outer_fluid_properties['oil_flow_rate'], 3)
+
+        return render_template('forward_3_de.html', geo=geo, flow=flow, perform=perform, flowrate=flowrate,
+                               fignames=fig_names)
+    return redirect(url_for('index_3'))
 
 
 @nn_blueprint.route('/backward_1', methods=['GET', 'POST'])
@@ -306,6 +484,8 @@ def backward_2():
             else:
                 metrics_results["metric_keys"] = ["all_overall_score", "all_size_score", "all_rate_score"]
                 metrics_results["verse_group"] = "Versatility (in both regimes)"
+            if metrics_results["sort_by"] == "flow_stability":
+                metrics_results["sort_by"] = "stability"
             metrics_results["sort_by"] = str.replace(str.capitalize(metrics_results["sort_by"]),"_"," ")
             metrics_results["top_k"] = metrics["top_k"]
         else:
@@ -318,6 +498,257 @@ def backward_2():
                                metrics_results=metrics_results, metrics_fig_name=metrics_fig_name, metricTest=(metrics_results is not None))
 
     return redirect(url_for('index_2'))
+
+
+@nn_blueprint.route('/backward_3', methods=['GET', 'POST'])
+def backward_3():
+    if request.method == 'POST':
+
+        constraints = {}
+        constraints['orifice_width'] = request.form.get('oriWid')
+        constraints['aspect_ratio'] = request.form.get('aspRatio')
+        constraints['expansion_ratio'] = request.form.get('expRatio')
+        constraints['normalized_water_inlet'] = request.form.get('normInlet')
+        constraints['normalized_oil_inlet'] = request.form.get('normOil')
+        constraints['oil_flow_rate'] = request.form.get('contFlow')
+        constraints['water_flow_rate'] = request.form.get('dispFlow')
+
+
+        fluid_properties = {}
+        fluid_properties['oil_viscosity'] = request.form.get('contVisc')
+        fluid_properties['water_viscosity'] = request.form.get('dispVisc')
+        fluid_properties['surface_tension'] = request.form.get('surfTension')
+        fluid_properties = {key: float(fluid_properties[key]) for key in fluid_properties.keys()}
+        # normalize to correct values
+        constraints = {key:float(constraints[key]) for key in constraints.keys() if constraints[key] is not None}
+        constraints['viscosity_ratio'] = fluid_properties["oil_viscosity"]/fluid_properties["water_viscosity"]
+
+        if "oil_flow_rate" in constraints.keys():
+            # TODO: This doesn't work if the other constraints aren't there
+            if "aspect_ratio" in constraints.keys() and "orifice_width" in constraints.keys():
+                ca_num = fluid_properties["oil_viscosity"]*constraints["oil_flow_rate"]/(constraints["orifice_width"]**2*constraints["aspect_ratio"]) * (1/3.6)
+                constraints['capillary_number'] = ca_num/fluid_properties["surface_tension"]
+            if "water_flow_rate" in constraints.keys():
+                #TODO: need to handle case where water flow is a constraint but oil flow is not
+                constraints['flow_rate_ratio'] = constraints["oil_flow_rate"] / constraints["water_flow_rate"]
+
+
+
+        desired_vals = {}
+        desired_vals['generation_rate'] = request.form.get('genRate')
+        desired_vals['droplet_size'] = request.form.get('dropSize')
+
+        strOutput, reverse_results = runReverse_3(constraints, desired_vals, fluid_properties)
+        parsed = strOutput.split(':')[1].split('|')[:-1]
+        geo = {}
+        geo['Orifice Width (\u03BCm)'] = np.round(reverse_results["orifice_width"], 3)
+        geo['Channel Depth (\u03BCm)'] = np.round(reverse_results["aspect_ratio"]*reverse_results["orifice_width"], 3)
+        geo['Outlet Channel Width (\u03BCm)'] = np.round(reverse_results["expansion_ratio"]*reverse_results["orifice_width"], 3)
+        geo['Dispersed Inlet Width (\u03BCm)'] = np.round(reverse_results["normalized_water_inlet"]*reverse_results["orifice_width"], 3)
+        geo['Continuous Inlet Width (\u03BCm)'] = np.round(reverse_results["normalized_oil_inlet"]*reverse_results["orifice_width"], 3)
+
+        flow = {}
+        flow['Flow Rate Ratio '] = np.round(reverse_results["flow_rate_ratio"], 3)
+        flow['Capillary Number'] = np.round(reverse_results["capillary_number"], 3)
+        flow['Continuous Phase Dynamic Viscosity'] = np.round(fluid_properties['oil_viscosity'], 3)
+        flow['Dispersed Phase Dynamic Viscosity'] = np.round(fluid_properties['water_viscosity'], 3)
+        flow['Interfacial Surface Tension'] = np.round(fluid_properties['surface_tension'], 3)
+
+        opt = {}
+        opt['Point Source'] = reverse_results['point_source']
+
+        perform = {}
+        perform['Generation Rate (Hz)'] = np.round(reverse_results["generation_rate"], 3)
+        perform['Droplet Diameter (\u03BCm)'] = np.round(reverse_results["droplet_size"], 3)
+
+        flowrate = {}
+        flowrate['Continuous Phase Flow  Rate (\u03BCl/hr)'] = np.round(reverse_results["oil_flow_rate"], 3)
+        flowrate['Dispersed Phase Flow Rate (\u03BCl/hr)'] = np.round(reverse_results["water_flow_rate"], 3)
+
+        gen_rate = np.round(reverse_results["generation_rate"], 3)
+        disp_Flow  = np.round(reverse_results["water_flow_rate"], 3)
+
+        features = reverse_results.copy()
+        del features["point_source"]
+        features = {key: float(features[key]) for key in features.keys()}
+        TH = TolHelper3(features, fluid_properties)
+        TH.run_all()
+        fig_name = TH.plot_all()
+
+        return render_template('backward_3.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
+                               figname=fig_name)
+    return redirect(url_for('index_3'))
+
+
+@nn_blueprint.route('/backward_3_de', methods=['GET', 'POST'])
+def backward_3_de():
+    if request.method == 'POST':
+        weights = {}
+        weights["inner"] = request.form.get('innerWeight')
+        weights["outer"] = request.form.get('outer')
+        for k in weights.keys():
+            if weights[k] is None:
+                weights[k] = 0.5
+            else:
+                weights[k] = float(weights[k])
+
+
+        fluid_properties = {}
+        fluid_properties['inner_aq_viscosity'] = request.form.get('innerAqVisc')
+        fluid_properties['oil_viscosity'] = request.form.get('oilVisc')
+        fluid_properties['outer_aq_viscosity'] = request.form.get('outerAqVisc')
+        fluid_properties['inner_surface_tension'] = request.form.get('innerSurfTension')
+        fluid_properties['outer_surface_tension'] = request.form.get('outerSurfTension')
+        fluid_properties = {key: float(fluid_properties[key]) for key in fluid_properties.keys()}
+
+        desired_vals = {}
+        desired_vals['inner_droplet_size'] = request.form.get('innerDropSize')
+        desired_vals['outer_droplet_size'] = request.form.get('outerDropSize')
+        desired_vals = {key: float(desired_vals[key]) for key in desired_vals.keys()}
+
+        device = request.form.get('device')
+        if device is not None:
+            device = float(device)
+        inner_features = {'orifice_width': None, 'aspect_ratio': None, 'normalized_oil_inlet': 1,
+                'normalized_water_inlet': 1, 'expansion_ratio': 1}
+        outer_features = inner_features.copy()
+        if device == 1:
+            inner_features['orifice_width'] = 15
+            outer_features['orifice_width'] = 30
+            inner_features['aspect_ratio'] = 1
+            outer_features['aspect_ratio'] = 1
+        elif device == 2:
+            inner_features['orifice_width'] = 22.5
+            outer_features['orifice_width'] = 45
+            inner_features['aspect_ratio'] = 1
+            outer_features['aspect_ratio'] = 1
+        elif device == 3:
+            inner_features['orifice_width'] = 30
+            outer_features['orifice_width'] = 60
+            inner_features['aspect_ratio'] = 1
+            outer_features['aspect_ratio'] = 1
+        elif device == 4:
+            inner_features['orifice_width'] = 15
+            outer_features['orifice_width'] = 30
+            inner_features['aspect_ratio'] = 1.33
+            outer_features['aspect_ratio'] = 1.33
+        elif device == 5:
+            inner_features['orifice_width'] = 22.5
+            outer_features['orifice_width'] = 45
+            inner_features['aspect_ratio'] = 1.33
+            outer_features['aspect_ratio'] = 1.33
+        elif device == 6:
+            inner_features['orifice_width'] = 30
+            outer_features['orifice_width'] = 60
+            inner_features['aspect_ratio'] = 1.33
+            outer_features['aspect_ratio'] = 1.33
+        else:
+            custom = request.form.get('customDevice')
+            if custom is not None:
+                inner_features['orifice_width'] = request.form.get('FF1OriWidDE_backwards')
+                inner_features['aspect_ratio'] = request.form.get('FF1aspRatioDE_backwards')
+                inner_features['normalized_oil_inlet'] = request.form.get('FF1normContDE_backwards')
+                inner_features['normalized_water_inlet'] = request.form.get('FF1normInletDE_backwards')
+                inner_features['expansion_ratio'] = request.form.get('FF1expRatioDE_backards')
+                inner_features = {k:float(inner_features[k]) for k in inner_features.keys()}
+
+                outer_features['orifice_width'] = request.form.get('FF2OriWidDE_backwards')
+                outer_features['aspect_ratio'] = request.form.get('FF2aspRatioDE_backwards')
+                outer_features['normalized_oil_inlet'] = request.form.get('FF2normContDE_backwards')
+                outer_features['normalized_water_inlet'] = request.form.get('FF2normInletDE_backwards')
+                outer_features['expansion_ratio'] = request.form.get('FF2expRatioDE_backards')
+                outer_features = {k:float(outer_features[k]) for k in outer_features.keys()}
+            else:
+                inner_features['orifice_width'] = [15, 22.5, 30]
+                outer_features['orifice_width'] = [30, 45, 60]
+                inner_features['aspect_ratio'] = [1, 1.33]
+                outer_features['aspect_ratio'] = [1, 1.33]
+
+        inner_features['viscosity_ratio'] = fluid_properties["oil_viscosity"]/fluid_properties["inner_aq_viscosity"]
+        outer_features['viscosity_ratio'] = fluid_properties["outer_aq_viscosity"]/fluid_properties["oil_viscosity"]
+
+
+
+        inner_results, outer_results, soln_filename = runReverse_3DE(inner_features, outer_features, desired_vals, fluid_properties, weights)
+        if inner_results is None and outer_results is None:
+            return render_template('no_solution.html')
+
+        fig_names = []
+        size_hms = []
+        gen_hms = []
+
+        for i, result in enumerate([inner_results, outer_results]):
+            if i == 0:
+                base = "inner"
+                fprop = {
+                    "surface_tension": fluid_properties["inner_surface_tension"],
+                    "water_viscosity": fluid_properties["inner_aq_viscosity"],
+                    "oil_viscosity": fluid_properties["oil_viscosity"],
+                    "viscosity_ratio": inner_features["viscosity_ratio"]
+                }
+            else:
+                base = "outer"
+                fprop = {
+                    "surface_tension": fluid_properties["outer_surface_tension"],
+                    "water_viscosity": fluid_properties["oil_viscosity"],
+                    "oil_viscosity": fluid_properties["outer_aq_viscosity"],
+                    "viscosity_ratio": outer_features["viscosity_ratio"]
+                }
+            features = result.copy()
+            features = {key: float(features[key]) for key in features.keys()}
+            TH = TolHelper3(features, fprop)
+            TH.run_all()
+            size_hms.append(TH.flow_heatmap_size)
+            gen_hms.append(TH.flow_heatmap_gen)
+            fig_names.append(TH.plot_all(base=base))
+
+        DH = DEHelper(fluid_properties)
+        stab_names = DH.run_stability(inner_results, outer_results)
+        fig_names.extend(stab_names)
+
+        geo = {}
+        geo['Inner Orifice Width (\u03BCm)'] = np.round(inner_results["orifice_width"], 3)
+        geo['Inner Channel Depth (\u03BCm)'] = np.round(inner_results["aspect_ratio"]*inner_results["orifice_width"], 3)
+        geo['Inner Outlet Channel Width (\u03BCm)'] = np.round(inner_results["expansion_ratio"]*inner_results["orifice_width"], 3)
+        geo['Inner Dispersed Inlet Width (\u03BCm)'] = np.round(inner_results["normalized_water_inlet"]*inner_results["orifice_width"], 3)
+        geo['Inner Continuous Inlet Width (\u03BCm)'] = np.round(inner_results["normalized_oil_inlet"]*inner_results["orifice_width"], 3)
+
+        geo['Outer Orifice Width (\u03BCm)'] = np.round(outer_results["orifice_width"], 3)
+        geo['Outer Channel Depth (\u03BCm)'] = np.round(outer_results["aspect_ratio"]*outer_results["orifice_width"], 3)
+        geo['Outer Outlet Channel Width (\u03BCm)'] = np.round(outer_results["expansion_ratio"]*outer_results["orifice_width"], 3)
+        geo['Outer Dispersed Inlet Width (\u03BCm)'] = np.round(outer_results["normalized_water_inlet"]*outer_results["orifice_width"], 3)
+        geo['Outer Continuous Inlet Width (\u03BCm)'] = np.round(outer_results["normalized_oil_inlet"]*outer_results["orifice_width"], 3)
+
+
+        flow = {}
+        #TODO: See if it really helps to have frr and ca num outputter for the user
+        # flow['Flow Rate Ratio '] = np.round(reverse_results["flow_rate_ratio"], 3)
+        # flow['Capillary Number'] = np.round(reverse_results["capillary_number"], 3)
+        flow['Inner Aqueous Dynamic Viscosity (mPa s)'] = np.round(fluid_properties['inner_aq_viscosity'], 3)
+        flow['Oil Dynamic Viscosity (mPa s)'] = np.round(fluid_properties['oil_viscosity'], 3)
+        flow['Outer Aqueous Dynamic Viscosity (mPa s)'] = np.round(fluid_properties['outer_aq_viscosity'], 3)
+
+        flow['Inner Aqueous / Oil Interfacial Surface Tension'] = np.round(fluid_properties['inner_surface_tension'], 3)
+        flow['Oil / Outer Aqueous Interfacial Surface Tension'] = np.round(fluid_properties['outer_surface_tension'], 3)
+
+        perform = {}
+        perform['Inner DE Diameter (\u03BCm)'] = np.round(inner_results["droplet_size"], 3)
+        perform['Inner Generation Rate (Hz)'] = np.round(inner_results["generation_rate"], 3)
+        perform['Outer DE Diameter (\u03BCm)'] = np.round(outer_results["droplet_size"], 3)
+        perform['Outer Generation Rate (Hz)'] = np.round(outer_results["generation_rate"], 3)
+        perform["Generation Rate Difference (%)"] = np.round(np.abs((outer_results["generation_rate"] - inner_results["generation_rate"]) \
+                                                              / inner_results["generation_rate"] * 100), 3)
+
+        flowrate = {}
+        flowrate['Inner Aqueous Flow Rate (\u03BCl/hr)'] = np.round(inner_results["dispersed_flow_rate"], 3)
+        flowrate['Oil Flow Rate (\u03BCl/hr)'] = np.round(inner_results["continuous_flow_rate"], 3)
+        flowrate['Outer Aqueous Flow Rate (\u03BCl/hr)'] = np.round(outer_results["continuous_flow_rate"], 3)
+
+        return render_template('backward_3_de.html',filename=soln_filename, geo=geo, flow=flow, perform=perform, flowrate=flowrate,
+                               fignames=fig_names)
+    return redirect(url_for('index_3'))
+
+
 
 
 @nn_blueprint.route('/dummy', methods=['GET', 'POST'])
@@ -473,7 +904,11 @@ def download_weights():
 
         directory = os.path.join(APP_ROOT, '../resources/inputs/')
         return send_from_directory(directory=directory, filename='weights-classification.h5', as_attachment=True)
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> dafd3
     return redirect(url_for('download_weights'))
 
 @nn_blueprint.route('/tolerance', methods=['GET', 'POST'])
