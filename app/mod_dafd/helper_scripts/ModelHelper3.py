@@ -13,7 +13,7 @@ class ModelHelper3:
 	Singleton
 	"""
 
-	RESOURCE_PATH = "experimental_data/DAFD3_data.csv"		# Experimental data location
+	RESOURCE_PATH = "experimental_data/20231001_all_data_dafd3.csv"		# Experimental data location
 	NUM_OUTPUTS = 2													# Droplet Generation Rate + Droplet Size
 
 	instance = None				# Singleton

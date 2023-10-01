@@ -51,7 +51,7 @@ class NeuralNetModel_DAFD3:
         self.model.fit(X_train, Y_train, validation_data=(X_test, Y_test), batch_size=32,
                            epochs=5000)  # , callbacks=[earlystopping])
 
-    def load_model(self, model_name="20221121_DAFD3_NN_7weights"):
+    def load_model(self, model_name="20231001_DAFD3_NN_7weights"):
         # load file
         file = os.path.dirname(os.path.abspath(__file__)) + "/saved/" + model_name
         self.model = keras.models.load_model(file, custom_objects={"rmse": rmse, "r_square":r_square})
@@ -85,7 +85,7 @@ class XGBoost_DAFD3:
     def save_model(self, name):
         self.model.save_model(name)
 
-    def load_model(self, model_name="20221121_DAFD3_XGB.json"):
+    def load_model(self, model_name="20231001_DAFD3_XGB.json"):
         # load file
         file = os.path.dirname(os.path.abspath(__file__)) + "/saved/" + model_name
         if self.model is None:
