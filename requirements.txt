@@ -34,7 +34,7 @@ mkl-random==1.1.1
 mkl-service==2.3.0
 more-itertools==8.0.2
 pandas==0.24.2
-protobuf==3.8.0
+protobuf==3.18.3
 pylint==2.3.1
 pyparsing==2.4.2
 python-dateutil==2.8.0
