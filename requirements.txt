@@ -47,7 +47,7 @@ scipy==1.5.4
 seaborn==0.10.1
 six @ file:///tmp/build/80754af9/six_1644875935023/work
 tensorboard==1.14.0
-tensorflow==1.14.0
+tensorflow==2.9.3
 tensorflow-estimator==1.14.0
 termcolor==1.1.0
 Theano==1.0.4
